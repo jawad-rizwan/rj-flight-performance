@@ -12,7 +12,8 @@ Charts produced:
   6. Turn rate & load factor vs velocity
   7. Payload-range diagram
   8. Takeoff & landing distance breakdown
-  9. Glide polar (sink rate vs velocity)
+  9. ASDR & AGDR vs engine failure speed (BFL)
+ 10. Glide polar (sink rate vs velocity)
 """
 
 import sys, os
@@ -35,6 +36,7 @@ from perf import (
     n_sustained, sustained_turn_envelope_rho,
     Ps_expanded, specific_energy,
     V_best_glide, min_sink_rate, sink_rate,
+    asdr_todr_curves, find_V1,
 )
 
 VARIANTS = [crj700, crj1000]
@@ -426,7 +428,68 @@ def plot_TO_landing_bars():
 
 
 # =====================================================================
-# 9. Glide Polar (Sink Rate vs Velocity)
+# 9. ASDR & TODR vs Engine Failure Speed
+# =====================================================================
+def plot_asdr_todr():
+    fig, axes = plt.subplots(1, len(VARIANTS), figsize=(14, 6), sharey=True)
+    if len(VARIANTS) == 1:
+        axes = [axes]
+
+    for ax, ac in zip(axes, VARIANTS):
+        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+        rho = RHO_SL
+        CD0_TO = CD0 + 0.015
+        T_TO = 0.75 * ac.T_max_SL
+        T_idle = 0.05 * ac.T_max_SL
+
+        curves = asdr_todr_curves(
+            W=W, S=S, T=T_TO, CD0=CD0_TO,
+            CL_ground=ac.CL_ground, K=K,
+            mu_roll=ac.mu_roll, mu_brake=ac.mu_brake,
+            rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+            h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+            T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
+
+        v1_result = find_V1(
+            W=W, S=S, T=T_TO, CD0=CD0_TO,
+            CL_ground=ac.CL_ground, K=K,
+            mu_roll=ac.mu_roll, mu_brake=ac.mu_brake,
+            rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+            h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+            T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
+
+        V_kts = fps_to_kts(curves["V_EF"])
+        V1_kts = fps_to_kts(v1_result["V1"])
+        BFL = v1_result["BFL"]
+
+        ax.plot(V_kts, curves["ASDR"], 'r-', lw=2, label="ASDR (accelerate-stop)")
+        ax.plot(V_kts, curves["AGDR"], 'b-', lw=2, label="AGDR (accelerate-go)")
+
+        # Mark V1 / BFL intersection
+        ax.plot(V1_kts, BFL, 'ko', ms=10, zorder=5)
+        ax.annotate(f"V1 = {V1_kts:.0f} kts\nBFL = {BFL:,.0f} ft",
+                    (V1_kts, BFL), fontsize=9, fontweight='bold',
+                    xytext=(-80, 30), textcoords='offset points',
+                    arrowprops=dict(arrowstyle='->', color='black'))
+
+        # Mark VR
+        V_s = V_stall(W, S, rho, ac.CL_max_TO)
+        VR_kts = fps_to_kts(1.1 * V_s)
+        ax.axvline(VR_kts, color='green', ls='--', alpha=0.6, label=f"VR = {VR_kts:.0f} kts")
+
+        ax.set_xlabel("Engine Failure Speed, $V_{EF}$ [kts]")
+        ax.set_title(f"{ac.name} (Sea Level, ISA)")
+        ax.legend(fontsize=8, loc="upper left")
+        ax.grid(True, alpha=0.3)
+
+    axes[0].set_ylabel("Distance [ft]")
+    fig.suptitle("ASDR & AGDR vs Engine Failure Speed — Balanced Field Length",
+                 fontsize=12)
+    save(fig, "09_ASDR_TODR.png")
+
+
+# =====================================================================
+# 10. Glide Polar (Sink Rate vs Velocity)
 # =====================================================================
 def plot_glide_polar():
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -468,7 +531,7 @@ def plot_glide_polar():
     ax.invert_yaxis()  # convention: sink is positive downward
     ax.legend()
     ax.grid(True, alpha=0.3)
-    save(fig, "09_glide_polar.png")
+    save(fig, "10_glide_polar.png")
 
 
 # =====================================================================
@@ -482,5 +545,6 @@ if __name__ == "__main__":
     plot_turn_performance()
     plot_payload_range()
     plot_TO_landing_bars()
+    plot_asdr_todr()
     plot_glide_polar()
     print("\nAll charts saved to examples/charts/")

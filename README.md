@@ -154,7 +154,7 @@ All equations reference Raymer's *Aircraft Design: A Conceptual Approach*, 7th E
 
 ## Performance Charts
 
-Running `python examples/plot_performance.py` generates 9 charts in `examples/charts/`:
+Running `python examples/plot_performance.py` generates 10 charts in `examples/charts/`:
 
 | # | Chart | Raymer Reference |
 |---|-------|-----------------|
@@ -166,7 +166,8 @@ Running `python examples/plot_performance.py` generates 9 charts in `examples/ch
 | 6 | Turn rate & load factor vs velocity | Fig. 17.6, Eq. 17.52, 17.54 |
 | 7 | Payload-range diagram | Eq. 17.23 |
 | 8 | Takeoff & landing distance breakdown | Sec. 17.8, 17.9 |
-| 9 | Glide polar (sink rate vs velocity) | Fig. 17.7, Eq. 17.68 |
+| 9 | ASDR & AGDR vs engine failure speed (BFL) | Sec. 17.8.4, Eq. 17.102 |
+| 10 | Glide polar (sink rate vs velocity) | Fig. 17.7, Eq. 17.68 |
 
 ---
 
@@ -180,9 +181,13 @@ Running `python examples/plot_performance.py` generates 9 charts in `examples/ch
   Range (nmi)                          2,976         2,359
   Best ROC (fpm)                      11,202         9,393
   Corner spd (kts)                       276           292
-  TO dist (ft)                        10,533        12,128
-  BFL (ft)                             7,933         9,808
-  Land FAR (ft)                        7,099         7,656
+  TODR (ft)                           10,533        12,128
+  TODR FAR (ft)                       12,113        13,947
+  ASDR at V1 (ft)                      8,520        10,587
+  BFL iterative (ft)                   8,521        10,587
+  BFL Eq.17.113 (ft)                   7,933         9,808
+  LDR (ft)                             4,258         4,592
+  LDR FAR (ft)                         7,099         7,656
 ```
 
 ---
@@ -202,6 +207,89 @@ All calculations use **Imperial units** (ft, lb, slugs, seconds), consistent wit
 | Power | ft-lb/s (converted to hp for display) |
 | Density | slug/ft^3 |
 | Dynamic pressure | lb/ft^2 (psf) |
+
+---
+
+## Data Checklist for Your Aircraft
+
+To run a full performance analysis on your own design, you need to gather the values below. All units are **Imperial** (lb, ft, ft², etc.). Fields marked *(optional)* have sensible defaults or are only needed for propeller aircraft.
+
+### Weights
+
+| Parameter | Field | Unit | Description |
+|-----------|-------|------|-------------|
+| Max takeoff weight | `W_TO` | lb | Maximum takeoff gross weight |
+| Operating empty weight | `W_empty` | lb | Empty weight including crew & unusable fuel |
+| Max fuel capacity | `W_fuel_max` | lb | Maximum usable fuel weight |
+| Design payload | `W_payload` | lb | Design payload (passengers + cargo) |
+
+### Wing Geometry
+
+| Parameter | Field | Unit | Description |
+|-----------|-------|------|-------------|
+| Reference area | `S` | ft² | Trapezoidal wing planform area |
+| Wingspan | `b` | ft | Tip-to-tip span |
+| Aspect ratio | `AR` | — | b²/S (auto-computed if `b` and `S` are given) |
+| Quarter-chord sweep | `sweep_qc_deg` | deg | Sweep angle at the quarter-chord line |
+| Thickness-to-chord ratio | `t_c` | — | Average t/c of the wing |
+| Taper ratio | `taper` | — | Tip chord / root chord |
+
+### Aerodynamics
+
+| Parameter | Field | Unit | Description |
+|-----------|-------|------|-------------|
+| Zero-lift drag coefficient | `CD0` | — | Parasite drag at zero lift |
+| Induced-drag factor | `K` | — | K in CD = CD0 + K·CL² (= 1/π·e·AR) |
+| Oswald efficiency | `e` | — | Span efficiency factor |
+| CL max (clean) | `CL_max_clean` | — | Maximum lift coefficient, clean configuration |
+| CL max (takeoff) | `CL_max_TO` | — | Maximum lift coefficient, takeoff flaps |
+| CL max (landing) | `CL_max_L` | — | Maximum lift coefficient, landing flaps |
+
+### Propulsion — Jet
+
+| Parameter | Field | Unit | Description |
+|-----------|-------|------|-------------|
+| Number of engines | `n_engines` | — | Total engine count |
+| Total static thrust | `T_max_SL` | lb | Combined sea-level static thrust (all engines) |
+| Thrust SFC | `TSFC` | 1/hr | Cruise thrust-specific fuel consumption |
+| Bypass ratio | `BPR` | — | Engine bypass ratio |
+
+### Propulsion — Propeller *(set `is_prop=True`)*
+
+| Parameter | Field | Unit | Description |
+|-----------|-------|------|-------------|
+| Shaft power | `P_bhp` | bhp | Total shaft brake horsepower (all engines) |
+| Propeller efficiency | `eta_p` | — | Cruise propeller efficiency (typically 0.7–0.85) |
+| Brake SFC | `C_bhp` | lb/hr/bhp | Brake-specific fuel consumption |
+
+### Landing Gear *(optional — defaults shown)*
+
+| Parameter | Field | Default | Description |
+|-----------|-------|---------|-------------|
+| Rolling friction coeff. | `mu_roll` | 0.03 | Hard-surface runway rolling friction |
+| Braking friction coeff. | `mu_brake` | 0.40 | Hard-surface runway braking friction |
+
+### Takeoff / Landing *(optional — defaults shown)*
+
+| Parameter | Field | Default | Description |
+|-----------|-------|---------|-------------|
+| Takeoff obstacle height | `h_obstacle_TO` | 35 ft | FAR 25 screen height for takeoff |
+| Landing obstacle height | `h_obstacle_L` | 50 ft | FAR 25 screen height for landing |
+| Ground-roll CL | `CL_ground` | 0.10 | Lift coefficient during ground roll |
+
+### Design Cruise
+
+| Parameter | Field | Unit | Description |
+|-----------|-------|------|-------------|
+| Cruise Mach number | `M_cruise` | — | Design cruise Mach |
+| Cruise altitude | `h_cruise_ft` | ft | Design cruise altitude |
+
+### Structural Limits
+
+| Parameter | Field | Default | Description |
+|-----------|-------|---------|-------------|
+| Max load factor | `n_max` | 2.5 | Positive limit load factor (FAR 25 transport) |
+| Never-exceed speed | `V_NE_kts` | — *(optional)* | VNE in KEAS; only needed for V-n diagrams |
 
 ---
 

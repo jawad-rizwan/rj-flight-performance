@@ -34,7 +34,7 @@ from perf import (
     # energy
     specific_energy, Ps_expanded,
     # takeoff
-    total_takeoff_distance, balanced_field_length,
+    total_takeoff_distance, balanced_field_length, find_V1,
     # landing
     total_landing_distance,
 )
@@ -308,36 +308,59 @@ def analyse(ac):
     # =================================================================
     subsection("17.8  TAKEOFF ANALYSIS (Sea Level, ISA)")
 
-    T_TO = 0.75 * T_sl   # average thrust during ground roll (~75% at V_TO^2 avg)
+    CD0_TO = CD0 + 0.015   # gear + flap drag increment
+    T_TO = 0.75 * T_sl     # average thrust during ground roll
+
+    # All-engine TODR
     to = total_takeoff_distance(
-        W=W, S=S, T=T_TO, CD0=CD0 + 0.015,  # gear + flap drag increment
+        W=W, S=S, T=T_TO, CD0=CD0_TO,
         CL_ground=ac.CL_ground, K=K, mu=ac.mu_roll,
         rho=rho_sl, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
         h_obstacle=ac.h_obstacle_TO, t_rotate=3.0)
 
-    print(f"  V_stall (TO config)     : {fps_to_kts(to['V_stall']):.1f} kts")
-    print(f"  V_TO (1.1 Vs)           : {fps_to_kts(to['V_TO']):.1f} kts")
-    print(f"  Ground roll             : {to['S_ground_roll']:,.0f} ft  (Eq. 17.102)")
-    print(f"  Rotation                : {to['S_rotation']:,.0f} ft")
-    print(f"  Transition              : {to['S_transition']:,.0f} ft")
-    print(f"  Climb to {ac.h_obstacle_TO:.0f} ft        : {to['S_climb']:,.0f} ft  (Eq. 17.112)")
-    print(f"  Climb angle             : {to['gamma_deg']:.1f} deg")
-    print(f"  TOTAL takeoff distance  : {to['S_total']:,.0f} ft")
+    # V1 / BFL (iterative)
+    T_idle_to = 0.05 * T_sl
+    v1_result = find_V1(
+        W=W, S=S, T=T_TO, CD0=CD0_TO,
+        CL_ground=ac.CL_ground, K=K,
+        mu_roll=ac.mu_roll, mu_brake=ac.mu_brake,
+        rho=rho_sl, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+        h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+        T_idle=T_idle_to, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
 
-    # Balanced field length (Eq. 17.113)
+    # Empirical BFL (Eq. 17.113)
     gamma_min = 0.024  # 2-engine
     U = 0.01 * ac.CL_max_TO + 0.02
     CL_climb = ac.CL_max_TO / (1.2**2)  # CL at 1.2*Vs
     G_climb = np.arcsin(np.clip(ac.thrust_to_weight * 0.5 - 1.0 /
               (CL_climb / (CD0 + K * CL_climb**2)), -1, 1)) - gamma_min
 
-    bfl = balanced_field_length(
+    bfl_empirical = balanced_field_length(
         W_over_S=ac.wing_loading, CL_climb=CL_climb,
         h_obstacle=ac.h_obstacle_TO, TW=ac.thrust_to_weight,
         U=U, G_climb=max(G_climb, 0.01), BPR=ac.BPR,
         N_e=ac.n_engines, rho=rho_sl, is_prop=False)
 
-    print(f"\n  Balanced field length   : {bfl:,.0f} ft  (Eq. 17.113)")
+    print(f"\n  V-speeds:")
+    print(f"    V_stall (TO config)   : {fps_to_kts(to['V_stall_TO']):.1f} kts")
+    print(f"    V1  (decision)        : {fps_to_kts(v1_result['V1']):.1f} kts")
+    print(f"    VR  (rotation, 1.1 Vs): {fps_to_kts(to['V_R']):.1f} kts")
+    print(f"    V2  (safety, 1.2 Vs)  : {fps_to_kts(to['V_2']):.1f} kts")
+
+    print(f"\n  TODR (all-engine):")
+    print(f"    Ground roll           : {to['S_ground_roll']:,.0f} ft  (Eq. 17.102)")
+    print(f"    Rotation              : {to['S_rotation']:,.0f} ft")
+    print(f"    Transition            : {to['S_transition']:,.0f} ft")
+    print(f"    Climb to {ac.h_obstacle_TO:.0f} ft        : {to['S_climb']:,.0f} ft  (Eq. 17.112)")
+    print(f"    Climb angle           : {to['gamma_deg']:.1f} deg")
+    print(f"    TODR (unfactored)     : {to['TODR']:,.0f} ft")
+    print(f"    TODR (FAR x1.15)      : {to['TODR_factored']:,.0f} ft")
+
+    print(f"\n  Balanced field / V1:")
+    print(f"    ASDR at V1            : {v1_result['ASDR_at_V1']:,.0f} ft")
+    print(f"    AGDR at V1            : {v1_result['AGDR_at_V1']:,.0f} ft")
+    print(f"    BFL (iterative)       : {v1_result['BFL']:,.0f} ft")
+    print(f"    BFL (Raymer Eq.17.113): {bfl_empirical:,.0f} ft")
 
     # =================================================================
     # 17.9  LANDING
@@ -354,16 +377,18 @@ def analyse(ac):
         T_idle=T_idle_land, T_reverse=0.0,
         approach_factor=1.3, t_free=3.0, FAR_factor=True)
 
-    print(f"  Landing weight          : {W_land:,.0f} lb  (85% MTOW)")
-    print(f"  V_stall (landing)       : {fps_to_kts(la['V_stall']):.1f} kts")
-    print(f"  V_approach (1.3 Vs)     : {fps_to_kts(la['V_approach']):.1f} kts")
-    print(f"  V_touchdown             : {fps_to_kts(la['V_TD']):.1f} kts")
-    print(f"  Approach distance       : {la['S_approach']:,.0f} ft")
-    print(f"  Flare distance          : {la['S_flare']:,.0f} ft")
-    print(f"  Free roll               : {la['S_free_roll']:,.0f} ft")
-    print(f"  Braking distance        : {la['S_braking']:,.0f} ft")
-    print(f"  Total actual            : {la['S_total_actual']:,.0f} ft")
-    print(f"  FAR field length (x1.667): {la['S_FAR_field']:,.0f} ft")
+    print(f"\n  V-speeds:")
+    print(f"    V_stall (landing)     : {fps_to_kts(la['V_stall']):.1f} kts")
+    print(f"    V_approach (1.3 Vs)   : {fps_to_kts(la['V_approach']):.1f} kts")
+    print(f"    V_touchdown (1.15 Vs) : {fps_to_kts(la['V_TD']):.1f} kts")
+
+    print(f"\n  Landing weight          : {W_land:,.0f} lb  (85% MTOW)")
+    print(f"    Approach distance     : {la['S_approach']:,.0f} ft")
+    print(f"    Flare distance        : {la['S_flare']:,.0f} ft")
+    print(f"    Free roll             : {la['S_free_roll']:,.0f} ft")
+    print(f"    Braking distance      : {la['S_braking']:,.0f} ft")
+    print(f"    LDR (unfactored)      : {la['S_total_actual']:,.0f} ft")
+    print(f"    LDR (FAR x1.667)      : {la['S_FAR_field']:,.0f} ft")
 
     # =================================================================
     # Summary table
@@ -377,13 +402,18 @@ def analyse(ac):
         ("Cruise L/D",              f"{LD_cr:.2f}"),
         ("Cruise Mach",             f"{ac.M_cruise}"),
         ("V_stall clean (SL)",      f"{fps_to_kts(vs_clean):.0f} kts"),
+        ("V1 / VR / V2",           f"{fps_to_kts(v1_result['V1']):.0f} / {fps_to_kts(to['V_R']):.0f} / {fps_to_kts(to['V_2']):.0f} kts"),
         ("Best range (cruise)",     f"{R_cruise:,.0f} nmi"),
         ("Best ROC (SL)",           f"{roc_best*60:,.0f} fpm"),
         ("Service ceiling",         "see above"),
         ("Corner speed (SL)",       f"{fps_to_kts(V_corner):.0f} kts"),
-        ("Takeoff distance",        f"{to['S_total']:,.0f} ft"),
-        ("BFL",                     f"{bfl:,.0f} ft"),
-        ("Landing distance (FAR)",  f"{la['S_FAR_field']:,.0f} ft"),
+        ("TODR (unfactored)",       f"{to['TODR']:,.0f} ft"),
+        ("TODR (FAR x1.15)",        f"{to['TODR_factored']:,.0f} ft"),
+        ("ASDR at V1",              f"{v1_result['ASDR_at_V1']:,.0f} ft"),
+        ("BFL (iterative)",         f"{v1_result['BFL']:,.0f} ft"),
+        ("BFL (Raymer Eq.17.113)",  f"{bfl_empirical:,.0f} ft"),
+        ("LDR (unfactored)",        f"{la['S_total_actual']:,.0f} ft"),
+        ("LDR (FAR x1.667)",        f"{la['S_FAR_field']:,.0f} ft"),
         ("Glide range from cruise", f"{R_glide/6076:,.0f} nmi"),
     ]
     for label, value in summary:
@@ -393,8 +423,13 @@ def analyse(ac):
     return {
         "ac": ac, "LD_max": ld_max, "LD_cr": LD_cr,
         "R_cruise": R_cruise, "ROC_best_sl": roc_best,
-        "V_corner": V_corner, "TO_dist": to["S_total"],
-        "BFL": bfl, "land_FAR": la["S_FAR_field"],
+        "V_corner": V_corner, "TODR": to["TODR"],
+        "TODR_factored": to["TODR_factored"],
+        "ASDR": v1_result["ASDR_at_V1"],
+        "BFL": v1_result["BFL"],
+        "BFL_empirical": bfl_empirical,
+        "LDR": la["S_total_actual"],
+        "LDR_FAR": la["S_FAR_field"],
     }
 
 
@@ -413,22 +448,24 @@ if __name__ == "__main__":
     print("  " + "-" * (28 + 14 * len(results)))
 
     metrics = [
-        ("(L/D)_max",      "LD_max",      ".2f"),
-        ("Cruise L/D",     "LD_cr",       ".2f"),
-        ("Range (nmi)",    "R_cruise",    ",.0f"),
-        ("Best ROC (fpm)", "ROC_best_sl", ",.0f"),  # will multiply by 60
-        ("Corner spd (kts)","V_corner",   ",.0f"),
-        ("TO dist (ft)",   "TO_dist",     ",.0f"),
-        ("BFL (ft)",       "BFL",         ",.0f"),
-        ("Land FAR (ft)",  "land_FAR",    ",.0f"),
+        ("(L/D)_max",          "LD_max",         ".2f",  None),
+        ("Cruise L/D",         "LD_cr",          ".2f",  None),
+        ("Range (nmi)",        "R_cruise",       ",.0f", None),
+        ("Best ROC (fpm)",     "ROC_best_sl",    ",.0f", lambda v: v * 60),
+        ("Corner spd (kts)",   "V_corner",       ",.0f", fps_to_kts),
+        ("TODR (ft)",          "TODR",           ",.0f", None),
+        ("TODR FAR (ft)",      "TODR_factored",  ",.0f", None),
+        ("ASDR at V1 (ft)",    "ASDR",           ",.0f", None),
+        ("BFL iterative (ft)", "BFL",            ",.0f", None),
+        ("BFL Eq.17.113 (ft)", "BFL_empirical",  ",.0f", None),
+        ("LDR (ft)",           "LDR",            ",.0f", None),
+        ("LDR FAR (ft)",       "LDR_FAR",        ",.0f", None),
     ]
-    for label, key, fmt in metrics:
+    for label, key, fmt, transform in metrics:
         row = f"  {label:<28s}"
         for name in results:
             val = results[name][key]
-            if key == "ROC_best_sl":
-                val *= 60  # ft/s -> fpm
-            if key == "V_corner":
-                val = fps_to_kts(val)
+            if transform:
+                val = transform(val)
             row += f"  {val:>12{fmt}}"
         print(row)
