@@ -173,11 +173,18 @@ def total_takeoff_distance(W, S, T, CD0, CL_ground, K, mu, rho,
     S_R = rotation_distance(V_R, t_rotate)
 
     trans = transition_segment(W, S, rho, CL_max_TO, TW)
-    S_TR = trans["S_TR"]
     h_TR = trans["h_TR"]
     gamma = trans["gamma_rad"]
+    R = trans["R"]
 
-    S_C = climb_distance(h_obstacle, h_TR, gamma) if gamma > 0.01 else 0.0
+    if h_TR >= h_obstacle:
+        # Obstacle cleared during transition — truncate arc at h_obstacle
+        theta = np.arccos(np.clip(1.0 - h_obstacle / R, -1, 1))
+        S_TR = R * np.sin(theta)
+        S_C = 0.0
+    else:
+        S_TR = trans["S_TR"]
+        S_C = climb_distance(h_obstacle, h_TR, gamma) if gamma > 0.01 else 0.0
 
     TODR = S_G + S_R + S_TR + S_C
     TODR_factored = 1.15 * TODR   # FAR 25.113(a): 115% of all-engine distance
@@ -271,11 +278,17 @@ def accelerate_go_distance(W, S, T, CD0, CL_ground, K, mu_roll, rho,
     # Transition and climb (OEI)
     TW_OEI = T_OEI / W
     trans = transition_segment(W, S, rho, CL_max_TO, TW_OEI)
-    S_TR = trans["S_TR"]
     h_TR = trans["h_TR"]
     gamma = trans["gamma_rad"]
+    R = trans["R"]
 
-    S_C = climb_distance(h_obstacle, h_TR, gamma) if gamma > 0.01 else 0.0
+    if h_TR >= h_obstacle:
+        theta = np.arccos(np.clip(1.0 - h_obstacle / R, -1, 1))
+        S_TR = R * np.sin(theta)
+        S_C = 0.0
+    else:
+        S_TR = trans["S_TR"]
+        S_C = climb_distance(h_obstacle, h_TR, gamma) if gamma > 0.01 else 0.0
 
     return S1 + S2 + S_R + S_TR + S_C
 

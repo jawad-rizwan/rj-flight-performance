@@ -362,6 +362,10 @@ def analyse(ac):
     print(f"    BFL (iterative)       : {v1_result['BFL']:,.0f} ft")
     print(f"    BFL (Raymer Eq.17.113): {bfl_empirical:,.0f} ft")
 
+    # TOFL = max(FAR-factored all-engine TODR, BFL)
+    TOFL = max(to['TODR_factored'], v1_result['BFL'])
+    print(f"\n  >> TOFL (FAR 25)        : {TOFL:,.0f} ft  = max(TODR×1.15, BFL)")
+
     # =================================================================
     # 17.9  LANDING
     # =================================================================
@@ -412,6 +416,7 @@ def analyse(ac):
         ("ASDR at V1",              f"{v1_result['ASDR_at_V1']:,.0f} ft"),
         ("BFL (iterative)",         f"{v1_result['BFL']:,.0f} ft"),
         ("BFL (Raymer Eq.17.113)",  f"{bfl_empirical:,.0f} ft"),
+        ("TOFL (FAR 25)",           f"{TOFL:,.0f} ft"),
         ("LDR (unfactored)",        f"{la['S_total_actual']:,.0f} ft"),
         ("LDR (FAR x1.667)",        f"{la['S_FAR_field']:,.0f} ft"),
         ("Glide range from cruise", f"{R_glide/6076:,.0f} nmi"),
@@ -428,6 +433,7 @@ def analyse(ac):
         "ASDR": v1_result["ASDR_at_V1"],
         "BFL": v1_result["BFL"],
         "BFL_empirical": bfl_empirical,
+        "TOFL": TOFL,
         "LDR": la["S_total_actual"],
         "LDR_FAR": la["S_FAR_field"],
     }
@@ -458,6 +464,7 @@ if __name__ == "__main__":
         ("ASDR at V1 (ft)",    "ASDR",           ",.0f", None),
         ("BFL iterative (ft)", "BFL",            ",.0f", None),
         ("BFL Eq.17.113 (ft)", "BFL_empirical",  ",.0f", None),
+        ("TOFL FAR 25 (ft)",   "TOFL",           ",.0f", None),
         ("LDR (ft)",           "LDR",            ",.0f", None),
         ("LDR FAR (ft)",       "LDR_FAR",        ",.0f", None),
     ]
