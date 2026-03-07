@@ -372,7 +372,7 @@ def plot_TO_landing_bars():
     for ac in VARIANTS:
         W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
         rho = RHO_SL
-        T_TO = 0.75 * ac.T_max_SL
+        T_TO = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR) * ac.T_max_SL
 
         to = total_takeoff_distance(W, S, T_TO, CD0+0.015, ac.CL_ground, K,
                                     ac.mu_roll, rho, ac.CL_max_TO,
@@ -439,7 +439,7 @@ def plot_asdr_todr():
         W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
         rho = RHO_SL
         CD0_TO = CD0 + 0.015
-        T_TO = 0.75 * ac.T_max_SL
+        T_TO = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR) * ac.T_max_SL
         T_idle = 0.05 * ac.T_max_SL
 
         curves = asdr_todr_curves(

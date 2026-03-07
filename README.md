@@ -181,12 +181,12 @@ Running `python examples/plot_performance.py` generates 10 charts in `examples/c
   Range (nmi)                          2,976         2,359
   Best ROC (fpm)                      11,202         9,393
   Corner spd (kts)                       276           292
-  TODR (ft)                            7,455         9,249
-  TODR FAR (ft)                        8,573        10,636
-  ASDR at V1 (ft)                      8,520        10,587
-  BFL iterative (ft)                   8,521        10,587
+  TODR (ft)                            6,801         8,377
+  TODR FAR (ft)                        7,821         9,634
+  ASDR at V1 (ft)                      7,803         9,627
+  BFL iterative (ft)                   7,803         9,627
   BFL Eq.17.113 (ft)                   7,933         9,808
-  TOFL FAR 25 (ft)                     8,573        10,636
+  TOFL FAR 25 (ft)                     7,821         9,634
   LDR (ft)                             4,258         4,592
   LDR FAR (ft)                         7,099         7,656
 ```

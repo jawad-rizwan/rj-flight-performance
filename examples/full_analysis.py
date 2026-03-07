@@ -309,7 +309,9 @@ def analyse(ac):
     subsection("17.8  TAKEOFF ANALYSIS (Sea Level, ISA)")
 
     CD0_TO = CD0 + 0.015   # gear + flap drag increment
-    T_TO = 0.75 * T_sl     # average thrust during ground roll
+    # Raymer Eq. 17.114: average thrust = T_static * 0.75*(5+BPR)/(4+BPR)
+    T_ratio = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR)
+    T_TO = T_ratio * T_sl
 
     # All-engine TODR
     to = total_takeoff_distance(
