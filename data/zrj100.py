@@ -45,4 +45,5 @@ zrj100 = AircraftData(
     # ---- Structural limits ----
     n_max=2.5,
     V_NE_kts=340.0,         # KEAS (estimate for Mmo 0.85)
+    M_mo=0.85,
 )

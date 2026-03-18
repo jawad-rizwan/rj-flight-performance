@@ -57,4 +57,5 @@ crj700 = AircraftData(
     # ---- Structural limits ----
     n_max=2.5,
     V_NE_kts=335.0,         # KEAS
+    M_mo=0.85,
 )

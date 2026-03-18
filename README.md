@@ -19,7 +19,8 @@ rj-flight-performance/
 │   ├── glide.py                       # 17.5   Gliding flight
 │   ├── energy.py                      # 17.6   Energy-maneuverability methods
 │   ├── takeoff.py                     # 17.8   Takeoff analysis
-│   └── landing.py                     # 17.9   Landing analysis
+│   ├── landing.py                     # 17.9   Landing analysis
+│   └── wave_drag.py                   # 12.5.9 Transonic drag rise (Korn eqn)
 ├── data/                              # Aircraft data files
 │   ├── base.py                        # AircraftData dataclass definition
 │   ├── crj700.py                      # Bombardier CRJ-700
@@ -91,6 +92,7 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   TOFL FAR 25 (ft)                     2,677         3,653         4,192
   LDR (ft)                             2,293         2,557         2,682
   LDR FAR (ft)                         3,822         4,262         4,469
+  LDR wet (ft)                         4,395         4,902         5,140
 ```
 
 ### MR&O Performance Attributes
@@ -106,13 +108,14 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | Maximum cruise (Optimized Mach) | M 0.85 | M 0.85 | M 0.85 |
 | | Takeoff BFL, ft | 2,439 | 3,396 | 3,956 |
 | | Initial cruise altitude, ft | 35,000 | 35,000 | 35,000 |
-| | Maximum cruise altitude, ft | >65,000 | 63,000 | 59,500 |
+| | Maximum cruise altitude, ft | >60,000 | 55,000 | 52,000 |
 | | Single engine climb | 19.6% | 13.6% | 11.5% |
 | **Weight & Payload** | Max. payload, lbs | 11,350 | 18,055 | 23,380 |
 | | Passengers (<100 PAX market segment) | 50 | 76 | 96 |
 | | Max. landing weight (~85% MTOW) | 55,250 | 69,295 | 76,002 |
 | **Airfield Performance** | TOFL, ISA, SL (MTOW) | 2,677 ft | 3,653 ft | 4,192 ft |
-| | LD, ISA, SL (MLW) | 3,822 ft | 4,262 ft | 4,469 ft |
+| | LD FAR (dry), ISA, SL (MLW) | 3,822 ft | 4,262 ft | 4,469 ft |
+| | LD FAR (wet), ISA, SL (MLW) | 4,395 ft | 4,902 ft | 5,140 ft |
 | | Steep approach capability (MLW) | Yes | Yes | Yes |
 | | Rate of climb [SL, AEO / OEI] | 17,672 / 6,006 fpm | 13,986 / 4,643 fpm | 12,462 / 4,070 fpm |
 | | Glideslope | 3.0 deg | 3.0 deg | 3.0 deg |
@@ -196,6 +199,7 @@ All equations reference Raymer's *Aircraft Design: A Conceptual Approach*, 7th E
 | 17.9.1 | Landing approach | -- | `landing.py` |
 | 17.9.2 | Landing flare | 17.107, 17.110 | `landing.py` |
 | 17.9.3 | Landing ground roll (braking) | 17.102-17.104 | `landing.py` |
+| 12.5.9 | Transonic wave drag / drag rise | Eq. 12.46, Fig. 12.32 | `wave_drag.py` |
 
 ---
 

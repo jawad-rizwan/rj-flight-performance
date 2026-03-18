@@ -38,6 +38,7 @@ from perf import (
     Ps_expanded, specific_energy,
     V_best_glide, min_sink_rate, sink_rate,
     asdr_todr_curves,
+    mdd_wing, cd0_at_mach,
 )
 
 FAMILIES = {
@@ -177,14 +178,24 @@ def plot_ROC_vs_altitude():
 
     for ac in VARIANTS:
         W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
-        alts = np.linspace(0, 45000, 100)
+        alts = np.linspace(0, 50000, 100)
         rocs = []
         for h in alts:
             rho_h = isa_density(h)
+            a_h = speed_of_sound(h)
             T_h = thrust_at_altitude(ac.T_max_SL, h, ac.BPR)
             TW_h = T_h / W
             V_h = V_best_ROC_jet(W, S, rho_h, CD0, K, TW_h)
-            roc = ROC_jet(V_h, T_h, CD0, K, W, S, rho_h)
+            # Cap at Mmo
+            if ac.M_mo > 0:
+                V_h = min(V_h, ac.M_mo * a_h)
+            # Wave drag
+            M_h = V_h / a_h
+            q_h = 0.5 * rho_h * V_h**2
+            CL_h = W / (q_h * S) if q_h > 0 else 0
+            mdd_h = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_h)
+            CD0_h = cd0_at_mach(CD0, M_h, mdd_h)
+            roc = ROC_jet(V_h, T_h, CD0_h, K, W, S, rho_h)
             rocs.append(max(roc * 60, 0))  # fpm
         ax.plot(rocs, alts / 1000, color=COLORS[ac.name], label=ac.name, lw=2)
 
@@ -216,7 +227,12 @@ def plot_Ps_vs_Mach():
 
             M_arr = np.linspace(0.2, 0.85, 200)
             V_arr = M_arr * a
-            ps_arr = Ps_expanded(V_arr, TW, ac.wing_loading, CD0, K, rho, n=1.0)
+            # Wave drag: adjust CD0 for each Mach
+            q_arr = 0.5 * rho * V_arr**2
+            CL_arr = W / (q_arr * S)
+            mdd_arr = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_arr)
+            CD0_arr = cd0_at_mach(CD0, M_arr, mdd_arr)
+            ps_arr = Ps_expanded(V_arr, TW, ac.wing_loading, CD0_arr, K, rho, n=1.0)
 
             ax.plot(M_arr, ps_arr * 60, label=f"{h_ft/1000:.0f}k ft")
 
@@ -432,8 +448,17 @@ def plot_operating_envelope():
             # Thrust boundary: find max Mach where T >= D (Ps >= 0)
             M_test = np.linspace(0.3, 0.95, 300)
             V_test = M_test * a_h
-            T_req = thrust_required(W, CD0, K, S, rho_h, V_test)
+            # Wave drag: adjust CD0 for each Mach
+            q_test = 0.5 * rho_h * V_test**2
+            CL_test = W / (q_test * S)
+            mdd_test = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_test)
+            CD0_test = cd0_at_mach(CD0, M_test, mdd_test)
+            T_req = np.array([thrust_required(W, cd0_m, K, S, rho_h, v)
+                              for cd0_m, v in zip(CD0_test, V_test)])
             feasible = T_req <= T_h
+            # Also cap at Mmo
+            if ac.M_mo > 0:
+                feasible = feasible & (M_test <= ac.M_mo)
             if np.any(feasible):
                 M_max_thrust.append(M_test[feasible][-1])
             else:
@@ -536,8 +561,13 @@ def plot_Ps_contours():
             T_h = thrust_at_altitude(ac.T_max_SL, h, ac.BPR)
             TW_h = T_h / W
             V_row = M_arr * a_h
+            # Wave drag: adjust CD0 for each Mach
+            q_row = 0.5 * rho_h * V_row**2
+            CL_row = np.where(q_row > 0, W / (q_row * S), 0)
+            mdd_row = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_row)
+            CD0_row = cd0_at_mach(CD0, M_arr, mdd_row)
             Ps_grid[i, :] = Ps_expanded(V_row, TW_h, ac.wing_loading,
-                                         CD0, K, rho_h, n=1.0) * 60  # fpm
+                                         CD0_row, K, rho_h, n=1.0) * 60  # fpm
 
         levels = [0, 500, 1000, 2000, 5000, 10000, 15000]
         cs = ax.contour(M_grid, H_grid / 1000, Ps_grid, levels=levels,

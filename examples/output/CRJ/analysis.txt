@@ -98,8 +98,8 @@
   Ps at SL, n=3           : 12.3 ft/s  (735 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 56,500 ft
-  Absolute ceiling (~0 fpm) : 59,500 ft
+  Service ceiling (~500 fpm): 48,500 ft
+  Absolute ceiling (~0 fpm) : 50,500 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -153,7 +153,8 @@
     Free roll             : 715 ft
     Braking distance      : 1,852 ft
     LDR (unfactored)      : 3,786 ft
-    LDR (FAR x1.667)      : 6,310 ft
+    LDR (FAR /0.6)        : 6,310 ft
+    LDR wet (FAR x1.15)   : 7,257 ft  (FAR 121.195d)
 
 ======================================================================
   CRJ-700  PERFORMANCE SUMMARY
@@ -177,7 +178,8 @@
   BFL (Raymer Eq.17.113)      : 6,788 ft
   TOFL (FAR 25)               : 6,543 ft
   LDR (unfactored)            : 3,786 ft
-  LDR (FAR x1.667)            : 6,310 ft
+  LDR (FAR /0.6)              : 6,310 ft
+  LDR wet (FAR x1.15)         : 7,257 ft
   Glide range from cruise     : 97 nmi
 
 
@@ -280,8 +282,8 @@
   Ps at SL, n=3           : 7.6 ft/s  (456 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 52,500 ft
-  Absolute ceiling (~0 fpm) : 56,000 ft
+  Service ceiling (~500 fpm): 45,500 ft
+  Absolute ceiling (~0 fpm) : 48,000 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -335,7 +337,8 @@
     Free roll             : 757 ft
     Braking distance      : 2,063 ft
     LDR (unfactored)      : 4,071 ft
-    LDR (FAR x1.667)      : 6,784 ft
+    LDR (FAR /0.6)        : 6,784 ft
+    LDR wet (FAR x1.15)   : 7,802 ft  (FAR 121.195d)
 
 ======================================================================
   CRJ-1000  PERFORMANCE SUMMARY
@@ -359,7 +362,8 @@
   BFL (Raymer Eq.17.113)      : 9,808 ft
   TOFL (FAR 25)               : 9,634 ft
   LDR (unfactored)            : 4,071 ft
-  LDR (FAR x1.667)            : 6,784 ft
+  LDR (FAR /0.6)              : 6,784 ft
+  LDR wet (FAR x1.15)         : 7,802 ft
   Glide range from cruise     : 98 nmi
 
 
@@ -381,6 +385,7 @@
   TOFL FAR 25 (ft)                     6,543         9,634
   LDR (ft)                             3,786         4,071
   LDR FAR (ft)                         6,310         6,784
+  LDR wet (ft)                         7,257         7,802
 
 ======================================================================
   AIRFIELD PERFORMANCE BY RUNWAY SURFACE  (Table 17.1)

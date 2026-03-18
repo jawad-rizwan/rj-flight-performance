@@ -98,8 +98,8 @@
   Ps at SL, n=3           : 64.1 ft/s  (3845 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling           : > 65,000 ft
-  Absolute ceiling          : > 65,000 ft
+  Service ceiling           : > 60,000 ft
+  Absolute ceiling          : > 60,000 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -153,7 +153,8 @@
     Free roll             : 456 ft
     Braking distance      : 776 ft
     LDR (unfactored)      : 2,293 ft
-    LDR (FAR x1.667)      : 3,822 ft
+    LDR (FAR /0.6)        : 3,822 ft
+    LDR wet (FAR x1.15)   : 4,395 ft  (FAR 121.195d)
 
 ======================================================================
   ZRJ50  PERFORMANCE SUMMARY
@@ -177,7 +178,8 @@
   BFL (Raymer Eq.17.113)      : 2,589 ft
   TOFL (FAR 25)               : 2,677 ft
   LDR (unfactored)            : 2,293 ft
-  LDR (FAR x1.667)            : 3,822 ft
+  LDR (FAR /0.6)              : 3,822 ft
+  LDR wet (FAR x1.15)         : 4,395 ft
   Glide range from cruise     : 91 nmi
 
 
@@ -280,8 +282,8 @@
   Ps at SL, n=3           : 34.3 ft/s  (2055 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 63,000 ft
-  Absolute ceiling          : > 65,000 ft
+  Service ceiling (~500 fpm): 55,000 ft
+  Absolute ceiling (~0 fpm) : 57,000 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -335,7 +337,8 @@
     Free roll             : 510 ft
     Braking distance      : 958 ft
     LDR (unfactored)      : 2,557 ft
-    LDR (FAR x1.667)      : 4,262 ft
+    LDR (FAR /0.6)        : 4,262 ft
+    LDR wet (FAR x1.15)   : 4,902 ft  (FAR 121.195d)
 
 ======================================================================
   ZRJ70  PERFORMANCE SUMMARY
@@ -359,7 +362,8 @@
   BFL (Raymer Eq.17.113)      : 3,662 ft
   TOFL (FAR 25)               : 3,653 ft
   LDR (unfactored)            : 2,557 ft
-  LDR (FAR x1.667)            : 4,262 ft
+  LDR (FAR /0.6)              : 4,262 ft
+  LDR wet (FAR x1.15)         : 4,902 ft
   Glide range from cruise     : 91 nmi
 
 
@@ -462,8 +466,8 @@
   Ps at SL, n=3           : 21.9 ft/s  (1314 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 59,500 ft
-  Absolute ceiling (~0 fpm) : 62,500 ft
+  Service ceiling (~500 fpm): 52,000 ft
+  Absolute ceiling (~0 fpm) : 54,500 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -517,7 +521,8 @@
     Free roll             : 535 ft
     Braking distance      : 1,045 ft
     LDR (unfactored)      : 2,682 ft
-    LDR (FAR x1.667)      : 4,469 ft
+    LDR (FAR /0.6)        : 4,469 ft
+    LDR wet (FAR x1.15)   : 5,140 ft  (FAR 121.195d)
 
 ======================================================================
   ZRJ100  PERFORMANCE SUMMARY
@@ -541,7 +546,8 @@
   BFL (Raymer Eq.17.113)      : 4,266 ft
   TOFL (FAR 25)               : 4,192 ft
   LDR (unfactored)            : 2,682 ft
-  LDR (FAR x1.667)            : 4,469 ft
+  LDR (FAR /0.6)              : 4,469 ft
+  LDR wet (FAR x1.15)         : 5,140 ft
   Glide range from cruise     : 90 nmi
 
 
@@ -563,6 +569,7 @@
   TOFL FAR 25 (ft)                     2,677         3,653         4,192
   LDR (ft)                             2,293         2,557         2,682
   LDR FAR (ft)                         3,822         4,262         4,469
+  LDR wet (ft)                         4,395         4,902         5,140
 
 ======================================================================
   AIRFIELD PERFORMANCE BY RUNWAY SURFACE  (Table 17.1)

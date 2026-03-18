@@ -38,6 +38,8 @@ from perf import (
     total_takeoff_distance, balanced_field_length, find_V1,
     # landing
     total_landing_distance,
+    # wave drag
+    mdd_wing, cd0_at_mach,
 )
 
 # =====================================================================
@@ -291,13 +293,28 @@ def analyse(ac):
     subsection("17.7  SERVICE CEILING")
 
     # Find altitude where ROC = 500 fpm for jet service ceiling
+    # Cap speed at Mmo and account for compressibility drag rise
     svc_ceil = None
     abs_ceil = None
-    for h_test in np.arange(0, 65001, 500):
+    for h_test in np.arange(0, 60001, 500):
         rho_t = isa_density(h_test)
+        a_t = speed_of_sound(h_test)
         T_t = thrust_at_altitude(T_sl, h_test, ac.BPR)
         V_t = V_best_ROC_jet(W, S, rho_t, CD0, K, T_t / W)
-        roc_t = ROC_jet(V_t, T_t, CD0, K, W, S, rho_t)
+
+        # Cap at Mmo
+        if ac.M_mo > 0:
+            V_mmo = ac.M_mo * a_t
+            V_t = min(V_t, V_mmo)
+
+        # Wave drag: adjust CD0 for compressibility
+        M_t = V_t / a_t
+        q_t = 0.5 * rho_t * V_t**2
+        CL_t = W / (q_t * S) if q_t > 0 else 0
+        mdd_t = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_t)
+        CD0_t = cd0_at_mach(CD0, M_t, mdd_t)
+
+        roc_t = ROC_jet(V_t, T_t, CD0_t, K, W, S, rho_t)
         if svc_ceil is None and roc_t * 60 <= 500.0:
             svc_ceil = h_test
         if roc_t <= 0.5:
@@ -307,11 +324,11 @@ def analyse(ac):
     if svc_ceil:
         print(f"  Service ceiling (~500 fpm): {svc_ceil:,.0f} ft")
     else:
-        print(f"  Service ceiling           : > 65,000 ft")
+        print(f"  Service ceiling           : > 60,000 ft")
     if abs_ceil:
         print(f"  Absolute ceiling (~0 fpm) : {abs_ceil:,.0f} ft")
     else:
-        print(f"  Absolute ceiling          : > 65,000 ft")
+        print(f"  Absolute ceiling          : > 60,000 ft")
 
     # =================================================================
     # 17.8  TAKEOFF
@@ -427,8 +444,11 @@ def analyse(ac):
     print(f"    Flare distance        : {la['S_flare']:,.0f} ft")
     print(f"    Free roll             : {la['S_free_roll']:,.0f} ft")
     print(f"    Braking distance      : {la['S_braking']:,.0f} ft")
+    ldr_wet = la['S_FAR_field'] * 1.15
+
     print(f"    LDR (unfactored)      : {la['S_total_actual']:,.0f} ft")
-    print(f"    LDR (FAR x1.667)      : {la['S_FAR_field']:,.0f} ft")
+    print(f"    LDR (FAR /0.6)        : {la['S_FAR_field']:,.0f} ft")
+    print(f"    LDR wet (FAR x1.15)   : {ldr_wet:,.0f} ft  (FAR 121.195d)")
 
     # =================================================================
     # Summary table
@@ -454,7 +474,8 @@ def analyse(ac):
         ("BFL (Raymer Eq.17.113)",  f"{bfl_empirical:,.0f} ft"),
         ("TOFL (FAR 25)",           f"{TOFL:,.0f} ft"),
         ("LDR (unfactored)",        f"{la['S_total_actual']:,.0f} ft"),
-        ("LDR (FAR x1.667)",        f"{la['S_FAR_field']:,.0f} ft"),
+        ("LDR (FAR /0.6)",          f"{la['S_FAR_field']:,.0f} ft"),
+        ("LDR wet (FAR x1.15)",     f"{ldr_wet:,.0f} ft"),
         ("Glide range from cruise", f"{R_glide/6076:,.0f} nmi"),
     ]
     for label, value in summary:
@@ -472,6 +493,7 @@ def analyse(ac):
         "TOFL": TOFL,
         "LDR": la["S_total_actual"],
         "LDR_FAR": la["S_FAR_field"],
+        "LDR_wet": ldr_wet,
     }
 
 
@@ -499,6 +521,7 @@ def run_comparison(results):
         ("TOFL FAR 25 (ft)",   "TOFL",           ",.0f", None),
         ("LDR (ft)",           "LDR",            ",.0f", None),
         ("LDR FAR (ft)",       "LDR_FAR",        ",.0f", None),
+        ("LDR wet (ft)",       "LDR_wet",        ",.0f", None),
     ]
     for label, key, fmt, transform in metrics:
         row = f"  {label:<28s}"

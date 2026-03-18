@@ -75,9 +75,10 @@ class AircraftData:
     M_cruise: float = 0.0      # design cruise Mach number
     h_cruise_ft: float = 0.0   # design cruise altitude [ft]
 
-    # ---- Structural limits ----
+    # ---- Structural / speed limits ----
     n_max: float = 2.5         # max positive load factor (transport)
     V_NE_kts: float = 0.0      # never-exceed speed [KEAS]
+    M_mo: float = 0.0          # max operating Mach number
 
     # ---- Derived helpers ----
     @property
