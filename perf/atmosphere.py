@@ -100,18 +100,21 @@ def fps_to_kts(V_fps):
 
 
 def thrust_at_altitude(T_SL, h_ft, BPR=5.0):
-    """Thrust lapse model for high-BPR turbofans.
+    """Thrust lapse model for turbofans.
 
-    Uses a more realistic model:
-      - Troposphere (h <= 36,089 ft): T/T_SL ~ sigma^0.7
-      - Stratosphere (h > 36,089 ft): T/T_SL ~ 0.568 * (sigma/0.2971)^0.7
-    This gives a steeper decline above the tropopause.
+    T/T_SL ~ sigma^n with exponent scaling by BPR:
+      - BPR <= 3  : n ≈ 0.7  (low-bypass, military-class)
+      - BPR ~ 5   : n ≈ 0.75 (CF34-class)
+      - BPR ~ 9   : n ≈ 0.82 (geared turbofan, PW1000G-class)
+      - BPR >= 12  : n ≈ 0.88
 
-    For BPR ~ 5, the exponent is ~0.7; for lower BPR use ~0.8.
+    Above the tropopause an additional 0.85 factor accounts for
+    the isothermal stratosphere where ram recovery drops off.
     """
     sig = sigma(h_ft)
     h = np.asarray(h_ft, dtype=float)
-    exp = 0.7 if BPR >= 4 else 0.8
+    # Linear interpolation: n = 0.70 at BPR=3, 0.90 at BPR=13
+    exp = np.clip(0.70 + (BPR - 3.0) * 0.02, 0.70, 0.90)
 
     # Below tropopause
     ratio = sig**exp

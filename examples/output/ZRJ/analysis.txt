@@ -20,7 +20,7 @@
   Cruise CL         : 0.3015
   Cruise CD         : 0.02336
   Cruise L/D        : 12.91
-  Thrust available  : 16,901 lb
+  Thrust available  : 14,684 lb
   Thrust required   : 5,035 lb
 
   (L/D)_max         : 15.82  at CL = 0.5832
@@ -33,7 +33,7 @@
   V_stall land (SL): 78.3 kts  (at 85% MTOW)
 
   V_max (SL)        : 776.7 kts  (Sec. 17.2.3)
-  V_max (cruise alt): 920.3 kts
+  V_max (cruise alt): 855.7 kts
 
 --- 17.2.5  RANGE (Jet) ---
   V best range      : 425.4 kts  (Eq. 17.25)
@@ -61,15 +61,15 @@
   Climb profile (SL -> 35k ft):
     Alt (ft)   ROC (fpm)  Time (min)
            0      17,672         0.0
-       5,000      16,234         0.3
-      10,000      14,855         0.6
-      15,000      13,535         1.0
-      20,000      12,270         1.4
-      25,000      11,059         1.8
-      30,000       9,897         2.3
-      35,000       8,780         2.8
-  Total time to climb   : 2.8 min  (Eqs. 17.48-17.50)
-  Est. fuel to climb    : 806 lb  (Eq. 17.51)
+       5,000      15,795         0.3
+      10,000      14,045         0.6
+      15,000      12,415         1.0
+      20,000      10,899         1.4
+      25,000       9,488         1.9
+      30,000       8,175         2.5
+      35,000       6,950         3.2
+  Total time to climb   : 3.2 min  (Eqs. 17.48-17.50)
+  Est. fuel to climb    : 911 lb  (Eq. 17.51)
 
 --- 17.4  LEVEL TURNING FLIGHT ---
   n_max (structural)      : 2.5
@@ -79,10 +79,10 @@
   Bank angle at n_max     : 66.4 deg
 
   Sustained turn (cruise):
-    n_sustained           : 3.49  (Eq. 17.54)
-    Turn rate             : 8.12 deg/s
-    Turn radius           : 5,354 ft
-    Bank angle            : 73.3 deg
+    n_sustained           : 3.18  (Eq. 17.54)
+    Turn rate             : 7.32 deg/s
+    Turn radius           : 5,937 ft
+    Bank angle            : 71.6 deg
 
 --- 17.5  GLIDING FLIGHT ---
   Best glide L/D          : 15.82  (Eq. 17.67)
@@ -92,14 +92,14 @@
 
 --- 17.6  ENERGY MANEUVERABILITY ---
   Energy height (cruise)  : 43,949 ft  (Eq. 17.85)
-  Ps at cruise (n=1)      : 138.5 ft/s  (8312 fpm)  (Eq. 17.89)
+  Ps at cruise (n=1)      : 112.7 ft/s  (6759 fpm)  (Eq. 17.89)
   Ps at SL, n=1           : 147.4 ft/s  (8843 fpm)
   Ps at SL, n=2           : 116.1 ft/s  (6969 fpm)
   Ps at SL, n=3           : 64.1 ft/s  (3845 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling           : > 60,000 ft
-  Absolute ceiling          : > 60,000 ft
+  Service ceiling (~500 fpm): 55,500 ft
+  Absolute ceiling (~0 fpm) : 57,500 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -204,7 +204,7 @@
   Cruise CL         : 0.3782
   Cruise CD         : 0.02618
   Cruise L/D        : 14.45
-  Thrust available  : 16,901 lb
+  Thrust available  : 14,684 lb
   Thrust required   : 5,643 lb
 
   (L/D)_max         : 15.82  at CL = 0.5832
@@ -217,7 +217,7 @@
   V_stall land (SL): 87.7 kts  (at 85% MTOW)
 
   V_max (SL)        : 776.1 kts  (Sec. 17.2.3)
-  V_max (cruise alt): 916.2 kts
+  V_max (cruise alt): 850.5 kts
 
 --- 17.2.5  RANGE (Jet) ---
   V best range      : 476.5 kts  (Eq. 17.25)
@@ -245,15 +245,15 @@
   Climb profile (SL -> 35k ft):
     Alt (ft)   ROC (fpm)  Time (min)
            0      13,985         0.0
-       5,000      12,825         0.4
-      10,000      11,709         0.8
-      15,000      10,637         1.2
-      20,000       9,606         1.7
-      25,000       8,612         2.3
-      30,000       7,653         2.9
-      35,000       6,723         3.6
-  Total time to climb   : 3.6 min  (Eqs. 17.48-17.50)
-  Est. fuel to climb    : 1,032 lb  (Eq. 17.51)
+       5,000      12,474         0.4
+      10,000      11,061         0.8
+      15,000       9,740         1.3
+      20,000       8,506         1.8
+      25,000       7,350         2.5
+      30,000       6,267         3.2
+      35,000       5,246         4.1
+  Total time to climb   : 4.1 min  (Eqs. 17.48-17.50)
+  Est. fuel to climb    : 1,172 lb  (Eq. 17.51)
 
 --- 17.4  LEVEL TURNING FLIGHT ---
   n_max (structural)      : 2.5
@@ -263,10 +263,10 @@
   Bank angle at n_max     : 66.4 deg
 
   Sustained turn (cruise):
-    n_sustained           : 2.78  (Eq. 17.54)
-    Turn rate             : 6.31 deg/s
-    Turn radius           : 6,894 ft
-    Bank angle            : 68.9 deg
+    n_sustained           : 2.53  (Eq. 17.54)
+    Turn rate             : 5.65 deg/s
+    Turn radius           : 7,693 ft
+    Bank angle            : 66.7 deg
 
 --- 17.5  GLIDING FLIGHT ---
   Best glide L/D          : 15.82  (Eq. 17.67)
@@ -276,14 +276,14 @@
 
 --- 17.6  ENERGY MANEUVERABILITY ---
   Energy height (cruise)  : 43,949 ft  (Eq. 17.85)
-  Ps at cruise (n=1)      : 104.8 ft/s  (6287 fpm)  (Eq. 17.89)
+  Ps at cruise (n=1)      : 84.2 ft/s  (5049 fpm)  (Eq. 17.89)
   Ps at SL, n=1           : 127.5 ft/s  (7652 fpm)
   Ps at SL, n=2           : 92.5 ft/s  (5553 fpm)
   Ps at SL, n=3           : 34.3 ft/s  (2055 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 55,000 ft
-  Absolute ceiling (~0 fpm) : 57,000 ft
+  Service ceiling (~500 fpm): 49,500 ft
+  Absolute ceiling (~0 fpm) : 52,000 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -388,7 +388,7 @@
   Cruise CL         : 0.4148
   Cruise CD         : 0.02842
   Cruise L/D        : 14.59
-  Thrust available  : 16,901 lb
+  Thrust available  : 14,684 lb
   Thrust required   : 6,127 lb
 
   (L/D)_max         : 15.54  at CL = 0.5937
@@ -401,7 +401,7 @@
   V_stall land (SL): 91.8 kts  (at 85% MTOW)
 
   V_max (SL)        : 761.9 kts  (Sec. 17.2.3)
-  V_max (cruise alt): 897.2 kts
+  V_max (cruise alt): 831.9 kts
 
 --- 17.2.5  RANGE (Jet) ---
   V best range      : 494.6 kts  (Eq. 17.25)
@@ -429,15 +429,15 @@
   Climb profile (SL -> 35k ft):
     Alt (ft)   ROC (fpm)  Time (min)
            0      12,462         0.0
-       5,000      11,414         0.4
-      10,000      10,405         0.9
-      15,000       9,433         1.4
-      20,000       8,496         1.9
-      25,000       7,589         2.6
-      30,000       6,710         3.3
-      35,000       5,854         4.1
-  Total time to climb   : 4.1 min  (Eqs. 17.48-17.50)
-  Est. fuel to climb    : 1,169 lb  (Eq. 17.51)
+       5,000      11,099         0.4
+      10,000       9,823         0.9
+      15,000       8,627         1.4
+      20,000       7,507         2.1
+      25,000       6,454         2.8
+      30,000       5,461         3.6
+      35,000       4,521         4.6
+  Total time to climb   : 4.6 min  (Eqs. 17.48-17.50)
+  Est. fuel to climb    : 1,333 lb  (Eq. 17.51)
 
 --- 17.4  LEVEL TURNING FLIGHT ---
   n_max (structural)      : 2.5
@@ -447,10 +447,10 @@
   Bank angle at n_max     : 66.4 deg
 
   Sustained turn (cruise):
-    n_sustained           : 2.52  (Eq. 17.54)
-    Turn rate             : 5.63 deg/s
-    Turn radius           : 7,729 ft
-    Bank angle            : 66.6 deg
+    n_sustained           : 2.29  (Eq. 17.54)
+    Turn rate             : 5.01 deg/s
+    Turn radius           : 8,673 ft
+    Bank angle            : 64.1 deg
 
 --- 17.5  GLIDING FLIGHT ---
   Best glide L/D          : 15.54  (Eq. 17.67)
@@ -460,14 +460,14 @@
 
 --- 17.6  ENERGY MANEUVERABILITY ---
   Energy height (cruise)  : 43,949 ft  (Eq. 17.85)
-  Ps at cruise (n=1)      : 91.4 ft/s  (5486 fpm)  (Eq. 17.89)
+  Ps at cruise (n=1)      : 72.6 ft/s  (4358 fpm)  (Eq. 17.89)
   Ps at SL, n=1           : 119.6 ft/s  (7176 fpm)
   Ps at SL, n=2           : 83.0 ft/s  (4978 fpm)
   Ps at SL, n=3           : 21.9 ft/s  (1314 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 52,000 ft
-  Absolute ceiling (~0 fpm) : 54,500 ft
+  Service ceiling (~500 fpm): 47,000 ft
+  Absolute ceiling (~0 fpm) : 49,500 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 

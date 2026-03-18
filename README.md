@@ -108,7 +108,7 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | Maximum cruise (Optimized Mach) | M 0.85 | M 0.85 | M 0.85 |
 | | Takeoff BFL, ft | 2,439 | 3,396 | 3,956 |
 | | Initial cruise altitude, ft | 35,000 | 35,000 | 35,000 |
-| | Maximum cruise altitude, ft | >60,000 | 55,000 | 52,000 |
+| | Maximum cruise altitude, ft | 55,500 | 49,500 | 47,000 |
 | | Single engine climb | 19.6% | 13.6% | 11.5% |
 | **Weight & Payload** | Max. payload, lbs | 11,350 | 18,055 | 23,380 |
 | | Passengers (<100 PAX market segment) | 50 | 76 | 96 |
