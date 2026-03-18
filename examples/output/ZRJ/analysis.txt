@@ -186,10 +186,10 @@
 ======================================================================
 
   Aircraft       : ZRJ70
-  MTOW           : 86,000 lb
+  MTOW           : 81,523 lb
   Wing area      : 1016.6 ft^2
-  Wing loading   : 84.6 lb/ft^2
-  T/W (SL)       : 0.446
+  Wing loading   : 80.2 lb/ft^2
+  T/W (SL)       : 0.471
   CD0            : 0.0184
   K              : 0.0542
   Oswald e       : 0.75
@@ -199,167 +199,167 @@
   Cruise altitude   : 35,000 ft
   Cruise TAS        : 449.6 kts  (758.8 ft/s)
   Cruise q          : 212.1 lb/ft^2
-  Cruise CL         : 0.3989
-  Cruise CD         : 0.02705
-  Cruise L/D        : 14.75
+  Cruise CL         : 0.3782
+  Cruise CD         : 0.02618
+  Cruise L/D        : 14.45
   Thrust available  : 16,901 lb
-  Thrust required   : 5,832 lb
+  Thrust required   : 5,643 lb
 
   (L/D)_max         : 15.82  at CL = 0.5832
-  V for max L/D     : 371.8 kts  (Eq. 17.13)
-  V for min power   : 282.5 kts  (Eq. 17.19)
+  V for max L/D     : 362.0 kts  (Eq. 17.13)
+  V for min power   : 275.1 kts  (Eq. 17.19)
   Ratio V_mp/V_md   : 0.760  (should be ~0.76)
 
-  V_stall clean (SL): 146.8 kts
-  V_stall TO   (SL): 112.1 kts
-  V_stall land (SL): 90.0 kts  (at 85% MTOW)
+  V_stall clean (SL): 142.9 kts
+  V_stall TO   (SL): 109.1 kts
+  V_stall land (SL): 87.7 kts  (at 85% MTOW)
 
-  V_max (SL)        : 775.9 kts  (Sec. 17.2.3)
-  V_max (cruise alt): 914.9 kts
+  V_max (SL)        : 776.1 kts  (Sec. 17.2.3)
+  V_max (cruise alt): 916.2 kts
 
 --- 17.2.5  RANGE (Jet) ---
-  V best range      : 489.4 kts  (Eq. 17.25)
+  V best range      : 476.5 kts  (Eq. 17.25)
   CL best range     : 0.3367  (Eq. 17.26)
   L/D best range    : 13.70  (~86.6% of L/D_max = 13.70)
 
-  Breguet range (cruise M=0.78): 3,500 nmi  (Eq. 17.23)
-  Breguet range (best-range V)    : 3,540 nmi
-  Fuel used         : 19,953 lb  (23.2% MTOW)
+  Breguet range (cruise M=0.78): 2,823 nmi  (Eq. 17.23)
+  Breguet range (best-range V)    : 2,838 nmi
+  Fuel used         : 15,924 lb  (19.5% MTOW)
 
 --- 17.2.8  ENDURANCE / LOITER (Jet) ---
-  Max endurance (at L/D_max): 4.37 hr  (Eq. 17.30)
-  Endurance at cruise L/D  : 4.07 hr
-  Loiter from cruise (est) : 8.88 hr  (Eq. 17.34)
+  Max endurance (at L/D_max): 3.64 hr  (Eq. 17.30)
+  Endurance at cruise L/D  : 3.32 hr
+  Loiter from cruise (est) : 7.16 hr  (Eq. 17.34)
 
 --- 17.3  STEADY CLIMB ---
   Sea-level max thrust    : 38,380 lb
-  Climb speed (1.3 Vs)    : 190.8 kts
-  Climb angle (SL)        : 22.5 deg  (Eq. 17.38)
-  Rate of climb (SL)      : 123 ft/s  (7386 fpm)  (Eq. 17.39)
+  Climb speed (1.3 Vs)    : 185.8 kts
+  Climb angle (SL)        : 24.0 deg  (Eq. 17.38)
+  Rate of climb (SL)      : 128 ft/s  (7652 fpm)  (Eq. 17.39)
 
-  V best ROC (SL)         : 452.4 kts  (Eq. 17.43)
-  Best ROC (SL)           : 220 ft/s  (13227 fpm)
+  V best ROC (SL)         : 452.1 kts  (Eq. 17.43)
+  Best ROC (SL)           : 233 ft/s  (13986 fpm)
 
   Climb profile (SL -> 35k ft):
     Alt (ft)   ROC (fpm)  Time (min)
-           0      13,227         0.0
-       5,000      12,122         0.4
-      10,000      11,060         0.8
-      15,000      10,038         1.3
-      20,000       9,054         1.8
-      25,000       8,104         2.4
-      30,000       7,185         3.1
-      35,000       6,292         3.8
-  Total time to climb   : 3.8 min  (Eqs. 17.48-17.50)
-  Est. fuel to climb    : 1,096 lb  (Eq. 17.51)
+           0      13,985         0.0
+       5,000      12,825         0.4
+      10,000      11,709         0.8
+      15,000      10,637         1.2
+      20,000       9,606         1.7
+      25,000       8,612         2.3
+      30,000       7,653         2.9
+      35,000       6,723         3.6
+  Total time to climb   : 3.6 min  (Eqs. 17.48-17.50)
+  Est. fuel to climb    : 1,032 lb  (Eq. 17.51)
 
 --- 17.4  LEVEL TURNING FLIGHT ---
   n_max (structural)      : 2.5
-  Corner speed (SL)       : 232.1 kts
-  Turn rate at corner     : 10.8 deg/s  (Eq. 17.52)
-  Turn radius at corner   : 2,081 ft  (Eq. 17.79)
+  Corner speed (SL)       : 225.9 kts
+  Turn rate at corner     : 11.1 deg/s  (Eq. 17.52)
+  Turn radius at corner   : 1,973 ft  (Eq. 17.79)
   Bank angle at n_max     : 66.4 deg
 
   Sustained turn (cruise):
-    n_sustained           : 2.64  (Eq. 17.54)
-    Turn rate             : 5.93 deg/s
-    Turn radius           : 7,334 ft
-    Bank angle            : 67.7 deg
+    n_sustained           : 2.78  (Eq. 17.54)
+    Turn rate             : 6.31 deg/s
+    Turn radius           : 6,894 ft
+    Bank angle            : 68.9 deg
 
 --- 17.5  GLIDING FLIGHT ---
   Best glide L/D          : 15.82  (Eq. 17.67)
-  V best glide (at 35k) : 371.8 kts  (Eq. 17.65)
-  Min sink rate           : 34.8 ft/s  (2088 fpm)
+  V best glide (at 35k) : 362.0 kts  (Eq. 17.65)
+  Min sink rate           : 33.9 ft/s  (2033 fpm)
   Glide range from 35k ft: 91 nmi  (105 SM)
 
 --- 17.6  ENERGY MANEUVERABILITY ---
   Energy height (cruise)  : 43,949 ft  (Eq. 17.85)
-  Ps at cruise (n=1)      : 97.7 ft/s  (5860 fpm)  (Eq. 17.89)
-  Ps at SL, n=1           : 123.1 ft/s  (7386 fpm)
-  Ps at SL, n=2           : 87.2 ft/s  (5230 fpm)
-  Ps at SL, n=3           : 27.3 ft/s  (1637 fpm)
+  Ps at cruise (n=1)      : 104.8 ft/s  (6287 fpm)  (Eq. 17.89)
+  Ps at SL, n=1           : 127.5 ft/s  (7652 fpm)
+  Ps at SL, n=2           : 92.5 ft/s  (5553 fpm)
+  Ps at SL, n=3           : 34.3 ft/s  (2055 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 61,000 ft
-  Absolute ceiling (~0 fpm) : 64,000 ft
+  Service ceiling (~500 fpm): 63,000 ft
+  Absolute ceiling          : > 65,000 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
   V-speeds:
-    V_stall (TO config)   : 112.1 kts
-    V1  (decision)        : 119.4 kts
-    VR  (rotation, 1.1 Vs): 123.3 kts
-    V2  (safety, 1.2 Vs)  : 134.5 kts
+    V_stall (TO config)   : 109.1 kts
+    V1  (decision)        : 115.9 kts
+    VR  (rotation, 1.1 Vs): 120.0 kts
+    V2  (safety, 1.2 Vs)  : 130.9 kts
 
   TODR (all-engine):
-    Ground roll           : 2,096 ft  (Eq. 17.102)
-    Rotation              : 624 ft
-    Transition            : 716 ft
+    Ground roll           : 1,871 ft  (Eq. 17.102)
+    Rotation              : 608 ft
+    Transition            : 698 ft
     Climb to 35 ft        : 0 ft  (Eq. 17.112)
-    Climb angle           : 19.3 deg
-    TODR (unfactored)     : 3,436 ft
-    TODR (FAR x1.15)      : 3,952 ft
+    Climb angle           : 20.8 deg
+    TODR (unfactored)     : 3,176 ft
+    TODR (FAR x1.15)      : 3,653 ft
 
   Balanced field / V1:
-    ASDR at V1            : 3,699 ft
-    AGDR at V1            : 3,705 ft
-    BFL (iterative)       : 3,705 ft
-    BFL (Raymer Eq.17.113): 3,995 ft
+    ASDR at V1            : 3,395 ft
+    AGDR at V1            : 3,396 ft
+    BFL (iterative)       : 3,396 ft
+    BFL (Raymer Eq.17.113): 3,662 ft
 
-  >> TOFL (FAR 25)        : 3,952 ft  = max(TODR×1.15, BFL)
+  >> TOFL (FAR 25)        : 3,653 ft  = max(TODR×1.15, BFL)
 
 --- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
     1st segment (LOF, TO flaps, gear dn, OEI)
-      Gradient: 10.5%  (required >= 0.0%)  @ 123 kts  [PASS]
+      Gradient: 11.7%  (required >= 0.0%)  @ 120 kts  [PASS]
     2nd segment (V2, TO flaps, gear up, OEI)
-      Gradient: 12.4%  (required >= 2.4%)  @ 134 kts  [PASS]
+      Gradient: 13.6%  (required >= 2.4%)  @ 131 kts  [PASS]
     4th segment (1.25Vs, clean, gear up, OEI)
-      Gradient: 15.1%  (required >= 1.2%)  @ 183 kts  [PASS]
+      Gradient: 16.4%  (required >= 1.2%)  @ 179 kts  [PASS]
     Go-around approach (1.4Vs, app flaps, gear up, OEI)
-      Gradient: 16.3%  (required >= 2.1%)  @ 126 kts  [PASS]
+      Gradient: 17.7%  (required >= 2.1%)  @ 123 kts  [PASS]
     Go-around landing (1.23Vs, ldg flaps, gear dn, AEO)
-      Gradient: 40.0%  (required >= 3.2%)  @ 111 kts  [PASS]
+      Gradient: 42.9%  (required >= 3.2%)  @ 108 kts  [PASS]
 
   >> FAR 25 climb compliance: ALL PASS
 
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
   V-speeds:
-    V_stall (landing)     : 90.0 kts
-    V_approach (1.3 Vs)   : 117.0 kts
-    V_touchdown (1.15 Vs) : 103.5 kts
+    V_stall (landing)     : 87.7 kts
+    V_approach (1.3 Vs)   : 114.0 kts
+    V_touchdown (1.15 Vs) : 100.8 kts
 
-  Landing weight          : 73,100 lb  (85% MTOW)
-    Approach distance     : 812 ft
-    Flare distance        : 284 ft
-    Free roll             : 524 ft
-    Braking distance      : 1,008 ft
-    LDR (unfactored)      : 2,628 ft
-    LDR (FAR x1.667)      : 4,380 ft
+  Landing weight          : 69,295 lb  (85% MTOW)
+    Approach distance     : 819 ft
+    Flare distance        : 269 ft
+    Free roll             : 510 ft
+    Braking distance      : 958 ft
+    LDR (unfactored)      : 2,557 ft
+    LDR (FAR x1.667)      : 4,262 ft
 
 ======================================================================
   ZRJ70  PERFORMANCE SUMMARY
 ======================================================================
-  MTOW                        : 86,000 lb
-  Wing loading (W/S)          : 84.6 lb/ft^2
-  T/W (SL static)             : 0.446
+  MTOW                        : 81,523 lb
+  Wing loading (W/S)          : 80.2 lb/ft^2
+  T/W (SL static)             : 0.471
   (L/D)_max                   : 15.82
-  Cruise L/D                  : 14.75
+  Cruise L/D                  : 14.45
   Cruise Mach                 : 0.78
-  V_stall clean (SL)          : 147 kts
-  V1 / VR / V2                : 119 / 123 / 134 kts
-  Best range (cruise)         : 3,500 nmi
-  Best ROC (SL)               : 13,227 fpm
+  V_stall clean (SL)          : 143 kts
+  V1 / VR / V2                : 116 / 120 / 131 kts
+  Best range (cruise)         : 2,823 nmi
+  Best ROC (SL)               : 13,986 fpm
   Service ceiling             : see above
-  Corner speed (SL)           : 232 kts
-  TODR (unfactored)           : 3,436 ft
-  TODR (FAR x1.15)            : 3,952 ft
-  ASDR at V1                  : 3,699 ft
-  BFL (iterative)             : 3,705 ft
-  BFL (Raymer Eq.17.113)      : 3,995 ft
-  TOFL (FAR 25)               : 3,952 ft
-  LDR (unfactored)            : 2,628 ft
-  LDR (FAR x1.667)            : 4,380 ft
+  Corner speed (SL)           : 226 kts
+  TODR (unfactored)           : 3,176 ft
+  TODR (FAR x1.15)            : 3,653 ft
+  ASDR at V1                  : 3,395 ft
+  BFL (iterative)             : 3,396 ft
+  BFL (Raymer Eq.17.113)      : 3,662 ft
+  TOFL (FAR 25)               : 3,653 ft
+  LDR (unfactored)            : 2,557 ft
+  LDR (FAR x1.667)            : 4,262 ft
   Glide range from cruise     : 91 nmi
 
 
@@ -368,10 +368,10 @@
 ======================================================================
 
   Aircraft       : ZRJ100
-  MTOW           : 92,979 lb
+  MTOW           : 89,414 lb
   Wing area      : 1016.6 ft^2
-  Wing loading   : 91.5 lb/ft^2
-  T/W (SL)       : 0.413
+  Wing loading   : 88.0 lb/ft^2
+  T/W (SL)       : 0.429
   CD0            : 0.0191
   K              : 0.0542
   Oswald e       : 0.75
@@ -381,167 +381,167 @@
   Cruise altitude   : 35,000 ft
   Cruise TAS        : 449.6 kts  (758.8 ft/s)
   Cruise q          : 212.1 lb/ft^2
-  Cruise CL         : 0.4313
-  Cruise CD         : 0.02918
-  Cruise L/D        : 14.78
+  Cruise CL         : 0.4148
+  Cruise CD         : 0.02842
+  Cruise L/D        : 14.59
   Thrust available  : 16,901 lb
-  Thrust required   : 6,290 lb
+  Thrust required   : 6,127 lb
 
   (L/D)_max         : 15.54  at CL = 0.5937
-  V for max L/D     : 383.2 kts  (Eq. 17.13)
-  V for min power   : 291.2 kts  (Eq. 17.19)
+  V for max L/D     : 375.8 kts  (Eq. 17.13)
+  V for min power   : 285.5 kts  (Eq. 17.19)
   Ratio V_mp/V_md   : 0.760  (should be ~0.76)
 
-  V_stall clean (SL): 152.6 kts
-  V_stall TO   (SL): 116.5 kts
-  V_stall land (SL): 93.6 kts  (at 85% MTOW)
+  V_stall clean (SL): 149.7 kts
+  V_stall TO   (SL): 114.3 kts
+  V_stall land (SL): 91.8 kts  (at 85% MTOW)
 
-  V_max (SL)        : 761.7 kts  (Sec. 17.2.3)
-  V_max (cruise alt): 896.0 kts
+  V_max (SL)        : 761.9 kts  (Sec. 17.2.3)
+  V_max (cruise alt): 897.2 kts
 
 --- 17.2.5  RANGE (Jet) ---
-  V best range      : 504.3 kts  (Eq. 17.25)
+  V best range      : 494.6 kts  (Eq. 17.25)
   CL best range     : 0.3428  (Eq. 17.26)
   L/D best range    : 13.46  (~86.6% of L/D_max = 13.46)
 
-  Breguet range (cruise M=0.78): 3,062 nmi  (Eq. 17.23)
-  Breguet range (best-range V)    : 3,128 nmi
-  Fuel used         : 19,132 lb  (20.6% MTOW)
+  Breguet range (cruise M=0.78): 2,574 nmi  (Eq. 17.23)
+  Breguet range (best-range V)    : 2,611 nmi
+  Fuel used         : 15,924 lb  (17.8% MTOW)
 
 --- 17.2.8  ENDURANCE / LOITER (Jet) ---
-  Max endurance (at L/D_max): 3.77 hr  (Eq. 17.30)
-  Endurance at cruise L/D  : 3.59 hr
-  Loiter from cruise (est) : 7.76 hr  (Eq. 17.34)
+  Max endurance (at L/D_max): 3.24 hr  (Eq. 17.30)
+  Endurance at cruise L/D  : 3.04 hr
+  Loiter from cruise (est) : 6.53 hr  (Eq. 17.34)
 
 --- 17.3  STEADY CLIMB ---
   Sea-level max thrust    : 38,380 lb
-  Climb speed (1.3 Vs)    : 198.4 kts
-  Climb angle (SL)        : 20.4 deg  (Eq. 17.38)
-  Rate of climb (SL)      : 116 ft/s  (6987 fpm)  (Eq. 17.39)
+  Climb speed (1.3 Vs)    : 194.5 kts
+  Climb angle (SL)        : 21.4 deg  (Eq. 17.38)
+  Rate of climb (SL)      : 120 ft/s  (7176 fpm)  (Eq. 17.39)
 
-  V best ROC (SL)         : 445.1 kts  (Eq. 17.43)
-  Best ROC (SL)           : 199 ft/s  (11959 fpm)
+  V best ROC (SL)         : 444.8 kts  (Eq. 17.43)
+  Best ROC (SL)           : 208 ft/s  (12462 fpm)
 
   Climb profile (SL -> 35k ft):
     Alt (ft)   ROC (fpm)  Time (min)
-           0      11,959         0.0
-       5,000      10,948         0.4
-      10,000       9,974         0.9
-      15,000       9,035         1.4
-      20,000       8,128         2.0
-      25,000       7,250         2.7
-      30,000       6,397         3.4
-      35,000       5,564         4.2
-  Total time to climb   : 4.2 min  (Eqs. 17.48-17.50)
-  Est. fuel to climb    : 1,223 lb  (Eq. 17.51)
+           0      12,462         0.0
+       5,000      11,414         0.4
+      10,000      10,405         0.9
+      15,000       9,433         1.4
+      20,000       8,496         1.9
+      25,000       7,589         2.6
+      30,000       6,710         3.3
+      35,000       5,854         4.1
+  Total time to climb   : 4.1 min  (Eqs. 17.48-17.50)
+  Est. fuel to climb    : 1,169 lb  (Eq. 17.51)
 
 --- 17.4  LEVEL TURNING FLIGHT ---
   n_max (structural)      : 2.5
-  Corner speed (SL)       : 241.3 kts
-  Turn rate at corner     : 10.4 deg/s  (Eq. 17.52)
-  Turn radius at corner   : 2,250 ft  (Eq. 17.79)
+  Corner speed (SL)       : 236.6 kts
+  Turn rate at corner     : 10.6 deg/s  (Eq. 17.52)
+  Turn radius at corner   : 2,164 ft  (Eq. 17.79)
   Bank angle at n_max     : 66.4 deg
 
   Sustained turn (cruise):
-    n_sustained           : 2.43  (Eq. 17.54)
-    Turn rate             : 5.37 deg/s
-    Turn radius           : 8,099 ft
-    Bank angle            : 65.7 deg
+    n_sustained           : 2.52  (Eq. 17.54)
+    Turn rate             : 5.63 deg/s
+    Turn radius           : 7,729 ft
+    Bank angle            : 66.6 deg
 
 --- 17.5  GLIDING FLIGHT ---
   Best glide L/D          : 15.54  (Eq. 17.67)
-  V best glide (at 35k) : 383.2 kts  (Eq. 17.65)
-  Min sink rate           : 36.5 ft/s  (2191 fpm)
+  V best glide (at 35k) : 375.8 kts  (Eq. 17.65)
+  Min sink rate           : 35.8 ft/s  (2148 fpm)
   Glide range from 35k ft: 90 nmi  (103 SM)
 
 --- 17.6  ENERGY MANEUVERABILITY ---
   Energy height (cruise)  : 43,949 ft  (Eq. 17.85)
-  Ps at cruise (n=1)      : 86.6 ft/s  (5196 fpm)  (Eq. 17.89)
-  Ps at SL, n=1           : 116.4 ft/s  (6987 fpm)
-  Ps at SL, n=2           : 79.1 ft/s  (4745 fpm)
-  Ps at SL, n=3           : 16.8 ft/s  (1010 fpm)
+  Ps at cruise (n=1)      : 91.4 ft/s  (5486 fpm)  (Eq. 17.89)
+  Ps at SL, n=1           : 119.6 ft/s  (7176 fpm)
+  Ps at SL, n=2           : 83.0 ft/s  (4978 fpm)
+  Ps at SL, n=3           : 21.9 ft/s  (1314 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 58,500 ft
-  Absolute ceiling (~0 fpm) : 61,500 ft
+  Service ceiling (~500 fpm): 59,500 ft
+  Absolute ceiling (~0 fpm) : 62,500 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
   V-speeds:
-    V_stall (TO config)   : 116.5 kts
-    V1  (decision)        : 125.1 kts
-    VR  (rotation, 1.1 Vs): 128.2 kts
-    V2  (safety, 1.2 Vs)  : 139.8 kts
+    V_stall (TO config)   : 114.3 kts
+    V1  (decision)        : 122.2 kts
+    VR  (rotation, 1.1 Vs): 125.7 kts
+    V2  (safety, 1.2 Vs)  : 137.1 kts
 
   TODR (all-engine):
-    Ground roll           : 2,476 ft  (Eq. 17.102)
-    Rotation              : 649 ft
-    Transition            : 745 ft
+    Ground roll           : 2,278 ft  (Eq. 17.102)
+    Rotation              : 636 ft
+    Transition            : 731 ft
     Climb to 35 ft        : 0 ft  (Eq. 17.112)
-    Climb angle           : 17.2 deg
-    TODR (unfactored)     : 3,870 ft
-    TODR (FAR x1.15)      : 4,451 ft
+    Climb angle           : 18.2 deg
+    TODR (unfactored)     : 3,645 ft
+    TODR (FAR x1.15)      : 4,192 ft
 
   Balanced field / V1:
-    ASDR at V1            : 4,235 ft
-    AGDR at V1            : 4,233 ft
-    BFL (iterative)       : 4,235 ft
-    BFL (Raymer Eq.17.113): 4,557 ft
+    ASDR at V1            : 3,956 ft
+    AGDR at V1            : 3,955 ft
+    BFL (iterative)       : 3,956 ft
+    BFL (Raymer Eq.17.113): 4,266 ft
 
-  >> TOFL (FAR 25)        : 4,451 ft  = max(TODR×1.15, BFL)
+  >> TOFL (FAR 25)        : 4,192 ft  = max(TODR×1.15, BFL)
 
 --- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
     1st segment (LOF, TO flaps, gear dn, OEI)
-      Gradient: 8.7%  (required >= 0.0%)  @ 128 kts  [PASS]
+      Gradient: 9.6%  (required >= 0.0%)  @ 126 kts  [PASS]
     2nd segment (V2, TO flaps, gear up, OEI)
-      Gradient: 10.7%  (required >= 2.4%)  @ 140 kts  [PASS]
+      Gradient: 11.5%  (required >= 2.4%)  @ 137 kts  [PASS]
     4th segment (1.25Vs, clean, gear up, OEI)
-      Gradient: 13.4%  (required >= 1.2%)  @ 191 kts  [PASS]
+      Gradient: 14.2%  (required >= 1.2%)  @ 187 kts  [PASS]
     Go-around approach (1.4Vs, app flaps, gear up, OEI)
-      Gradient: 14.3%  (required >= 2.1%)  @ 131 kts  [PASS]
+      Gradient: 15.2%  (required >= 2.1%)  @ 129 kts  [PASS]
     Go-around landing (1.23Vs, ldg flaps, gear dn, AEO)
-      Gradient: 36.1%  (required >= 3.2%)  @ 115 kts  [PASS]
+      Gradient: 38.0%  (required >= 3.2%)  @ 113 kts  [PASS]
 
   >> FAR 25 climb compliance: ALL PASS
 
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
   V-speeds:
-    V_stall (landing)     : 93.6 kts
-    V_approach (1.3 Vs)   : 121.7 kts
-    V_touchdown (1.15 Vs) : 107.7 kts
+    V_stall (landing)     : 91.8 kts
+    V_approach (1.3 Vs)   : 119.3 kts
+    V_touchdown (1.15 Vs) : 105.6 kts
 
-  Landing weight          : 79,032 lb  (85% MTOW)
-    Approach distance     : 801 ft
-    Flare distance        : 307 ft
-    Free roll             : 545 ft
-    Braking distance      : 1,085 ft
-    LDR (unfactored)      : 2,737 ft
-    LDR (FAR x1.667)      : 4,562 ft
+  Landing weight          : 76,002 lb  (85% MTOW)
+    Approach distance     : 806 ft
+    Flare distance        : 295 ft
+    Free roll             : 535 ft
+    Braking distance      : 1,045 ft
+    LDR (unfactored)      : 2,682 ft
+    LDR (FAR x1.667)      : 4,469 ft
 
 ======================================================================
   ZRJ100  PERFORMANCE SUMMARY
 ======================================================================
-  MTOW                        : 92,979 lb
-  Wing loading (W/S)          : 91.5 lb/ft^2
-  T/W (SL static)             : 0.413
+  MTOW                        : 89,414 lb
+  Wing loading (W/S)          : 88.0 lb/ft^2
+  T/W (SL static)             : 0.429
   (L/D)_max                   : 15.54
-  Cruise L/D                  : 14.78
+  Cruise L/D                  : 14.59
   Cruise Mach                 : 0.78
-  V_stall clean (SL)          : 153 kts
-  V1 / VR / V2                : 125 / 128 / 140 kts
-  Best range (cruise)         : 3,062 nmi
-  Best ROC (SL)               : 11,959 fpm
+  V_stall clean (SL)          : 150 kts
+  V1 / VR / V2                : 122 / 126 / 137 kts
+  Best range (cruise)         : 2,574 nmi
+  Best ROC (SL)               : 12,462 fpm
   Service ceiling             : see above
-  Corner speed (SL)           : 241 kts
-  TODR (unfactored)           : 3,870 ft
-  TODR (FAR x1.15)            : 4,451 ft
-  ASDR at V1                  : 4,235 ft
-  BFL (iterative)             : 4,235 ft
-  BFL (Raymer Eq.17.113)      : 4,557 ft
-  TOFL (FAR 25)               : 4,451 ft
-  LDR (unfactored)            : 2,737 ft
-  LDR (FAR x1.667)            : 4,562 ft
+  Corner speed (SL)           : 237 kts
+  TODR (unfactored)           : 3,645 ft
+  TODR (FAR x1.15)            : 4,192 ft
+  ASDR at V1                  : 3,956 ft
+  BFL (iterative)             : 3,956 ft
+  BFL (Raymer Eq.17.113)      : 4,266 ft
+  TOFL (FAR 25)               : 4,192 ft
+  LDR (unfactored)            : 2,682 ft
+  LDR (FAR x1.667)            : 4,469 ft
   Glide range from cruise     : 90 nmi
 
 
@@ -551,18 +551,18 @@
   Metric                               ZRJ50         ZRJ70        ZRJ100
   ----------------------------------------------------------------------
   (L/D)_max                            15.82         15.82         15.54
-  Cruise L/D                           12.91         14.75         14.78
-  Range (nmi)                          1,376         3,500         3,062
-  Best ROC (fpm)                      17,672        13,227        11,959
-  Corner spd (kts)                       202           232           241
-  TODR (ft)                            2,327         3,436         3,870
-  TODR FAR (ft)                        2,677         3,952         4,451
-  ASDR at V1 (ft)                      2,439         3,699         4,235
-  BFL iterative (ft)                   2,439         3,705         4,235
-  BFL Eq.17.113 (ft)                   2,589         3,995         4,557
-  TOFL FAR 25 (ft)                     2,677         3,952         4,451
-  LDR (ft)                             2,293         2,628         2,737
-  LDR FAR (ft)                         3,822         4,380         4,562
+  Cruise L/D                           12.91         14.45         14.59
+  Range (nmi)                          1,376         2,823         2,574
+  Best ROC (fpm)                      17,672        13,986        12,462
+  Corner spd (kts)                       202           226           237
+  TODR (ft)                            2,327         3,176         3,645
+  TODR FAR (ft)                        2,677         3,653         4,192
+  ASDR at V1 (ft)                      2,439         3,395         3,956
+  BFL iterative (ft)                   2,439         3,396         3,956
+  BFL Eq.17.113 (ft)                   2,589         3,662         4,266
+  TOFL FAR 25 (ft)                     2,677         3,653         4,192
+  LDR (ft)                             2,293         2,557         2,682
+  LDR FAR (ft)                         3,822         4,262         4,469
 
 ======================================================================
   AIRFIELD PERFORMANCE BY RUNWAY SURFACE  (Table 17.1)
@@ -585,13 +585,13 @@
 --- ZRJ70 ---
   Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
   ---------------------------------------------------------------------------
-  Dry concrete        0.03  0.40    3,952    3,848    2,891    4,819    5,542
-  Wet concrete        0.05  0.23    4,541    4,541    3,960    6,600        -
-  Icy concrete        0.02  0.08    5,090    5,090    9,371   15,619        -
-  Hard turf           0.05  0.40    4,107    4,019    2,891    4,819        -
-  Firm dirt           0.04  0.30    4,160    4,160    3,340    5,567        -
-  Soft turf           0.07  0.20    4,976    4,976    4,279    7,132        -
-  Wet grass           0.08  0.20    5,140    5,140    4,279    7,132        -
+  Dry concrete        0.03  0.40    3,653    3,529    2,809    4,681    5,383
+  Wet concrete        0.05  0.23    4,146    4,146    3,833    6,388        -
+  Icy concrete        0.02  0.08    4,648    4,648    9,125   15,208        -
+  Hard turf           0.05  0.40    3,783    3,675    2,809    4,681        -
+  Firm dirt           0.04  0.30    3,807    3,807    3,238    5,396        -
+  Soft turf           0.07  0.20    4,514    4,514    4,140    6,901        -
+  Wet grass           0.08  0.20    4,659    4,659    4,140    6,901        -
 
   TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
@@ -599,13 +599,13 @@
 --- ZRJ100 ---
   Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
   ---------------------------------------------------------------------------
-  Dry concrete        0.03  0.40    4,451    4,400    3,019    5,032    5,786
-  Wet concrete        0.05  0.23    5,227    5,227    4,156    6,926        -
-  Icy concrete        0.02  0.08    5,862    5,862    9,750   16,250        -
-  Hard turf           0.05  0.40    4,652    4,616    3,019    5,032        -
-  Firm dirt           0.04  0.30    4,767    4,767    3,498    5,830        -
-  Soft turf           0.07  0.20    5,757    5,757    4,494    7,489        -
-  Wet grass           0.08  0.20    5,979    5,979    4,494    7,489        -
+  Dry concrete        0.03  0.40    4,192    4,111    2,954    4,923    5,661
+  Wet concrete        0.05  0.23    4,868    4,868    4,055    6,758        -
+  Icy concrete        0.02  0.08    5,458    5,458    9,545   15,908        -
+  Hard turf           0.05  0.40    4,368    4,304    2,954    4,923        -
+  Firm dirt           0.04  0.30    4,452    4,452    3,417    5,695        -
+  Soft turf           0.07  0.20    5,345    5,345    4,383    7,305        -
+  Wet grass           0.08  0.20    5,586    5,586    4,383    7,305        -
 
   TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
