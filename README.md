@@ -31,8 +31,10 @@ rj-flight-performance/
 │   ├── full_analysis.py               # Complete numerical performance analysis
 │   ├── plot_performance.py            # Generate all performance charts
 │   ├── charts/
-│   │   ├── CRJ/                       # CRJ family charts (10 PNGs)
-│   │   └── ZRJ/                       # ZRJ family charts (10 PNGs)
+│   │   ├── CRJ/                       # CRJ family charts (12 PNGs)
+│   │   │   └── surfaces/              # Per-surface TO/landing + BFL charts
+│   │   └── ZRJ/                       # ZRJ family charts (12 PNGs)
+│   │       └── surfaces/              # Per-surface TO/landing + BFL charts
 │   └── output/
 │       ├── CRJ/analysis.txt           # CRJ family analysis output
 │       └── ZRJ/analysis.txt           # ZRJ family analysis output
@@ -88,7 +90,7 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   BFL Eq.17.113 (ft)                   2,589         3,987         4,434
   TOFL FAR 25 (ft)                     2,677         3,944         4,341
   LDR (ft)                             2,293         2,626         2,714
-  LDR FAR (ft)                         3,822         4,378         4,525
+  LDR FAR (ft)                         3,822         4,377         4,524
 ```
 
 ### MR&O Performance Attributes
@@ -97,14 +99,14 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 |----------|---------------|-------|-------|--------|
 | **Airworthiness** | Transport Canada, EASA, FAA (Part 25) | Yes | Yes | Yes |
 | **Performance** | Range, BOW, LRC/FAR121, 100 nm alt. | 4,056 nm | 7,875 nm | 7,929 nm |
+| | Max cruise range | 4,479 nm | 4,860 nm | 4,604 nm |
+| | Range, Full PAX, LRC | 1,531 nm | 3,722 nm | 3,009 nm |
+| | Operational range, Full PAX (mission analysis) | 489 nm | 1,800 nm | 1,549 nm |
 | | Normal cruise (Optimized Mach) | M 0.78 | M 0.78 | M 0.78 |
 | | Maximum cruise (Optimized Mach) | M 0.85 | M 0.85 | M 0.85 |
 | | Takeoff BFL, ft | 2,438 | 3,695 | 4,116 |
 | | Initial cruise altitude, ft | 35,000 | 35,000 | 35,000 |
 | | Maximum cruise altitude, ft | >65,000 | 61,000 | 59,000 |
-| | Max cruise range | 4,479 nm | 4,860 nm | 4,604 nm |
-| | Range, Full PAX, LRC | 1,531 nm | 3,722 nm | 3,009 nm |
-| | Operational range, Full PAX (mission analysis) | 489 nm | 1,800 nm | 1,549 nm |
 | | Single engine climb | 23.1% | 15.9% | 14.5% |
 | **Weight & Payload** | Max. payload, lbs | 11,350 | 18,055 | 23,380 |
 | | Passengers (<100 PAX market segment) | 50 | 76 | 100 |
@@ -164,6 +166,7 @@ All equations reference Raymer's *Aircraft Design: A Conceptual Approach*, 7th E
 | 17.2 | Steady level flight | 17.8-17.15 | `level_flight.py` |
 | 17.2.1 | Minimum thrust required | 17.12-17.14 | `level_flight.py` |
 | 17.2.2 | Minimum power required | 17.16-17.21 | `level_flight.py` |
+| 17.2.3 | Maximum speed | 17.8-17.11 | `level_flight.py` |
 | 17.2.4 | Range (Breguet, jet) | 17.22-17.27 | `range_endurance.py` |
 | 17.2.5 | Range optimization (jet) | 17.24-17.27 | `range_endurance.py` |
 | 17.2.6 | Range optimization (prop) | 17.28 | `range_endurance.py` |
@@ -172,15 +175,18 @@ All equations reference Raymer's *Aircraft Design: A Conceptual Approach*, 7th E
 | 17.2.9 | Loiter optimization (prop) | 17.31-17.33 | `range_endurance.py` |
 | 17.2.10 | Loiter-cruise relationship | 17.34 | `range_endurance.py` |
 | 17.3.1 | Climb equations of motion | 17.36-17.41 | `climb.py` |
+| 17.3.2 | Climb hodograph | 17.38-17.39 | `climb.py` |
 | 17.3.3 | Best angle/rate of climb (jet) | 17.42-17.43 | `climb.py` |
 | 17.3.4 | Best angle/rate of climb (prop) | 17.44-17.45 | `climb.py` |
 | 17.3.5 | Time to climb & fuel to climb | 17.46-17.51 | `climb.py` |
+| — | FAR 25 climb gradients (Table F.4) | FAR 25.111-25.121 | `climb.py` |
 | 17.4 | Level turning flight | 17.52 | `turning.py` |
 | 17.4.1 | Instantaneous turn rate | 17.52 | `turning.py` |
 | 17.4.2 | Sustained turn rate | 17.53-17.55 | `turning.py` |
 | 17.5.1 | Straight gliding flight | 17.62-17.74 | `glide.py` |
 | 17.5.2 | Turning glide | 17.75-17.81 | `glide.py` |
 | 17.6.1 | Energy equations | 17.84-17.89 | `energy.py` |
+| 17.6.2 | Ps contours (energy maneuverability) | 17.89, Fig. 17.9 | `energy.py` |
 | 17.6.3 | Minimum time-to-climb | 17.91-17.93 | `energy.py` |
 | 17.6.4 | Minimum fuel-to-climb | 17.94-17.96 | `energy.py` |
 | 17.6.5 | Mission-segment weight fraction | 17.97 | `energy.py` |
@@ -196,7 +202,7 @@ All equations reference Raymer's *Aircraft Design: A Conceptual Approach*, 7th E
 
 ## Performance Charts
 
-Running `python examples/plot_performance.py` generates 10 charts per family in `examples/charts/{CRJ,ZRJ}/`:
+Running `python examples/plot_performance.py` generates 12 charts per family in `examples/charts/{CRJ,ZRJ}/`, plus per-surface subcharts in `surfaces/`:
 
 | # | Chart | Raymer Reference |
 |---|-------|-----------------|
@@ -206,10 +212,13 @@ Running `python examples/plot_performance.py` generates 10 charts per family in 
 | 4 | Rate of climb vs altitude | Eq. 17.43, 17.39 |
 | 5 | Specific excess power (Ps) vs Mach | Fig. 17.9, Eq. 17.89 |
 | 6 | Turn rate & load factor vs velocity | Fig. 17.6, Eq. 17.52, 17.54 |
-| 7 | Payload-range diagram | Eq. 17.23 |
-| 8 | Takeoff & landing distance breakdown | Sec. 17.8, 17.9 |
-| 9 | ASDR & AGDR vs engine failure speed (BFL) | Sec. 17.8.4, Eq. 17.102 |
-| 10 | Glide polar (sink rate vs velocity) | Fig. 17.7, Eq. 17.68 |
+| 7 | Takeoff & landing distance breakdown | Sec. 17.8, 17.9 |
+| 8 | Glide polar (sink rate vs velocity) | Fig. 17.7, Eq. 17.68 |
+| 9 | Operating envelope (altitude vs Mach) | Eq. 17.8, 17.12 |
+| 10 | Climb hodograph (Vx vs Vy) | Sec. 17.3.2, Eq. 17.38-17.39 |
+| 11 | Ps contour plot (altitude vs Mach) | Fig. 17.9, Eq. 17.89 |
+| 12 | Airfield performance by runway surface | Table 17.1, Sec. 17.8-17.9 |
+| — | Per-surface TO/landing + BFL (in `surfaces/`) | Table 17.1, Eq. 17.102 |
 
 ---
 

@@ -10,10 +10,12 @@ Charts produced:
   4. Rate of climb vs altitude
   5. Specific excess power (Ps) vs Mach
   6. Turn rate & load factor vs velocity
-  7. Payload-range diagram
-  8. Takeoff & landing distance breakdown
-  9. ASDR & AGDR vs engine failure speed (BFL)
- 10. Glide polar (sink rate vs velocity)
+  7. Takeoff & landing distance breakdown
+  8. Glide polar (sink rate vs velocity)
+  9. Operating envelope (altitude vs Mach)
+ 10. Climb hodograph (Vx vs Vy)
+ 11. Ps contour plot (altitude vs Mach)
+ 12. Airfield performance by runway surface
 """
 
 import sys, os
@@ -30,14 +32,12 @@ from perf import (
     thrust_at_altitude, dynamic_pressure, RHO_SL, G,
     thrust_required, power_required,
     LD_max, CL_max_LD, V_min_thrust, V_min_power, V_stall, LD_from_CL,
-    breguet_range_jet_nmi, V_best_range_jet, CL_best_range_jet,
-    ROC_jet, V_best_ROC_jet,
+    ROC_jet, V_best_ROC_jet, climb_angle, rate_of_climb,
     turn_rate_deg, turn_radius, corner_speed,
     n_sustained, sustained_turn_envelope_rho,
     Ps_expanded, specific_energy,
     V_best_glide, min_sink_rate, sink_rate,
-    asdr_todr_curves, find_V1,
-    mission_profile,
+    asdr_todr_curves,
 )
 
 FAMILIES = {
@@ -291,86 +291,7 @@ def plot_turn_performance():
 
 
 # =====================================================================
-# 7. Payload-Range Diagram
-# =====================================================================
-def plot_payload_range():
-    fig, ax = plt.subplots(figsize=(9, 6))
-
-    for ac in VARIANTS:
-        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
-        h = ac.h_cruise_ft
-        rho = isa_density(h)
-        V = TAS_from_mach(ac.M_cruise, h)
-        q = 0.5 * rho * V**2
-        C_hr = ac.TSFC
-
-        # Point A: max payload, max fuel (MTOW limit may reduce fuel)
-        W_fuel_A = ac.W_TO - ac.W_empty - ac.W_payload
-        Wi_A = ac.W_TO
-        Wf_A = Wi_A - W_fuel_A
-        CL_A = Wi_A / (q * S)
-        CD_A = CD0 + K * CL_A**2
-        LD_A = CL_A / CD_A
-        R_A = breguet_range_jet_nmi(fps_to_kts(V), C_hr, LD_A, Wi_A, Wf_A)
-        PL_A = ac.W_payload
-
-        # Point B: max payload, max fuel (MTOW)
-        # Same as A if fuel is limited by MTOW
-        W_fuel_B = ac.W_fuel_max
-        Wi_B = ac.W_empty + ac.W_fuel_max + ac.W_payload
-        if Wi_B > ac.W_TO:
-            Wi_B = ac.W_TO
-            W_fuel_B = ac.W_TO - ac.W_empty - ac.W_payload
-
-        PL_B = ac.W_payload
-        Wf_B = Wi_B - W_fuel_B
-        CL_B = Wi_B / (q * S)
-        CD_B = CD0 + K * CL_B**2
-        LD_B = CL_B / CD_B
-        R_B = breguet_range_jet_nmi(fps_to_kts(V), C_hr, LD_B, Wi_B, Wf_B)
-
-        # Point C: max fuel, reduced payload (trade payload for fuel)
-        W_fuel_C = ac.W_fuel_max
-        PL_C = ac.W_TO - ac.W_empty - W_fuel_C
-        PL_C = max(PL_C, 0)
-        Wi_C = ac.W_empty + W_fuel_C + PL_C
-        Wf_C = Wi_C - W_fuel_C
-        CL_C = Wi_C / (q * S)
-        CD_C = CD0 + K * CL_C**2
-        LD_C = CL_C / CD_C
-        R_C = breguet_range_jet_nmi(fps_to_kts(V), C_hr, LD_C, Wi_C, Wf_C)
-
-        # Point D: ferry range (zero payload, max fuel)
-        W_fuel_D = ac.W_fuel_max
-        Wi_D = ac.W_empty + W_fuel_D
-        Wf_D = ac.W_empty
-        CL_D = Wi_D / (q * S)
-        CD_D = CD0 + K * CL_D**2
-        LD_D = CL_D / CD_D
-        R_D = breguet_range_jet_nmi(fps_to_kts(V), C_hr, LD_D, Wi_D, Wf_D)
-
-        ranges  = [0, R_B, R_C, R_D]
-        payloads = [PL_B, PL_B, PL_C, 0]
-
-        ax.plot(ranges, np.array(payloads) / 1000, '-o', color=COLORS[ac.name],
-                label=ac.name, lw=2, ms=6)
-
-        # Annotate points
-        ax.annotate(f"  A/B", (R_B, PL_B / 1000), fontsize=8)
-        ax.annotate(f"  C", (R_C, PL_C / 1000), fontsize=8)
-        ax.annotate(f"  D (ferry)", (R_D, 0), fontsize=8)
-
-    ax.set_xlabel("Range [nmi]")
-    ax.set_ylabel("Payload [1000 lb]")
-    ax.set_title("Payload-Range Diagram  (Breguet, Raymer Eq. 17.23)")
-    ax.legend()
-    ax.grid(True, alpha=0.3)
-    ax.set_ylim(bottom=-0.5)
-    save(fig, "07_payload_range.png")
-
-
-# =====================================================================
-# 8. Takeoff & Landing Bar Chart
+# 7. Takeoff & Landing Bar Chart
 # =====================================================================
 def plot_TO_landing_bars():
     from perf import total_takeoff_distance, total_landing_distance
@@ -436,72 +357,11 @@ def plot_TO_landing_bars():
     ax.grid(True, alpha=0.3, axis='y')
 
     fig.tight_layout()
-    save(fig, "08_TO_landing_breakdown.png")
+    save(fig, "07_TO_landing_breakdown.png")
 
 
 # =====================================================================
-# 9. ASDR & TODR vs Engine Failure Speed
-# =====================================================================
-def plot_asdr_todr():
-    fig, axes = plt.subplots(1, len(VARIANTS), figsize=(14, 6), sharey=True)
-    if len(VARIANTS) == 1:
-        axes = [axes]
-
-    for ax, ac in zip(axes, VARIANTS):
-        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
-        rho = RHO_SL
-        CD0_TO = CD0 + 0.015
-        T_TO = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR) * ac.T_max_SL
-        T_idle = 0.05 * ac.T_max_SL
-
-        curves = asdr_todr_curves(
-            W=W, S=S, T=T_TO, CD0=CD0_TO,
-            CL_ground=ac.CL_ground, K=K,
-            mu_roll=ac.mu_roll, mu_brake=ac.mu_brake,
-            rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
-            h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
-            T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
-
-        v1_result = find_V1(
-            W=W, S=S, T=T_TO, CD0=CD0_TO,
-            CL_ground=ac.CL_ground, K=K,
-            mu_roll=ac.mu_roll, mu_brake=ac.mu_brake,
-            rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
-            h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
-            T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
-
-        V_kts = fps_to_kts(curves["V_EF"])
-        V1_kts = fps_to_kts(v1_result["V1"])
-        BFL = v1_result["BFL"]
-
-        ax.plot(V_kts, curves["ASDR"], 'r-', lw=2, label="ASDR (accelerate-stop)")
-        ax.plot(V_kts, curves["AGDR"], 'b-', lw=2, label="AGDR (accelerate-go)")
-
-        # Mark V1 / BFL intersection
-        ax.plot(V1_kts, BFL, 'ko', ms=10, zorder=5)
-        ax.annotate(f"V1 = {V1_kts:.0f} kts\nBFL = {BFL:,.0f} ft",
-                    (V1_kts, BFL), fontsize=9, fontweight='bold',
-                    xytext=(-80, 30), textcoords='offset points',
-                    arrowprops=dict(arrowstyle='->', color='black'))
-
-        # Mark VR
-        V_s = V_stall(W, S, rho, ac.CL_max_TO)
-        VR_kts = fps_to_kts(1.1 * V_s)
-        ax.axvline(VR_kts, color='green', ls='--', alpha=0.6, label=f"VR = {VR_kts:.0f} kts")
-
-        ax.set_xlabel("Engine Failure Speed, $V_{EF}$ [kts]")
-        ax.set_title(f"{ac.name} (Sea Level, ISA)")
-        ax.legend(fontsize=8, loc="upper left")
-        ax.grid(True, alpha=0.3)
-
-    axes[0].set_ylabel("Distance [ft]")
-    fig.suptitle("ASDR & AGDR vs Engine Failure Speed — Balanced Field Length",
-                 fontsize=12)
-    save(fig, "09_ASDR_TODR.png")
-
-
-# =====================================================================
-# 10. Glide Polar (Sink Rate vs Velocity)
+# 8. Glide Polar (Sink Rate vs Velocity)
 # =====================================================================
 def plot_glide_polar():
     fig, ax = plt.subplots(figsize=(8, 6))
@@ -543,103 +403,369 @@ def plot_glide_polar():
     ax.invert_yaxis()  # convention: sink is positive downward
     ax.legend()
     ax.grid(True, alpha=0.3)
-    save(fig, "10_glide_polar.png")
+    save(fig, "08_glide_polar.png")
 
 
 # =====================================================================
-# 11. Mission Profile (Weight vs Segment)
+# 9. Operating Envelope (Altitude vs Mach)
 # =====================================================================
-def plot_mission_profile():
-    # Only plot for variants with design_range_nm set
-    variants_with_range = [ac for ac in VARIANTS if ac.design_range_nm > 0]
-    if not variants_with_range:
-        return
+def plot_operating_envelope():
+    fig, ax = plt.subplots(figsize=(10, 7))
+
+    for ac in VARIANTS:
+        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+
+        # Sweep altitudes
+        alts = np.linspace(0, 55000, 200)
+        M_stall = []      # low-speed stall boundary
+        M_max_thrust = []  # high-speed thrust boundary (Ps=0)
+
+        for h in alts:
+            rho_h = isa_density(h)
+            a_h = speed_of_sound(h)
+            T_h = thrust_at_altitude(ac.T_max_SL, h, ac.BPR)
+
+            # Stall boundary: 1g stall Mach at this altitude
+            Vs = V_stall(W, S, rho_h, ac.CL_max_clean)
+            M_stall.append(Vs / a_h)
+
+            # Thrust boundary: find max Mach where T >= D (Ps >= 0)
+            M_test = np.linspace(0.3, 0.95, 300)
+            V_test = M_test * a_h
+            T_req = thrust_required(W, CD0, K, S, rho_h, V_test)
+            feasible = T_req <= T_h
+            if np.any(feasible):
+                M_max_thrust.append(M_test[feasible][-1])
+            else:
+                M_max_thrust.append(np.nan)
+
+        M_stall = np.array(M_stall)
+        M_max_thrust = np.array(M_max_thrust)
+        alts_k = alts / 1000
+
+        # Plot stall boundary (left side)
+        ax.plot(M_stall, alts_k, '--', color=COLORS[ac.name], alpha=0.7, lw=1.5)
+        # Plot thrust boundary (right side)
+        ax.plot(M_max_thrust, alts_k, '-', color=COLORS[ac.name], lw=2,
+                label=ac.name)
+        # Fill the envelope
+        ax.fill_betweenx(alts_k, M_stall, M_max_thrust,
+                         color=COLORS[ac.name], alpha=0.08)
+
+    # Mmo limit
+    ax.axvline(0.85, color='red', ls=':', lw=1.5, alpha=0.7, label="$M_{mo}$ = 0.85")
+
+    # Cruise point
+    ax.axhline(35, color='gray', ls=':', alpha=0.4)
+    ax.plot(0.78, 35, 'k*', ms=12, zorder=5, label="Design cruise (M 0.78, FL350)")
+
+    ax.set_xlabel("Mach Number")
+    ax.set_ylabel("Altitude [1000 ft]")
+    ax.set_title("Operating Envelope — Altitude vs Mach")
+    ax.set_xlim(0.15, 0.95)
+    ax.set_ylim(0, 55)
+    ax.legend(fontsize=8, loc="upper left")
+    ax.grid(True, alpha=0.3)
+    save(fig, "09_operating_envelope.png")
+
+
+# =====================================================================
+# 10. Climb Hodograph (Raymer 17.3.2)
+# =====================================================================
+def plot_climb_hodograph():
+    fig, axes = plt.subplots(1, len(VARIANTS), figsize=(14, 5), sharey=True)
+    if len(VARIANTS) == 1:
+        axes = [axes]
+
+    for ax, ac in zip(axes, VARIANTS):
+        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+        rho = RHO_SL
+        T = ac.T_max_SL
+
+        Vs = V_stall(W, S, rho, ac.CL_max_clean)
+        V_arr = np.linspace(Vs, kts_to_fps(450), 300)
+        T_req = thrust_required(W, CD0, K, S, rho, V_arr)
+        gamma_arr = np.arcsin(np.clip((T - T_req) / W, -1, 1))
+        Vx = fps_to_kts(V_arr * np.cos(gamma_arr))  # horizontal
+        Vy = V_arr * np.sin(gamma_arr) * 60           # vertical [fpm]
+
+        ax.plot(Vx, Vy, color=COLORS[ac.name], lw=2)
+
+        # Best angle of climb (max gamma)
+        idx_gamma = np.argmax(gamma_arr)
+        ax.plot(Vx[idx_gamma], Vy[idx_gamma], 'o', color=COLORS[ac.name], ms=8)
+        ax.annotate(f"  best angle\n  {np.degrees(gamma_arr[idx_gamma]):.1f} deg",
+                    (Vx[idx_gamma], Vy[idx_gamma]), fontsize=8)
+
+        # Best rate of climb (max Vy)
+        idx_roc = np.argmax(Vy)
+        ax.plot(Vx[idx_roc], Vy[idx_roc], 's', color=COLORS[ac.name], ms=8)
+        ax.annotate(f"  best ROC\n  {Vy[idx_roc]:,.0f} fpm",
+                    (Vx[idx_roc], Vy[idx_roc]), fontsize=8)
+
+        ax.axhline(0, color='k', lw=0.5)
+        ax.set_xlabel("Horizontal Speed [kts]")
+        ax.set_title(f"{ac.name} (Sea Level)")
+        ax.grid(True, alpha=0.3)
+
+    axes[0].set_ylabel("Rate of Climb [fpm]")
+    fig.suptitle("Climb Hodograph  (Raymer Sec. 17.3.2)", fontsize=12)
+    save(fig, "10_climb_hodograph.png")
+
+
+# =====================================================================
+# 11. Ps Contour Plot — Altitude vs Mach (Raymer 17.6.2)
+# =====================================================================
+def plot_Ps_contours():
+    fig, axes = plt.subplots(1, len(VARIANTS), figsize=(14, 5), sharey=True)
+    if len(VARIANTS) == 1:
+        axes = [axes]
+
+    for ax, ac in zip(axes, VARIANTS):
+        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+
+        M_arr = np.linspace(0.15, 0.90, 150)
+        h_arr = np.linspace(0, 50000, 150)
+        M_grid, H_grid = np.meshgrid(M_arr, h_arr)
+        Ps_grid = np.zeros_like(M_grid)
+
+        for i in range(len(h_arr)):
+            h = h_arr[i]
+            rho_h = isa_density(h)
+            a_h = speed_of_sound(h)
+            T_h = thrust_at_altitude(ac.T_max_SL, h, ac.BPR)
+            TW_h = T_h / W
+            V_row = M_arr * a_h
+            Ps_grid[i, :] = Ps_expanded(V_row, TW_h, ac.wing_loading,
+                                         CD0, K, rho_h, n=1.0) * 60  # fpm
+
+        levels = [0, 500, 1000, 2000, 5000, 10000, 15000]
+        cs = ax.contour(M_grid, H_grid / 1000, Ps_grid, levels=levels,
+                        colors='k', linewidths=0.8)
+        ax.clabel(cs, inline=True, fontsize=7, fmt='%g fpm')
+        cf = ax.contourf(M_grid, H_grid / 1000, Ps_grid, levels=levels,
+                         cmap='RdYlGn', alpha=0.4)
+
+        # Ps = 0 contour (flight envelope boundary)
+        ax.contour(M_grid, H_grid / 1000, Ps_grid, levels=[0],
+                   colors='red', linewidths=2)
+
+        # Cruise point
+        ax.plot(ac.M_cruise, ac.h_cruise_ft / 1000, 'k*', ms=10, zorder=5)
+
+        ax.set_xlabel("Mach Number")
+        ax.set_title(f"{ac.name}")
+        ax.set_xlim(0.15, 0.90)
+        ax.set_ylim(0, 50)
+        ax.grid(True, alpha=0.2)
+
+    axes[0].set_ylabel("Altitude [1000 ft]")
+    fig.suptitle("Specific Excess Power Contours  (Raymer Fig. 17.9, Eq. 17.89)", fontsize=12)
+    save(fig, "11_Ps_contours.png")
+
+
+# =====================================================================
+# 12. Airfield Performance by Runway Surface (Raymer Table 17.1)
+# =====================================================================
+def plot_surface_performance():
+    from perf import total_takeoff_distance, total_landing_distance, find_V1
+
+    SURFACES = [
+        ("Dry\nconcrete",  0.03, 0.40),
+        ("Wet\nconcrete",  0.05, 0.225),
+        ("Icy\nconcrete",  0.02, 0.08),
+        ("Hard\nturf",     0.05, 0.40),
+        ("Firm\ndirt",     0.04, 0.30),
+        ("Soft\nturf",     0.07, 0.20),
+        ("Wet\ngrass",     0.08, 0.20),
+    ]
 
     fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+    x = np.arange(len(SURFACES))
+    width = 0.8 / len(VARIANTS)
 
-    # Left: weight through mission
-    ax = axes[0]
-    for ac in variants_with_range:
-        mp = mission_profile(ac)
-        segs = mp["segments"]
-        names = [s["name"].split(". ", 1)[-1] for s in segs]
-        W_trace = [s["W_start"] for s in segs] + [segs[-1]["W_end"]]
-        x = np.arange(len(W_trace))
-        labels = ["Start"] + names
+    for i, ac in enumerate(VARIANTS):
+        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+        rho = RHO_SL
+        CD0_TO = CD0 + 0.015
+        T_TO = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR) * ac.T_max_SL
+        T_idle = 0.05 * ac.T_max_SL
 
-        ax.step(x, np.array(W_trace) / 1000, where="post",
-                color=COLORS[ac.name], lw=2, label=ac.name)
-        # Mark trip fuel boundary (after segment 4)
-        ax.axvline(5, color='gray', ls=':', alpha=0.4)
+        tofls = []
+        ldrs = []
+        for _, mu_r, mu_b in SURFACES:
+            to = total_takeoff_distance(
+                W=W, S=S, T=T_TO, CD0=CD0_TO,
+                CL_ground=ac.CL_ground, K=K, mu=mu_r,
+                rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+                h_obstacle=ac.h_obstacle_TO, t_rotate=3.0)
+            v1 = find_V1(
+                W=W, S=S, T=T_TO, CD0=CD0_TO,
+                CL_ground=ac.CL_ground, K=K,
+                mu_roll=mu_r, mu_brake=mu_b,
+                rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+                h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+                T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
+            tofls.append(max(to['TODR_factored'], v1['BFL']))
 
-    ax.set_xticks(np.arange(len(labels)))
-    ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=7)
-    ax.set_ylabel("Weight [1000 lb]")
-    ax.set_title("Mission Profile — Weight vs Segment")
-    ax.legend(fontsize=8)
-    ax.grid(True, alpha=0.3)
-    ax.annotate("trip fuel | reserves", xy=(5, ax.get_ylim()[0]),
-                fontsize=7, color='gray', ha='center', va='bottom')
+            la = total_landing_distance(
+                W=ac.W_landing, S=S, rho=rho, CL_max_L=ac.CL_max_L,
+                CD0=CD0 + 0.02, CL_ground=ac.CL_ground, K=K,
+                mu_brake=mu_b, h_obstacle=ac.h_obstacle_L,
+                T_idle=T_idle, T_reverse=0.0,
+                approach_factor=1.3, t_free=3.0, FAR_factor=True)
+            ldrs.append(la['S_FAR_field'])
 
-    # Right: fuel per segment (stacked bar)
-    ax = axes[1]
-    seg_names = [s["name"].split(". ", 1)[-1]
-                 for s in mission_profile(variants_with_range[0])["segments"]]
-    x = np.arange(len(seg_names))
-    width = 0.8 / len(variants_with_range)
+        axes[0].bar(x + i * width, tofls, width, color=COLORS[ac.name], label=ac.name)
+        axes[1].bar(x + i * width, ldrs, width, color=COLORS[ac.name], label=ac.name)
 
-    for i, ac in enumerate(variants_with_range):
-        mp = mission_profile(ac)
-        fuels = [s["fuel"] for s in mp["segments"]]
-        ax.bar(x + i * width, fuels, width, color=COLORS[ac.name], label=ac.name)
+    surf_labels = [s[0] for s in SURFACES]
+    for ax, title in zip(axes, ["TOFL (FAR 25)", "Landing Field Length (FAR 25)"]):
+        ax.set_xticks(x + width * (len(VARIANTS) - 1) / 2)
+        ax.set_xticklabels(surf_labels, fontsize=8)
+        ax.set_ylabel("Distance [ft]")
+        ax.set_title(title)
+        ax.legend(fontsize=8)
+        ax.grid(True, alpha=0.3, axis='y')
 
-    ax.set_xticks(x + width * (len(variants_with_range) - 1) / 2)
-    ax.set_xticklabels(seg_names, rotation=45, ha="right", fontsize=7)
-    ax.set_ylabel("Fuel Burned [lb]")
-    ax.set_title("Fuel Burn per Mission Segment")
-    ax.legend(fontsize=8)
-    ax.grid(True, alpha=0.3, axis='y')
-
+    fig.suptitle("Airfield Performance by Runway Surface  (Raymer Table 17.1)", fontsize=12)
     fig.tight_layout()
-    save(fig, "11_mission_profile.png")
+    save(fig, "12_surface_performance.png")
 
 
 # =====================================================================
-# 12. FAR 25 OEI Climb Gradients
+# 13. Per-Surface Takeoff/Landing Breakdown + BFL Charts
 # =====================================================================
-def plot_oei_gradients():
-    variants_with_range = [ac for ac in VARIANTS if ac.design_range_nm > 0]
-    if not variants_with_range:
-        return
+def plot_per_surface_charts():
+    from perf import total_takeoff_distance, total_landing_distance, find_V1
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    SURFACES = [
+        ("Dry concrete",  "dry_concrete",  0.03, 0.40),
+        ("Wet concrete",  "wet_concrete",  0.05, 0.225),
+        ("Icy concrete",  "icy_concrete",  0.02, 0.08),
+        ("Hard turf",     "hard_turf",     0.05, 0.40),
+        ("Firm dirt",     "firm_dirt",      0.04, 0.30),
+        ("Soft turf",     "soft_turf",     0.07, 0.20),
+        ("Wet grass",     "wet_grass",     0.08, 0.20),
+    ]
 
-    categories = ["2nd segment\n(TO flaps)", "En-route\n(clean)", "Approach\n(landing)"]
-    keys = ["2nd_segment", "en_route", "approach_climb"]
-    minimums = [2.4, 1.2, 2.1]
-    x = np.arange(len(categories))
-    width = 0.8 / len(variants_with_range)
+    surf_dir = os.path.join(CHART_DIR, "surfaces")
+    os.makedirs(surf_dir, exist_ok=True)
 
-    for i, ac in enumerate(variants_with_range):
-        mp = mission_profile(ac)
-        vals = [mp["oei"][k]["gradient_pct"] for k in keys]
-        ax.bar(x + i * width, vals, width, color=COLORS[ac.name], label=ac.name)
+    for surf_name, surf_key, mu_r, mu_b in SURFACES:
+        # ---- TO/Landing breakdown ----
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+        names = []
+        to_segs = {"Ground Roll": [], "Rotation": [], "Transition": [], "Climb": []}
+        la_segs = {"Approach": [], "Flare": [], "Free Roll": [], "Braking": []}
 
-    # Minimum lines
-    for j, (cat_x, mn) in enumerate(zip(x, minimums)):
-        ax.plot([cat_x - 0.1, cat_x + width * len(variants_with_range) + 0.1],
-                [mn, mn], 'r--', lw=1.5, alpha=0.7)
-        ax.annotate(f"min {mn}%", (cat_x + width * len(variants_with_range), mn),
-                    fontsize=8, color='red', va='bottom')
+        for ac in VARIANTS:
+            W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+            rho = RHO_SL
+            T_TO = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR) * ac.T_max_SL
+            T_idle = 0.05 * ac.T_max_SL
 
-    ax.set_xticks(x + width * (len(variants_with_range) - 1) / 2)
-    ax.set_xticklabels(categories)
-    ax.set_ylabel("Climb Gradient [%]")
-    ax.set_title("FAR 25 OEI Climb Gradients  (2-engine)")
-    ax.legend(fontsize=8)
-    ax.grid(True, alpha=0.3, axis='y')
-    fig.tight_layout()
-    save(fig, "12_oei_gradients.png")
+            to = total_takeoff_distance(W, S, T_TO, CD0+0.015, ac.CL_ground, K,
+                                        mu_r, rho, ac.CL_max_TO,
+                                        ac.thrust_to_weight, ac.h_obstacle_TO, 3.0)
+            la = total_landing_distance(ac.W_landing, S, rho, ac.CL_max_L,
+                                        CD0+0.02, ac.CL_ground, K, mu_b,
+                                        ac.h_obstacle_L, T_idle, 0.0,
+                                        1.3, 3.0, False)
+            names.append(ac.name)
+            to_segs["Ground Roll"].append(to["S_ground_roll"])
+            to_segs["Rotation"].append(to["S_rotation"])
+            to_segs["Transition"].append(to["S_transition"])
+            to_segs["Climb"].append(to["S_climb"])
+            la_segs["Approach"].append(la["S_approach"])
+            la_segs["Flare"].append(la["S_flare"])
+            la_segs["Free Roll"].append(la["S_free_roll"])
+            la_segs["Braking"].append(la["S_braking"])
+
+        x = np.arange(len(names))
+        width = 0.5
+
+        ax = axes[0]
+        bottom = np.zeros(len(names))
+        for seg, vals in to_segs.items():
+            ax.bar(x, vals, width, bottom=bottom, label=seg)
+            bottom += np.array(vals)
+        ax.set_xticks(x); ax.set_xticklabels(names)
+        ax.set_ylabel("Distance [ft]")
+        ax.set_title(f"Takeoff Distance Breakdown")
+        ax.legend(fontsize=8); ax.grid(True, alpha=0.3, axis='y')
+
+        ax = axes[1]
+        bottom = np.zeros(len(names))
+        for seg, vals in la_segs.items():
+            ax.bar(x, vals, width, bottom=bottom, label=seg)
+            bottom += np.array(vals)
+        ax.set_xticks(x); ax.set_xticklabels(names)
+        ax.set_ylabel("Distance [ft]")
+        ax.set_title(f"Landing Distance Breakdown")
+        ax.legend(fontsize=8); ax.grid(True, alpha=0.3, axis='y')
+
+        fig.suptitle(f"{surf_name}  (mu_roll={mu_r}, mu_brake={mu_b})", fontsize=12)
+        fig.tight_layout()
+        path = os.path.join(surf_dir, f"{surf_key}_TO_landing.png")
+        fig.savefig(path, dpi=150, bbox_inches="tight"); plt.close(fig)
+        print(f"  Saved: {path}")
+
+        # ---- BFL chart ----
+        fig, axes_bfl = plt.subplots(1, len(VARIANTS), figsize=(14, 6), sharey=True)
+        if len(VARIANTS) == 1:
+            axes_bfl = [axes_bfl]
+
+        for ax, ac in zip(axes_bfl, VARIANTS):
+            W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+            rho = RHO_SL
+            CD0_TO = CD0 + 0.015
+            T_TO = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR) * ac.T_max_SL
+            T_idle = 0.05 * ac.T_max_SL
+
+            curves = asdr_todr_curves(
+                W=W, S=S, T=T_TO, CD0=CD0_TO,
+                CL_ground=ac.CL_ground, K=K,
+                mu_roll=mu_r, mu_brake=mu_b,
+                rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+                h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+                T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
+            v1_result = find_V1(
+                W=W, S=S, T=T_TO, CD0=CD0_TO,
+                CL_ground=ac.CL_ground, K=K,
+                mu_roll=mu_r, mu_brake=mu_b,
+                rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+                h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+                T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
+
+            V_kts = fps_to_kts(curves["V_EF"])
+            V1_kts = fps_to_kts(v1_result["V1"])
+            BFL = v1_result["BFL"]
+
+            ax.plot(V_kts, curves["ASDR"], 'r-', lw=2, label="ASDR")
+            ax.plot(V_kts, curves["AGDR"], 'b-', lw=2, label="AGDR")
+            ax.plot(V1_kts, BFL, 'ko', ms=10, zorder=5)
+            ax.annotate(f"V1 = {V1_kts:.0f} kts\nBFL = {BFL:,.0f} ft",
+                        (V1_kts, BFL), fontsize=9, fontweight='bold',
+                        xytext=(-80, 30), textcoords='offset points',
+                        arrowprops=dict(arrowstyle='->', color='black'))
+
+            V_s = V_stall(W, S, rho, ac.CL_max_TO)
+            VR_kts = fps_to_kts(1.1 * V_s)
+            ax.axvline(VR_kts, color='green', ls='--', alpha=0.6,
+                       label=f"VR = {VR_kts:.0f} kts")
+
+            ax.set_xlabel("$V_{EF}$ [kts]")
+            ax.set_title(f"{ac.name}")
+            ax.legend(fontsize=8, loc="upper left")
+            ax.grid(True, alpha=0.3)
+
+        axes_bfl[0].set_ylabel("Distance [ft]")
+        fig.suptitle(f"Balanced Field Length — {surf_name}  (mu_roll={mu_r}, mu_brake={mu_b})",
+                     fontsize=12)
+        path = os.path.join(surf_dir, f"{surf_key}_BFL.png")
+        fig.savefig(path, dpi=150, bbox_inches="tight"); plt.close(fig)
+        print(f"  Saved: {path}")
 
 
 # =====================================================================
@@ -650,12 +776,13 @@ ALL_PLOTS = [
     plot_ROC_vs_altitude,
     plot_Ps_vs_Mach,
     plot_turn_performance,
-    plot_payload_range,
     plot_TO_landing_bars,
-    plot_asdr_todr,
     plot_glide_polar,
-    plot_mission_profile,
-    plot_oei_gradients,
+    plot_operating_envelope,
+    plot_climb_hodograph,
+    plot_Ps_contours,
+    plot_surface_performance,
+    plot_per_surface_charts,
 ]
 
 if __name__ == "__main__":

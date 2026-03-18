@@ -18,13 +18,14 @@ from perf import (
     # level flight
     thrust_required, power_required, TW_level,
     LD_max, CL_max_LD, V_min_thrust, V_min_power,
-    V_stall, V_level, LD_from_CL,
+    V_stall, V_level, V_max, LD_from_CL,
     # range & endurance
     breguet_range_jet_nmi, V_best_range_jet, CL_best_range_jet,
     endurance_jet_hr, loiter_from_cruise,
     # climb
     climb_angle, rate_of_climb, V_best_ROC_jet, ROC_jet,
     time_to_climb, fuel_to_climb, time_to_climb_profile,
+    far25_climb_gradients,
     # turning
     turn_rate_deg, turn_radius, corner_speed,
     n_sustained, bank_angle,
@@ -37,8 +38,6 @@ from perf import (
     total_takeoff_distance, balanced_field_length, find_V1,
     # landing
     total_landing_distance,
-    # mission
-    mission_profile,
 )
 
 # =====================================================================
@@ -131,6 +130,12 @@ def analyse(ac):
     print(f"\n  V_stall clean (SL): {fps_to_kts(vs_clean):.1f} kts")
     print(f"  V_stall TO   (SL): {fps_to_kts(vs_to):.1f} kts")
     print(f"  V_stall land (SL): {fps_to_kts(vs_land):.1f} kts  (at 85% MTOW)")
+
+    # Maximum speed (Sec. 17.2.3)
+    v_max_sl = V_max(W, S, rho_sl, CD0, K, ac.T_max_SL)
+    v_max_cr = V_max(W, S, rho_cr, CD0, K, T_avail_cr)
+    print(f"\n  V_max (SL)        : {fps_to_kts(v_max_sl):.1f} kts  (Sec. 17.2.3)")
+    print(f"  V_max (cruise alt): {fps_to_kts(v_max_cr):.1f} kts")
 
     # =================================================================
     # 17.2.4  RANGE
@@ -374,6 +379,30 @@ def analyse(ac):
     print(f"\n  >> TOFL (FAR 25)        : {TOFL:,.0f} ft  = max(TODR×1.15, BFL)")
 
     # =================================================================
+    # FAR 25 CLIMB GRADIENTS (Table F.4)
+    # =================================================================
+    subsection("FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine)")
+
+    far_grads = far25_climb_gradients(
+        W=W, S=S, CD0=CD0, K=K,
+        CL_max_TO=ac.CL_max_TO, CL_max_L=ac.CL_max_L,
+        CL_max_clean=ac.CL_max_clean,
+        T_max_SL=ac.T_max_SL, n_engines=ac.n_engines, rho=rho_sl)
+
+    all_pass = True
+    for seg_key in ["1st_seg", "2nd_seg", "4th_seg", "GA_approach", "GA_landing"]:
+        seg = far_grads[seg_key]
+        status = "PASS" if seg["pass"] else "** FAIL **"
+        if not seg["pass"]:
+            all_pass = False
+        print(f"    {seg['label']}")
+        print(f"      Gradient: {seg['gradient']*100:.1f}%  "
+              f"(required >= {seg['required']*100:.1f}%)  "
+              f"@ {seg['speed_kts']:.0f} kts  [{status}]")
+
+    print(f"\n  >> FAR 25 climb compliance: {'ALL PASS' if all_pass else 'FAIL — see above'}")
+
+    # =================================================================
     # 17.9  LANDING
     # =================================================================
     subsection("17.9  LANDING ANALYSIS (Sea Level, ISA)")
@@ -482,90 +511,82 @@ def run_comparison(results):
 
 
 # =====================================================================
-def run_mro_table(variants):
-    """MR&O performance requirements table with mission segment weight fractions."""
-    separator("MR&O PERFORMANCE REQUIREMENTS  (Raymer Eq. 17.97 / Breguet)")
+# Raymer Table 17.1 — surface coefficients (midpoint values)
+# =====================================================================
+SURFACES = [
+    # (name,              mu_roll, mu_brake)
+    ("Dry concrete",       0.03,    0.40),
+    ("Wet concrete",       0.05,    0.225),
+    ("Icy concrete",       0.02,    0.08),
+    ("Hard turf",          0.05,    0.40),
+    ("Firm dirt",          0.04,    0.30),
+    ("Soft turf",          0.07,    0.20),
+    ("Wet grass",          0.08,    0.20),
+]
 
-    mission_results = {}
+
+def run_surface_performance(variants):
+    """Airfield performance on different runway surfaces (Raymer Table 17.1)."""
+    separator("AIRFIELD PERFORMANCE BY RUNWAY SURFACE  (Table 17.1)")
+
     for ac in variants:
-        if ac.design_range_nm == 0:
-            continue
-        mp = mission_profile(ac)
-        mission_results[ac.name] = mp
+        subsection(f"{ac.name}")
+        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+        rho = RHO_SL
+        CD0_TO = CD0 + 0.015
+        T_ratio = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR)
+        T_TO = T_ratio * ac.T_max_SL
+        T_idle = 0.05 * ac.T_max_SL
+        W_land = ac.W_landing
 
-        subsection(f"{ac.name} — Mission Segment Weight Fractions")
-        print(f"  Design range: {ac.design_range_nm:.0f} nm  |  "
-              f"Alternate: {ac.alternate_range_nm:.0f} nm  |  "
-              f"MTOW: {ac.W_TO:,.0f} lb")
-        print()
-        print(f"  {'#':<3s} {'Segment':<26s} {'Method':<12s} "
-              f"{'W/W_i':>8s} {'W_start':>10s} {'W_end':>10s} {'Fuel':>8s}")
-        print(f"  {'-'*3} {'-'*26} {'-'*12} {'-'*8} {'-'*10} {'-'*10} {'-'*8}")
-
-        for seg in mp["segments"]:
-            print(f"  {seg['name']:<29s} {seg['method']:<12s} "
-                  f"{seg['wf']:8.4f} {seg['W_start']:10,.0f} "
-                  f"{seg['W_end']:10,.0f} {seg['fuel']:8,.0f}")
-
-        print(f"  {'':29s} {'':12s} {'------':>8s} {'':10s} {'':10s} {'------':>8s}")
-        print(f"  {'Overall':29s} {'':12s} {mp['wf_total']:8.4f} "
-              f"{'':10s} {'':10s} {mp['total_fuel']:8,.0f}")
-
-        # Fuel summary
-        print(f"\n  Fuel Summary:")
-        print(f"    Trip fuel (seg 0-4)   : {mp['trip_fuel']:,.0f} lb")
-        print(f"    Reserve fuel (seg 5-8): {mp['reserve_fuel']:,.0f} lb")
-        print(f"    Total fuel required   : {mp['total_fuel']:,.0f} lb")
-        print(f"    Fuel available (MTOW) : {mp['fuel_available']:,.0f} lb")
-        margin = mp["fuel_available"] - mp["total_fuel"]
-        status = "OK" if margin >= 0 else "EXCEEDED"
-        print(f"    Margin                : {margin:+,.0f} lb  [{status}]")
-
-        # FAR 25 OEI climb gradients
-        print(f"\n  FAR 25 OEI Climb Gradients (2-engine):")
-        print(f"    {'Requirement':<24s} {'Gradient':>10s} {'Minimum':>10s} {'Status':>8s}")
-        print(f"    {'-'*24} {'-'*10} {'-'*10} {'-'*8}")
-        for label, key in [("2nd segment (TO flaps)", "2nd_segment"),
-                           ("En-route (clean)",       "en_route"),
-                           ("Approach climb (ldg)",   "approach_climb")]:
-            g = mp["oei"][key]
-            ok = "OK" if g["gradient_pct"] >= g["min_pct"] else "FAIL"
-            print(f"    {label:<24s} {g['gradient_pct']:9.1f}% {g['min_pct']:9.1f}% {ok:>8s}")
-
-        # Time to climb
-        print(f"\n  Time to climb (SL -> FL{ac.h_cruise_ft/100:.0f}): "
-              f"{mp['ttc_min']:.1f} min")
-        print()
-
-    # ---- Cross-variant MR&O comparison ----
-    if len(mission_results) >= 2:
-        subsection("MR&O Cross-Variant Summary")
-        header = f"  {'Requirement':<28s}"
-        for name in mission_results:
-            header += f"  {name:>12s}"
+        header = (f"  {'Surface':<18s} {'mu_r':>5s} {'mu_b':>5s}"
+                  f" {'TOFL':>8s} {'BFL':>8s}"
+                  f" {'LDR':>8s} {'LDR FAR':>8s} {'Wet FAR':>8s}")
         print(header)
-        print("  " + "-" * (28 + 14 * len(mission_results)))
+        print("  " + "-" * len(header.strip()))
 
-        rows = [
-            ("Design range (nm)",    lambda mp: f"{mp['design_range_nm']:,.0f}"),
-            ("Cruise range (nm)",    lambda mp: f"{mp['cruise_range_nm']:,.0f}"),
-            ("Cruise L/D",           lambda mp: f"{mp['cruise_LD']:.2f}"),
-            ("Total fuel req (lb)",  lambda mp: f"{mp['total_fuel']:,.0f}"),
-            ("Fuel available (lb)",  lambda mp: f"{mp['fuel_available']:,.0f}"),
-            ("Fuel margin (lb)",     lambda mp: f"{mp['fuel_available']-mp['total_fuel']:+,.0f}"),
-            ("Trip fuel (lb)",       lambda mp: f"{mp['trip_fuel']:,.0f}"),
-            ("Reserve fuel (lb)",    lambda mp: f"{mp['reserve_fuel']:,.0f}"),
-            ("W_final / W_TO",       lambda mp: f"{mp['wf_total']:.4f}"),
-            ("2nd seg gradient (%)", lambda mp: f"{mp['oei']['2nd_segment']['gradient_pct']:.1f}"),
-            ("En-route grad (%)",    lambda mp: f"{mp['oei']['en_route']['gradient_pct']:.1f}"),
-            ("Approach grad (%)",    lambda mp: f"{mp['oei']['approach_climb']['gradient_pct']:.1f}"),
-            ("Time to climb (min)",  lambda mp: f"{mp['ttc_min']:.1f}"),
-        ]
-        for label, fn in rows:
-            row = f"  {label:<28s}"
-            for name in mission_results:
-                row += f"  {fn(mission_results[name]):>12s}"
-            print(row)
+        for name, mu_r, mu_b in SURFACES:
+            # Takeoff: TOFL = max(TODR × 1.15, BFL)
+            to = total_takeoff_distance(
+                W=W, S=S, T=T_TO, CD0=CD0_TO,
+                CL_ground=ac.CL_ground, K=K, mu=mu_r,
+                rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+                h_obstacle=ac.h_obstacle_TO, t_rotate=3.0)
+
+            v1 = find_V1(
+                W=W, S=S, T=T_TO, CD0=CD0_TO,
+                CL_ground=ac.CL_ground, K=K,
+                mu_roll=mu_r, mu_brake=mu_b,
+                rho=rho, CL_max_TO=ac.CL_max_TO, TW=ac.thrust_to_weight,
+                h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+                T_idle=T_idle, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
+
+            tofl = max(to['TODR_factored'], v1['BFL'])
+
+            # Landing
+            la = total_landing_distance(
+                W=W_land, S=S, rho=rho, CL_max_L=ac.CL_max_L,
+                CD0=CD0 + 0.02, CL_ground=ac.CL_ground, K=K,
+                mu_brake=mu_b, h_obstacle=ac.h_obstacle_L,
+                T_idle=T_idle, T_reverse=0.0,
+                approach_factor=1.3, t_free=3.0, FAR_factor=True)
+
+            ldr = la['S_total_actual']
+            ldr_far = la['S_FAR_field']
+            # FAR 121.195(d): wet = dry FAR × 1.15
+            wet_far = ldr_far * 1.15 if "Dry" in name else ldr_far
+
+            wet_str = f"{wet_far:8,.0f}" if "Dry" in name else "       -"
+
+            print(f"  {name:<18s} {mu_r:5.2f} {mu_b:5.2f}"
+                  f" {tofl:8,.0f} {v1['BFL']:8,.0f}"
+                  f" {ldr:8,.0f} {ldr_far:8,.0f} {wet_str}")
+
+        print()
+        print("  TOFL = max(TODR × 1.15, BFL)  |  "
+              "LDR FAR = actual / 0.6  |  "
+              "Wet FAR = dry FAR × 1.15 (FAR 121.195d)")
+        print()
 
 
 # =====================================================================
@@ -599,9 +620,7 @@ if __name__ == "__main__":
             for ac in variants:
                 results[ac.name] = analyse(ac)
             run_comparison(results)
-            # MR&O table for families with design_range_nm set
-            if any(ac.design_range_nm > 0 for ac in variants):
-                run_mro_table(variants)
+            run_surface_performance(variants)
         finally:
             sys.stdout = old_stdout
 

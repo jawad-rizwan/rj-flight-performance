@@ -42,10 +42,6 @@ zrj70 = AircraftData(
     M_cruise=0.78,
     h_cruise_ft=35_000.0,   # ft
 
-    # ---- Mission ----
-    design_range_nm=1800.0,     # nm
-    alternate_range_nm=100.0,   # nm
-
     # ---- Structural limits ----
     n_max=2.5,
     V_NE_kts=340.0,         # KEAS (estimate for Mmo 0.85)

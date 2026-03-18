@@ -32,6 +32,9 @@
   V_stall TO   (SL): 97.4 kts
   V_stall land (SL): 78.3 kts  (at 85% MTOW)
 
+  V_max (SL)        : 776.7 kts  (Sec. 17.2.3)
+  V_max (cruise alt): 920.3 kts
+
 --- 17.2.5  RANGE (Jet) ---
   V best range      : 425.4 kts  (Eq. 17.25)
   CL best range     : 0.3367  (Eq. 17.26)
@@ -116,12 +119,26 @@
     TODR (FAR x1.15)      : 2,677 ft
 
   Balanced field / V1:
-    ASDR at V1            : 2,438 ft
+    ASDR at V1            : 2,439 ft
     AGDR at V1            : 2,437 ft
-    BFL (iterative)       : 2,438 ft
+    BFL (iterative)       : 2,439 ft
     BFL (Raymer Eq.17.113): 2,589 ft
 
   >> TOFL (FAR 25)        : 2,677 ft  = max(TODR×1.15, BFL)
+
+--- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
+    1st segment (LOF, TO flaps, gear dn, OEI)
+      Gradient: 17.7%  (required >= 0.0%)  @ 107 kts  [PASS]
+    2nd segment (V2, TO flaps, gear up, OEI)
+      Gradient: 19.6%  (required >= 2.4%)  @ 117 kts  [PASS]
+    4th segment (1.25Vs, clean, gear up, OEI)
+      Gradient: 22.3%  (required >= 1.2%)  @ 159 kts  [PASS]
+    Go-around approach (1.4Vs, app flaps, gear up, OEI)
+      Gradient: 24.8%  (required >= 2.1%)  @ 110 kts  [PASS]
+    Go-around landing (1.23Vs, ldg flaps, gear dn, AEO)
+      Gradient: 57.0%  (required >= 3.2%)  @ 96 kts  [PASS]
+
+  >> FAR 25 climb compliance: ALL PASS
 
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
@@ -155,8 +172,8 @@
   Corner speed (SL)           : 202 kts
   TODR (unfactored)           : 2,327 ft
   TODR (FAR x1.15)            : 2,677 ft
-  ASDR at V1                  : 2,438 ft
-  BFL (iterative)             : 2,438 ft
+  ASDR at V1                  : 2,439 ft
+  BFL (iterative)             : 2,439 ft
   BFL (Raymer Eq.17.113)      : 2,589 ft
   TOFL (FAR 25)               : 2,677 ft
   LDR (unfactored)            : 2,293 ft
@@ -196,6 +213,9 @@
   V_stall clean (SL): 146.7 kts
   V_stall TO   (SL): 112.0 kts
   V_stall land (SL): 90.0 kts  (at 85% MTOW)
+
+  V_max (SL)        : 775.9 kts  (Sec. 17.2.3)
+  V_max (cruise alt): 914.9 kts
 
 --- 17.2.5  RANGE (Jet) ---
   V best range      : 489.0 kts  (Eq. 17.25)
@@ -267,7 +287,7 @@
 
   V-speeds:
     V_stall (TO config)   : 112.0 kts
-    V1  (decision)        : 119.4 kts
+    V1  (decision)        : 119.3 kts
     VR  (rotation, 1.1 Vs): 123.2 kts
     V2  (safety, 1.2 Vs)  : 134.4 kts
 
@@ -281,12 +301,26 @@
     TODR (FAR x1.15)      : 3,944 ft
 
   Balanced field / V1:
-    ASDR at V1            : 3,695 ft
-    AGDR at V1            : 3,694 ft
+    ASDR at V1            : 3,694 ft
+    AGDR at V1            : 3,695 ft
     BFL (iterative)       : 3,695 ft
     BFL (Raymer Eq.17.113): 3,987 ft
 
   >> TOFL (FAR 25)        : 3,944 ft  = max(TODR×1.15, BFL)
+
+--- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
+    1st segment (LOF, TO flaps, gear dn, OEI)
+      Gradient: 10.5%  (required >= 0.0%)  @ 123 kts  [PASS]
+    2nd segment (V2, TO flaps, gear up, OEI)
+      Gradient: 12.4%  (required >= 2.4%)  @ 134 kts  [PASS]
+    4th segment (1.25Vs, clean, gear up, OEI)
+      Gradient: 15.2%  (required >= 1.2%)  @ 183 kts  [PASS]
+    Go-around approach (1.4Vs, app flaps, gear up, OEI)
+      Gradient: 16.3%  (required >= 2.1%)  @ 126 kts  [PASS]
+    Go-around landing (1.23Vs, ldg flaps, gear dn, AEO)
+      Gradient: 40.1%  (required >= 3.2%)  @ 111 kts  [PASS]
+
+  >> FAR 25 climb compliance: ALL PASS
 
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
@@ -301,7 +335,7 @@
     Free roll             : 524 ft
     Braking distance      : 1,007 ft
     LDR (unfactored)      : 2,626 ft
-    LDR (FAR x1.667)      : 4,378 ft
+    LDR (FAR x1.667)      : 4,377 ft
 
 ======================================================================
   ZRJ70  PERFORMANCE SUMMARY
@@ -320,12 +354,12 @@
   Corner speed (SL)           : 232 kts
   TODR (unfactored)           : 3,430 ft
   TODR (FAR x1.15)            : 3,944 ft
-  ASDR at V1                  : 3,695 ft
+  ASDR at V1                  : 3,694 ft
   BFL (iterative)             : 3,695 ft
   BFL (Raymer Eq.17.113)      : 3,987 ft
   TOFL (FAR 25)               : 3,944 ft
   LDR (unfactored)            : 2,626 ft
-  LDR (FAR x1.667)            : 4,378 ft
+  LDR (FAR x1.667)            : 4,377 ft
   Glide range from cruise     : 91 nmi
 
 
@@ -361,6 +395,9 @@
   V_stall clean (SL): 151.4 kts
   V_stall TO   (SL): 115.6 kts
   V_stall land (SL): 92.9 kts  (at 85% MTOW)
+
+  V_max (SL)        : 761.8 kts  (Sec. 17.2.3)
+  V_max (cruise alt): 896.5 kts
 
 --- 17.2.5  RANGE (Jet) ---
   V best range      : 500.3 kts  (Eq. 17.25)
@@ -446,12 +483,26 @@
     TODR (FAR x1.15)      : 4,341 ft
 
   Balanced field / V1:
-    ASDR at V1            : 4,115 ft
-    AGDR at V1            : 4,116 ft
-    BFL (iterative)       : 4,116 ft
+    ASDR at V1            : 4,117 ft
+    AGDR at V1            : 4,115 ft
+    BFL (iterative)       : 4,117 ft
     BFL (Raymer Eq.17.113): 4,434 ft
 
   >> TOFL (FAR 25)        : 4,341 ft  = max(TODR×1.15, BFL)
+
+--- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
+    1st segment (LOF, TO flaps, gear dn, OEI)
+      Gradient: 9.1%  (required >= 0.0%)  @ 127 kts  [PASS]
+    2nd segment (V2, TO flaps, gear up, OEI)
+      Gradient: 11.0%  (required >= 2.4%)  @ 139 kts  [PASS]
+    4th segment (1.25Vs, clean, gear up, OEI)
+      Gradient: 13.7%  (required >= 1.2%)  @ 189 kts  [PASS]
+    Go-around approach (1.4Vs, app flaps, gear up, OEI)
+      Gradient: 14.7%  (required >= 2.1%)  @ 130 kts  [PASS]
+    Go-around landing (1.23Vs, ldg flaps, gear dn, AEO)
+      Gradient: 36.8%  (required >= 3.2%)  @ 114 kts  [PASS]
+
+  >> FAR 25 climb compliance: ALL PASS
 
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
@@ -466,7 +517,7 @@
     Free roll             : 541 ft
     Braking distance      : 1,068 ft
     LDR (unfactored)      : 2,714 ft
-    LDR (FAR x1.667)      : 4,525 ft
+    LDR (FAR x1.667)      : 4,524 ft
 
 ======================================================================
   ZRJ100  PERFORMANCE SUMMARY
@@ -485,12 +536,12 @@
   Corner speed (SL)           : 239 kts
   TODR (unfactored)           : 3,775 ft
   TODR (FAR x1.15)            : 4,341 ft
-  ASDR at V1                  : 4,115 ft
-  BFL (iterative)             : 4,116 ft
+  ASDR at V1                  : 4,117 ft
+  BFL (iterative)             : 4,117 ft
   BFL (Raymer Eq.17.113)      : 4,434 ft
   TOFL (FAR 25)               : 4,341 ft
   LDR (unfactored)            : 2,714 ft
-  LDR (FAR x1.667)            : 4,525 ft
+  LDR (FAR x1.667)            : 4,524 ft
   Glide range from cruise     : 90 nmi
 
 
@@ -506,132 +557,55 @@
   Corner spd (kts)                       202           232           239
   TODR (ft)                            2,327         3,430         3,775
   TODR FAR (ft)                        2,677         3,944         4,341
-  ASDR at V1 (ft)                      2,438         3,695         4,115
-  BFL iterative (ft)                   2,438         3,695         4,116
+  ASDR at V1 (ft)                      2,439         3,694         4,117
+  BFL iterative (ft)                   2,439         3,695         4,117
   BFL Eq.17.113 (ft)                   2,589         3,987         4,434
   TOFL FAR 25 (ft)                     2,677         3,944         4,341
   LDR (ft)                             2,293         2,626         2,714
-  LDR FAR (ft)                         3,822         4,378         4,525
+  LDR FAR (ft)                         3,822         4,377         4,524
 
 ======================================================================
-  MR&O PERFORMANCE REQUIREMENTS  (Raymer Eq. 17.97 / Breguet)
+  AIRFIELD PERFORMANCE BY RUNWAY SURFACE  (Table 17.1)
 ======================================================================
 
---- ZRJ50 — Mission Segment Weight Fractions ---
-  Design range: 1800 nm  |  Alternate: 100 nm  |  MTOW: 65,000 lb
+--- ZRJ50 ---
+  Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
+  ---------------------------------------------------------------------------
+  Dry concrete        0.03  0.40    2,677    2,533    2,500    4,167    4,792
+  Wet concrete        0.05  0.23    2,917    2,917    3,363    5,604        -
+  Icy concrete        0.02  0.08    3,266    3,266    8,324   13,874        -
+  Hard turf           0.05  0.40    2,739    2,606    2,500    4,167        -
+  Firm dirt           0.04  0.30    2,709    2,709    2,858    4,764        -
+  Soft turf           0.07  0.20    3,114    3,114    3,627    6,045        -
+  Wet grass           0.08  0.20    3,186    3,186    3,627    6,045        -
 
-  #   Segment                    Method          W/W_i    W_start      W_end     Fuel
-  --- -------------------------- ------------ -------- ---------- ---------- --------
-  0. Warmup & Takeoff           Historical     0.9700     65,000     63,050    1,950
-  1. Climb to FL350             Eq. 17.97      0.9888     63,050     62,347      703
-  2. Cruise (1718 nm)           Breguet        0.8697     62,347     54,224    8,122
-  3. Contingency (10%)          Loiter         0.9912     54,224     53,744      480
-  4. Attempted landing          Historical     0.9950     53,744     53,476      269
-  5. Go-around climb            Eq. 17.97      0.9993     53,476     53,439       37
-  6. Divert (100 nm)            Breguet        0.9886     53,439     52,828      610
-  7. Hold (30 min)              Loiter         0.9884     52,828     52,218      611
-  8. Land                       Historical     0.9950     52,218     51,957      261
-                                               ------                         ------
-  Overall                                      0.7993                         13,043
-
-  Fuel Summary:
-    Trip fuel (seg 0-4)   : 11,524 lb
-    Reserve fuel (seg 5-8): 1,519 lb
-    Total fuel required   : 13,043 lb
-    Fuel available (MTOW) : 8,072 lb
-    Margin                : -4,971 lb  [EXCEEDED]
-
-  FAR 25 OEI Climb Gradients (2-engine):
-    Requirement                Gradient    Minimum   Status
-    ------------------------ ---------- ---------- --------
-    2nd segment (TO flaps)        19.6%       2.4%       OK
-    En-route (clean)              23.1%       1.2%       OK
-    Approach climb (ldg)          22.9%       2.1%       OK
-
-  Time to climb (SL -> FL350): 2.8 min
+  TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
 
---- ZRJ70 — Mission Segment Weight Fractions ---
-  Design range: 1800 nm  |  Alternate: 100 nm  |  MTOW: 85,888 lb
+--- ZRJ70 ---
+  Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
+  ---------------------------------------------------------------------------
+  Dry concrete        0.03  0.40    3,944    3,840    2,889    4,815    5,538
+  Wet concrete        0.05  0.23    4,557    4,557    3,957    6,595        -
+  Icy concrete        0.02  0.08    5,080    5,080    9,365   15,609        -
+  Hard turf           0.05  0.40    4,098    4,011    2,889    4,815        -
+  Firm dirt           0.04  0.30    4,149    4,149    3,338    5,563        -
+  Soft turf           0.07  0.20    4,957    4,957    4,276    7,127        -
+  Wet grass           0.08  0.20    5,128    5,128    4,276    7,127        -
 
-  #   Segment                    Method          W/W_i    W_start      W_end     Fuel
-  --- -------------------------- ------------ -------- ---------- ---------- --------
-  0. Warmup & Takeoff           Historical     0.9700     85,888     83,311    2,577
-  1. Climb to FL350             Eq. 17.97      0.9885     83,311     82,352      959
-  2. Cruise (1718 nm)           Breguet        0.8859     82,352     72,952    9,400
-  3. Contingency (10%)          Loiter         0.9912     72,952     72,306      646
-  4. Attempted landing          Historical     0.9950     72,306     71,944      362
-  5. Go-around climb            Eq. 17.97      0.9993     71,944     71,893       52
-  6. Divert (100 nm)            Breguet        0.9908     71,893     71,233      660
-  7. Hold (30 min)              Loiter         0.9884     71,233     70,409      824
-  8. Land                       Historical     0.9950     70,409     70,057      352
-                                               ------                         ------
-  Overall                                      0.8157                         15,831
-
-  Fuel Summary:
-    Trip fuel (seg 0-4)   : 13,944 lb
-    Reserve fuel (seg 5-8): 1,887 lb
-    Total fuel required   : 15,831 lb
-    Fuel available (MTOW) : 21,258 lb
-    Margin                : +5,427 lb  [OK]
-
-  FAR 25 OEI Climb Gradients (2-engine):
-    Requirement                Gradient    Minimum   Status
-    ------------------------ ---------- ---------- --------
-    2nd segment (TO flaps)        12.4%       2.4%       OK
-    En-route (clean)              15.9%       1.2%       OK
-    Approach climb (ldg)          14.4%       2.1%       OK
-
-  Time to climb (SL -> FL350): 3.8 min
+  TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
 
---- ZRJ100 — Mission Segment Weight Fractions ---
-  Design range: 1200 nm  |  Alternate: 100 nm  |  MTOW: 91,492 lb
+--- ZRJ100 ---
+  Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
+  ---------------------------------------------------------------------------
+  Dry concrete        0.03  0.40    4,341    4,278    2,992    4,986    5,734
+  Wet concrete        0.05  0.23    5,074    5,074    4,114    6,856        -
+  Icy concrete        0.02  0.08    5,689    5,689    9,664   16,107        -
+  Hard turf           0.05  0.40    4,532    4,483    2,992    4,986        -
+  Firm dirt           0.04  0.30    4,632    4,632    3,464    5,773        -
+  Soft turf           0.07  0.20    5,585    5,585    4,447    7,412        -
+  Wet grass           0.08  0.20    5,792    5,792    4,447    7,412        -
 
-  #   Segment                    Method          W/W_i    W_start      W_end     Fuel
-  --- -------------------------- ------------ -------- ---------- ---------- --------
-  0. Warmup & Takeoff           Historical     0.9700     91,492     88,747    2,745
-  1. Climb to FL350             Eq. 17.97      0.9883     88,747     87,706    1,041
-  2. Cruise (1118 nm)           Breguet        0.9241     87,706     81,049    6,657
-  3. Contingency (10%)          Loiter         0.9941     81,049     80,573      476
-  4. Attempted landing          Historical     0.9950     80,573     80,170      403
-  5. Go-around climb            Eq. 17.97      0.9993     80,170     80,112       59
-  6. Divert (100 nm)            Breguet        0.9912     80,112     79,405      707
-  7. Hold (30 min)              Loiter         0.9882     79,405     78,470      934
-  8. Land                       Historical     0.9950     78,470     78,078      392
-                                               ------                         ------
-  Overall                                      0.8534                         13,414
+  TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
-  Fuel Summary:
-    Trip fuel (seg 0-4)   : 11,322 lb
-    Reserve fuel (seg 5-8): 2,092 lb
-    Total fuel required   : 13,414 lb
-    Fuel available (MTOW) : 18,786 lb
-    Margin                : +5,372 lb  [OK]
-
-  FAR 25 OEI Climb Gradients (2-engine):
-    Requirement                Gradient    Minimum   Status
-    ------------------------ ---------- ---------- --------
-    2nd segment (TO flaps)        11.0%       2.4%       OK
-    En-route (clean)              14.5%       1.2%       OK
-    Approach climb (ldg)          12.8%       2.1%       OK
-
-  Time to climb (SL -> FL350): 4.2 min
-
-
---- MR&O Cross-Variant Summary ---
-  Requirement                          ZRJ50         ZRJ70        ZRJ100
-  ----------------------------------------------------------------------
-  Design range (nm)                    1,800         1,800         1,200
-  Cruise range (nm)                    1,718         1,718         1,118
-  Cruise L/D                           12.60         14.50         14.49
-  Total fuel req (lb)                 13,043        15,831        13,414
-  Fuel available (lb)                  8,072        21,258        18,786
-  Fuel margin (lb)                    -4,971        +5,427        +5,372
-  Trip fuel (lb)                      11,524        13,944        11,322
-  Reserve fuel (lb)                    1,519         1,887         2,092
-  W_final / W_TO                      0.7993        0.8157        0.8534
-  2nd seg gradient (%)                  19.6          12.4          11.0
-  En-route grad (%)                     23.1          15.9          14.5
-  Approach grad (%)                     22.9          14.4          12.8
-  Time to climb (min)                    2.8           3.8           4.2

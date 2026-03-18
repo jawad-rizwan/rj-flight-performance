@@ -314,7 +314,7 @@ def find_V1(W, S, T, CD0, CL_ground, K, mu_roll, mu_brake, rho,
     V_s = V_stall(W, S, rho, CL_max_TO)
     V_R = 1.1 * V_s
 
-    V_lo = 0.7 * V_s   # approximate lower bound
+    V_lo = 0.5 * V_s   # match asdr_todr_curves lower bound
     V_hi = V_R
 
     # Bisection: find V where ASDR = AGDR

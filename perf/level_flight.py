@@ -179,3 +179,30 @@ def V_stall(W, S, rho, CL_max):
     From Eq. (17.10) with CL = CL_max.
     """
     return V_level(W, S, rho, CL_max)
+
+
+def V_max(W, S, rho, CD0, K, T_avail):
+    """Maximum level-flight speed [ft/s].
+
+    Raymer Sec. 17.2.3: the highest velocity where T_avail >= T_req.
+    Solves  T = qS*CD0 + K*W^2/(qS)  for V via the quartic in V^2.
+
+    Parameters
+    ----------
+    T_avail : float, thrust available at flight condition [lb]
+
+    Returns
+    -------
+    V_max : float [ft/s], or NaN if no solution (thrust insufficient)
+    """
+    # T = (rho/2)*V^2*S*CD0 + K*W^2 / ((rho/2)*V^2*S)
+    # Let x = q = 0.5*rho*V^2:  T = x*S*CD0 + K*W^2/(x*S)
+    # x^2*(S*CD0) - x*T + K*W^2/S = 0
+    a_coeff = S * CD0
+    b_coeff = -T_avail
+    c_coeff = K * W**2 / S
+    disc = b_coeff**2 - 4.0 * a_coeff * c_coeff
+    if disc < 0:
+        return float('nan')
+    q_max = (-b_coeff + np.sqrt(disc)) / (2.0 * a_coeff)  # larger root = higher V
+    return np.sqrt(2.0 * q_max / rho)

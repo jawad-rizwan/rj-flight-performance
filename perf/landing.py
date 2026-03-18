@@ -190,8 +190,8 @@ def total_landing_distance(W, S, rho, CL_max_L, CD0, CL_ground, K,
 
     S_total = S_a + S_f + S_free + S_B
 
-    # FAR field length = 1.667 * (approach + flare + ground roll)
-    S_FAR = 1.667 * S_total if FAR_factor else S_total
+    # FAR field length = actual / 0.6  (FAR 25.125)
+    S_FAR = S_total / 0.6 if FAR_factor else S_total
 
     return {
         "V_stall": flare["V_stall"],
