@@ -104,6 +104,7 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | Maximum cruise altitude, ft | >65,000 | 61,000 | 59,000 |
 | | Max cruise range | 4,479 nm | 4,860 nm | 4,604 nm |
 | | Range, Full PAX, LRC | 1,531 nm | 3,722 nm | 3,009 nm |
+| | Operational range, Full PAX (mission analysis) | 489 nm | 1,800 nm | 1,549 nm |
 | | Single engine climb | 23.1% | 15.9% | 14.5% |
 | **Weight & Payload** | Max. payload, lbs | 11,350 | 18,055 | 23,380 |
 | | Passengers (<100 PAX market segment) | 50 | 76 | 100 |
