@@ -91,29 +91,60 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   LDR FAR (ft)                         3,822         4,378         4,525
 ```
 
-### MR&O Mission Profile (Eq. 17.97 / Breguet)
+### Mission-Segment Weight Fractions (Eq. 17.97 / Breguet)
 
-9-segment FAR 121.645 mission with energy-method climb (Eq. 17.97), Breguet cruise, and loiter reserves:
+9-segment FAR 121.645 mission profile. Climb uses the energy method (Eq. 17.97), cruise/divert use Breguet (Eq. 17.23), loiter uses jet endurance (Eq. 17.30).
 
-```
-  Requirement                          ZRJ50         ZRJ70        ZRJ100
-  ----------------------------------------------------------------------
-  Design range (nm)                    1,800         1,800         1,200
-  Cruise range (nm)                    1,718         1,718         1,118
-  Cruise L/D                           12.60         14.50         14.49
-  Total fuel req (lb)                 13,043        15,831        13,414
-  Fuel available (lb)                  8,072        21,258        18,786
-  Fuel margin (lb)                    -4,971        +5,427        +5,372
-  Trip fuel (lb)                      11,524        13,944        11,322
-  Reserve fuel (lb)                    1,519         1,887         2,092
-  W_final / W_TO                      0.7993        0.8157        0.8534
-  2nd seg gradient (%)                  19.6          12.4          11.0
-  En-route grad (%)                     23.1          15.9          14.5
-  Approach grad (%)                     22.9          14.4          12.8
-  Time to climb (min)                    2.8           3.8           4.2
-```
+**ZRJ50** — 1,800 nm design range, 65,000 lb MTOW
 
-ZRJ50 exceeds available fuel at 1,800 nm design range (scope-clause MTOW cap limits fuel to 8,072 lb at max payload). ZRJ70 and ZRJ100 close with comfortable margins. All variants pass FAR 25 OEI climb gradient minimums (2.4% 2nd segment, 1.2% en-route, 2.1% approach).
+| Segment | Method | W_i/W_{i-1} | Fuel (lb) |
+|---------|--------|:-----------:|----------:|
+| 0. Warmup & Takeoff | Historical | 0.9700 | 1,950 |
+| 1. Climb to FL350 | Eq. 17.97 | 0.9888 | 703 |
+| 2. Cruise (1,718 nm) | Breguet | 0.8697 | 8,122 |
+| 3. Contingency (10%) | Loiter | 0.9912 | 480 |
+| 4. Attempted landing | Historical | 0.9950 | 269 |
+| 5. Go-around climb | Eq. 17.97 | 0.9993 | 37 |
+| 6. Divert (100 nm) | Breguet | 0.9886 | 610 |
+| 7. Hold (30 min) | Loiter | 0.9884 | 611 |
+| 8. Land | Historical | 0.9950 | 261 |
+| **Overall** | | **0.7993** | **13,043** |
+
+Fuel available: 8,072 lb | Margin: **-4,971 lb (EXCEEDED)**
+
+**ZRJ70** — 1,800 nm design range, 85,888 lb MTOW
+
+| Segment | Method | W_i/W_{i-1} | Fuel (lb) |
+|---------|--------|:-----------:|----------:|
+| 0. Warmup & Takeoff | Historical | 0.9700 | 2,577 |
+| 1. Climb to FL350 | Eq. 17.97 | 0.9885 | 959 |
+| 2. Cruise (1,718 nm) | Breguet | 0.8859 | 9,400 |
+| 3. Contingency (10%) | Loiter | 0.9912 | 646 |
+| 4. Attempted landing | Historical | 0.9950 | 362 |
+| 5. Go-around climb | Eq. 17.97 | 0.9993 | 52 |
+| 6. Divert (100 nm) | Breguet | 0.9908 | 660 |
+| 7. Hold (30 min) | Loiter | 0.9884 | 824 |
+| 8. Land | Historical | 0.9950 | 352 |
+| **Overall** | | **0.8157** | **15,831** |
+
+Fuel available: 21,258 lb | Margin: **+5,427 lb (OK)**
+
+**ZRJ100** — 1,200 nm design range, 91,492 lb MTOW
+
+| Segment | Method | W_i/W_{i-1} | Fuel (lb) |
+|---------|--------|:-----------:|----------:|
+| 0. Warmup & Takeoff | Historical | 0.9700 | 2,745 |
+| 1. Climb to FL350 | Eq. 17.97 | 0.9883 | 1,041 |
+| 2. Cruise (1,118 nm) | Breguet | 0.9241 | 6,657 |
+| 3. Contingency (10%) | Loiter | 0.9941 | 476 |
+| 4. Attempted landing | Historical | 0.9950 | 403 |
+| 5. Go-around climb | Eq. 17.97 | 0.9993 | 59 |
+| 6. Divert (100 nm) | Breguet | 0.9912 | 707 |
+| 7. Hold (30 min) | Loiter | 0.9882 | 934 |
+| 8. Land | Historical | 0.9950 | 392 |
+| **Overall** | | **0.8534** | **13,414** |
+
+Fuel available: 18,786 lb | Margin: **+5,372 lb (OK)**
 
 ---
 
