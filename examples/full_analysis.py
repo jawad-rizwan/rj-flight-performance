@@ -37,6 +37,8 @@ from perf import (
     total_takeoff_distance, balanced_field_length, find_V1,
     # landing
     total_landing_distance,
+    # mission
+    mission_profile,
 )
 
 # =====================================================================
@@ -480,6 +482,93 @@ def run_comparison(results):
 
 
 # =====================================================================
+def run_mro_table(variants):
+    """MR&O performance requirements table with mission segment weight fractions."""
+    separator("MR&O PERFORMANCE REQUIREMENTS  (Raymer Eq. 17.97 / Breguet)")
+
+    mission_results = {}
+    for ac in variants:
+        if ac.design_range_nm == 0:
+            continue
+        mp = mission_profile(ac)
+        mission_results[ac.name] = mp
+
+        subsection(f"{ac.name} — Mission Segment Weight Fractions")
+        print(f"  Design range: {ac.design_range_nm:.0f} nm  |  "
+              f"Alternate: {ac.alternate_range_nm:.0f} nm  |  "
+              f"MTOW: {ac.W_TO:,.0f} lb")
+        print()
+        print(f"  {'#':<3s} {'Segment':<26s} {'Method':<12s} "
+              f"{'W/W_i':>8s} {'W_start':>10s} {'W_end':>10s} {'Fuel':>8s}")
+        print(f"  {'-'*3} {'-'*26} {'-'*12} {'-'*8} {'-'*10} {'-'*10} {'-'*8}")
+
+        for seg in mp["segments"]:
+            print(f"  {seg['name']:<29s} {seg['method']:<12s} "
+                  f"{seg['wf']:8.4f} {seg['W_start']:10,.0f} "
+                  f"{seg['W_end']:10,.0f} {seg['fuel']:8,.0f}")
+
+        print(f"  {'':29s} {'':12s} {'------':>8s} {'':10s} {'':10s} {'------':>8s}")
+        print(f"  {'Overall':29s} {'':12s} {mp['wf_total']:8.4f} "
+              f"{'':10s} {'':10s} {mp['total_fuel']:8,.0f}")
+
+        # Fuel summary
+        print(f"\n  Fuel Summary:")
+        print(f"    Trip fuel (seg 0-4)   : {mp['trip_fuel']:,.0f} lb")
+        print(f"    Reserve fuel (seg 5-8): {mp['reserve_fuel']:,.0f} lb")
+        print(f"    Total fuel required   : {mp['total_fuel']:,.0f} lb")
+        print(f"    Fuel available (MTOW) : {mp['fuel_available']:,.0f} lb")
+        margin = mp["fuel_available"] - mp["total_fuel"]
+        status = "OK" if margin >= 0 else "EXCEEDED"
+        print(f"    Margin                : {margin:+,.0f} lb  [{status}]")
+
+        # FAR 25 OEI climb gradients
+        print(f"\n  FAR 25 OEI Climb Gradients (2-engine):")
+        print(f"    {'Requirement':<24s} {'Gradient':>10s} {'Minimum':>10s} {'Status':>8s}")
+        print(f"    {'-'*24} {'-'*10} {'-'*10} {'-'*8}")
+        for label, key in [("2nd segment (TO flaps)", "2nd_segment"),
+                           ("En-route (clean)",       "en_route"),
+                           ("Approach climb (ldg)",   "approach_climb")]:
+            g = mp["oei"][key]
+            ok = "OK" if g["gradient_pct"] >= g["min_pct"] else "FAIL"
+            print(f"    {label:<24s} {g['gradient_pct']:9.1f}% {g['min_pct']:9.1f}% {ok:>8s}")
+
+        # Time to climb
+        print(f"\n  Time to climb (SL -> FL{ac.h_cruise_ft/100:.0f}): "
+              f"{mp['ttc_min']:.1f} min")
+        print()
+
+    # ---- Cross-variant MR&O comparison ----
+    if len(mission_results) >= 2:
+        subsection("MR&O Cross-Variant Summary")
+        header = f"  {'Requirement':<28s}"
+        for name in mission_results:
+            header += f"  {name:>12s}"
+        print(header)
+        print("  " + "-" * (28 + 14 * len(mission_results)))
+
+        rows = [
+            ("Design range (nm)",    lambda mp: f"{mp['design_range_nm']:,.0f}"),
+            ("Cruise range (nm)",    lambda mp: f"{mp['cruise_range_nm']:,.0f}"),
+            ("Cruise L/D",           lambda mp: f"{mp['cruise_LD']:.2f}"),
+            ("Total fuel req (lb)",  lambda mp: f"{mp['total_fuel']:,.0f}"),
+            ("Fuel available (lb)",  lambda mp: f"{mp['fuel_available']:,.0f}"),
+            ("Fuel margin (lb)",     lambda mp: f"{mp['fuel_available']-mp['total_fuel']:+,.0f}"),
+            ("Trip fuel (lb)",       lambda mp: f"{mp['trip_fuel']:,.0f}"),
+            ("Reserve fuel (lb)",    lambda mp: f"{mp['reserve_fuel']:,.0f}"),
+            ("W_final / W_TO",       lambda mp: f"{mp['wf_total']:.4f}"),
+            ("2nd seg gradient (%)", lambda mp: f"{mp['oei']['2nd_segment']['gradient_pct']:.1f}"),
+            ("En-route grad (%)",    lambda mp: f"{mp['oei']['en_route']['gradient_pct']:.1f}"),
+            ("Approach grad (%)",    lambda mp: f"{mp['oei']['approach_climb']['gradient_pct']:.1f}"),
+            ("Time to climb (min)",  lambda mp: f"{mp['ttc_min']:.1f}"),
+        ]
+        for label, fn in rows:
+            row = f"  {label:<28s}"
+            for name in mission_results:
+                row += f"  {fn(mission_results[name]):>12s}"
+            print(row)
+
+
+# =====================================================================
 if __name__ == "__main__":
     OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "output")
 
@@ -510,6 +599,9 @@ if __name__ == "__main__":
             for ac in variants:
                 results[ac.name] = analyse(ac)
             run_comparison(results)
+            # MR&O table for families with design_range_nm set
+            if any(ac.design_range_nm > 0 for ac in variants):
+                run_mro_table(variants)
         finally:
             sys.stdout = old_stdout
 

@@ -37,6 +37,7 @@ from perf import (
     Ps_expanded, specific_energy,
     V_best_glide, min_sink_rate, sink_rate,
     asdr_todr_curves, find_V1,
+    mission_profile,
 )
 
 FAMILIES = {
@@ -546,6 +547,102 @@ def plot_glide_polar():
 
 
 # =====================================================================
+# 11. Mission Profile (Weight vs Segment)
+# =====================================================================
+def plot_mission_profile():
+    # Only plot for variants with design_range_nm set
+    variants_with_range = [ac for ac in VARIANTS if ac.design_range_nm > 0]
+    if not variants_with_range:
+        return
+
+    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+    # Left: weight through mission
+    ax = axes[0]
+    for ac in variants_with_range:
+        mp = mission_profile(ac)
+        segs = mp["segments"]
+        names = [s["name"].split(". ", 1)[-1] for s in segs]
+        W_trace = [s["W_start"] for s in segs] + [segs[-1]["W_end"]]
+        x = np.arange(len(W_trace))
+        labels = ["Start"] + names
+
+        ax.step(x, np.array(W_trace) / 1000, where="post",
+                color=COLORS[ac.name], lw=2, label=ac.name)
+        # Mark trip fuel boundary (after segment 4)
+        ax.axvline(5, color='gray', ls=':', alpha=0.4)
+
+    ax.set_xticks(np.arange(len(labels)))
+    ax.set_xticklabels(labels, rotation=45, ha="right", fontsize=7)
+    ax.set_ylabel("Weight [1000 lb]")
+    ax.set_title("Mission Profile — Weight vs Segment")
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+    ax.annotate("trip fuel | reserves", xy=(5, ax.get_ylim()[0]),
+                fontsize=7, color='gray', ha='center', va='bottom')
+
+    # Right: fuel per segment (stacked bar)
+    ax = axes[1]
+    seg_names = [s["name"].split(". ", 1)[-1]
+                 for s in mission_profile(variants_with_range[0])["segments"]]
+    x = np.arange(len(seg_names))
+    width = 0.8 / len(variants_with_range)
+
+    for i, ac in enumerate(variants_with_range):
+        mp = mission_profile(ac)
+        fuels = [s["fuel"] for s in mp["segments"]]
+        ax.bar(x + i * width, fuels, width, color=COLORS[ac.name], label=ac.name)
+
+    ax.set_xticks(x + width * (len(variants_with_range) - 1) / 2)
+    ax.set_xticklabels(seg_names, rotation=45, ha="right", fontsize=7)
+    ax.set_ylabel("Fuel Burned [lb]")
+    ax.set_title("Fuel Burn per Mission Segment")
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3, axis='y')
+
+    fig.tight_layout()
+    save(fig, "11_mission_profile.png")
+
+
+# =====================================================================
+# 12. FAR 25 OEI Climb Gradients
+# =====================================================================
+def plot_oei_gradients():
+    variants_with_range = [ac for ac in VARIANTS if ac.design_range_nm > 0]
+    if not variants_with_range:
+        return
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+
+    categories = ["2nd segment\n(TO flaps)", "En-route\n(clean)", "Approach\n(landing)"]
+    keys = ["2nd_segment", "en_route", "approach_climb"]
+    minimums = [2.4, 1.2, 2.1]
+    x = np.arange(len(categories))
+    width = 0.8 / len(variants_with_range)
+
+    for i, ac in enumerate(variants_with_range):
+        mp = mission_profile(ac)
+        vals = [mp["oei"][k]["gradient_pct"] for k in keys]
+        ax.bar(x + i * width, vals, width, color=COLORS[ac.name], label=ac.name)
+
+    # Minimum lines
+    for j, (cat_x, mn) in enumerate(zip(x, minimums)):
+        ax.plot([cat_x - 0.1, cat_x + width * len(variants_with_range) + 0.1],
+                [mn, mn], 'r--', lw=1.5, alpha=0.7)
+        ax.annotate(f"min {mn}%", (cat_x + width * len(variants_with_range), mn),
+                    fontsize=8, color='red', va='bottom')
+
+    ax.set_xticks(x + width * (len(variants_with_range) - 1) / 2)
+    ax.set_xticklabels(categories)
+    ax.set_ylabel("Climb Gradient [%]")
+    ax.set_title("FAR 25 OEI Climb Gradients  (2-engine)")
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3, axis='y')
+    fig.tight_layout()
+    save(fig, "12_oei_gradients.png")
+
+
+# =====================================================================
 ALL_PLOTS = [
     plot_thrust_vs_velocity,
     plot_power_vs_velocity,
@@ -557,6 +654,8 @@ ALL_PLOTS = [
     plot_TO_landing_bars,
     plot_asdr_todr,
     plot_glide_polar,
+    plot_mission_profile,
+    plot_oei_gradients,
 ]
 
 if __name__ == "__main__":
