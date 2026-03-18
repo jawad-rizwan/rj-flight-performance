@@ -321,6 +321,13 @@ def analyse(ac):
             abs_ceil = h_test
             break
 
+    # Cap at pressurization limit if set
+    if ac.h_max_ft > 0:
+        if svc_ceil is None or svc_ceil > ac.h_max_ft:
+            svc_ceil = ac.h_max_ft
+        if abs_ceil is None or abs_ceil > ac.h_max_ft:
+            abs_ceil = ac.h_max_ft
+
     if svc_ceil:
         print(f"  Service ceiling (~500 fpm): {svc_ceil:,.0f} ft")
     else:
@@ -329,6 +336,8 @@ def analyse(ac):
         print(f"  Absolute ceiling (~0 fpm) : {abs_ceil:,.0f} ft")
     else:
         print(f"  Absolute ceiling          : > 60,000 ft")
+    if ac.h_max_ft > 0:
+        print(f"  Pressurization limit      : {ac.h_max_ft:,.0f} ft")
 
     # =================================================================
     # 17.8  TAKEOFF

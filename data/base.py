@@ -79,6 +79,7 @@ class AircraftData:
     n_max: float = 2.5         # max positive load factor (transport)
     V_NE_kts: float = 0.0      # never-exceed speed [KEAS]
     M_mo: float = 0.0          # max operating Mach number
+    h_max_ft: float = 0.0      # max pressurization altitude [ft] (0 = no limit)
 
     # ---- Derived helpers ----
     @property
