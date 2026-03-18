@@ -68,8 +68,8 @@ Three variants of a high-wing regional jet with PW1200G geared turbofan engines:
 | Variant | Seats | MTOW (lb) | OEW (lb) | Wing Area (ft²) | T/W | Cruise Mach |
 |---------|-------|-----------|----------|-----------------|-----|-------------|
 | ZRJ50   | 50    | 65,000    | 45,578   | 1,016.6          | 0.590 | 0.78        |
-| ZRJ70   | 76    | 85,888    | 46,575   | 1,016.6          | 0.447 | 0.78        |
-| ZRJ100  | 100   | 91,492    | 49,326   | 1,016.6          | 0.419 | 0.78        |
+| ZRJ70   | 76    | 86,000    | 45,775   | 1,016.6          | 0.446 | 0.78        |
+| ZRJ100  | 96    | 92,979    | 48,341   | 1,016.6          | 0.413 | 0.78        |
 
 All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 38,380 lb total thrust, BPR 9.0). The ZRJ50 uses the same airframe as the ZRJ70 but is MTOW-capped at 65,000 lb per scope clause.
 
@@ -79,18 +79,18 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   Metric                               ZRJ50         ZRJ70        ZRJ100
   ----------------------------------------------------------------------
   (L/D)_max                            15.82         15.82         15.54
-  Cruise L/D                           12.91         14.74         14.71
-  Range (nmi)                          1,495         3,630         2,937
-  Best ROC (fpm)                      17,672        13,245        12,164
-  Corner spd (kts)                       202           232           239
-  TODR (ft)                            2,327         3,430         3,775
-  TODR FAR (ft)                        2,677         3,944         4,341
-  ASDR at V1 (ft)                      2,438         3,695         4,115
-  BFL iterative (ft)                   2,438         3,695         4,116
-  BFL Eq.17.113 (ft)                   2,589         3,987         4,434
-  TOFL FAR 25 (ft)                     2,677         3,944         4,341
-  LDR (ft)                             2,293         2,626         2,714
-  LDR FAR (ft)                         3,822         4,377         4,524
+  Cruise L/D                           12.91         14.75         14.78
+  Range (nmi)                          1,376         3,500         3,062
+  Best ROC (fpm)                      17,672        13,227        11,959
+  Corner spd (kts)                       202           232           241
+  TODR (ft)                            2,327         3,436         3,870
+  TODR FAR (ft)                        2,677         3,952         4,451
+  ASDR at V1 (ft)                      2,439         3,699         4,235
+  BFL iterative (ft)                   2,439         3,705         4,235
+  BFL Eq.17.113 (ft)                   2,589         3,995         4,557
+  TOFL FAR 25 (ft)                     2,677         3,952         4,451
+  LDR (ft)                             2,293         2,628         2,737
+  LDR FAR (ft)                         3,822         4,380         4,562
 ```
 
 ### MR&O Performance Attributes
@@ -104,18 +104,17 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | Operational range, Full PAX (mission analysis) | 489 nm | 1,800 nm | 1,549 nm |
 | | Normal cruise (Optimized Mach) | M 0.78 | M 0.78 | M 0.78 |
 | | Maximum cruise (Optimized Mach) | M 0.85 | M 0.85 | M 0.85 |
-| | Takeoff BFL, ft | 2,438 | 3,695 | 4,116 |
+| | Takeoff BFL, ft | 2,439 | 3,705 | 4,235 |
 | | Initial cruise altitude, ft | 35,000 | 35,000 | 35,000 |
-| | Maximum cruise altitude, ft | >65,000 | 61,000 | 59,000 |
-| | Single engine climb | 23.1% | 15.9% | 14.5% |
+| | Maximum cruise altitude, ft | >65,000 | 61,000 | 58,500 |
+| | Single engine climb | 19.6% | 12.4% | 10.7% |
 | **Weight & Payload** | Max. payload, lbs | 11,350 | 18,055 | 23,380 |
-| | Passengers (<100 PAX market segment) | 50 | 76 | 100 |
-| | Max. landing weight (~90% MTOW) | 58,500 | 77,299 | 82,343 |
-| **Airfield Performance** | TOFL, ISA, SL (MTOW) | 2,677 ft | 3,944 ft | 4,341 ft |
-| | TOFL, ISA, +20C (MTOW) | 2,952 ft | 4,417 ft | 4,880 ft |
-| | LD, ISA, SL (MLW) | 3,925 ft | 4,511 ft | 4,665 ft |
+| | Passengers (<100 PAX market segment) | 50 | 76 | 96 |
+| | Max. landing weight (~85% MTOW) | 55,250 | 73,100 | 79,032 |
+| **Airfield Performance** | TOFL, ISA, SL (MTOW) | 2,677 ft | 3,952 ft | 4,451 ft |
+| | LD, ISA, SL (MLW) | 3,822 ft | 4,380 ft | 4,562 ft |
 | | Steep approach capability (MLW) | Yes | Yes | Yes |
-| | Rate of climb [SL, AEO / OEI] | 17,672 / 3,884 fpm | 13,245 / 3,078 fpm | 12,164 / 2,884 fpm |
+| | Rate of climb [SL, AEO / OEI] | 17,672 / 6,006 fpm | 13,227 / 4,358 fpm | 11,959 / 3,879 fpm |
 | | Glideslope | 3.0 deg | 3.0 deg | 3.0 deg |
 
 ---

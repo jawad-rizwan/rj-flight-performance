@@ -36,7 +36,7 @@ zrj50 = AircraftData(
     # ---- Propulsion (2x PW1200G) ----
     n_engines=2,
     T_max_SL=38_380.0,      # lb total (2 x 19,190 lb)
-    TSFC=0.46,              # 1/hr (cruise, refined GTF estimate)
+    TSFC=0.50,              # 1/hr (cruise, refined GTF estimate)
     BPR=9.0,
 
     # ---- Design cruise ----

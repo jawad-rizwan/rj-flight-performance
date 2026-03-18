@@ -1,5 +1,5 @@
 """
-ZRJ100 — 100-seat high-wing regional jet (EU variant).
+ZRJ100 — 96-seat high-wing regional jet (EU variant).
 
 Geometry and weights from rj-basic-aerodynamics and rj-mission-analysis.
 Aero coefficients synced via sync_aero.py from rj-basic-aerodynamics.
@@ -11,10 +11,10 @@ zrj100 = AircraftData(
     name="ZRJ100",
 
     # ---- Weights ----
-    W_TO=91_492.0,          # lb, MTOW
-    W_empty=49_326.0,       # lb, OEW (We 48538 + crew 788)
-    W_fuel_max=18_786.0,    # lb, fuel at max payload
-    W_payload=23_380.0,     # lb, 100 pax + cargo
+    W_TO=92_979.0,          # lb, MTOW
+    W_empty=48_341.0,       # lb, OEW (We 48538 + crew 788)
+    W_fuel_max=21_258.0,    # lb, fuel at max payload
+    W_payload=23_380.0,     # lb, 96 pax + cargo
 
     # ---- Wing geometry ----
     S=1016.58,              # ft^2, reference area (trapezoidal)
@@ -35,7 +35,7 @@ zrj100 = AircraftData(
     # ---- Propulsion (2x PW1200G) ----
     n_engines=2,
     T_max_SL=38_380.0,      # lb total (2 x 19,190 lb)
-    TSFC=0.46,              # 1/hr (cruise, refined GTF estimate)
+    TSFC=0.50,              # 1/hr (cruise, refined GTF estimate)
     BPR=9.0,
 
     # ---- Design cruise ----

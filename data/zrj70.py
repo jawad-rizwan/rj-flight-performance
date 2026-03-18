@@ -11,9 +11,9 @@ zrj70 = AircraftData(
     name="ZRJ70",
 
     # ---- Weights ----
-    W_TO=85_888.0,          # lb, MTOW
-    W_empty=46_575.0,       # lb, OEW (We 45787 + crew 788)
-    W_fuel_max=21_258.0,    # lb, fuel at max payload
+    W_TO=86_000.0,          # lb, MTOW
+    W_empty=45_775.0,       # lb, OEW (We 45787 + crew 788)
+    W_fuel_max=22_170.0,    # lb, fuel at max payload
     W_payload=18_055.0,     # lb, 76 pax + cargo
 
     # ---- Wing geometry ----
@@ -35,7 +35,7 @@ zrj70 = AircraftData(
     # ---- Propulsion (2x PW1200G) ----
     n_engines=2,
     T_max_SL=38_380.0,      # lb total (2 x 19,190 lb)
-    TSFC=0.46,              # 1/hr (cruise, refined GTF estimate)
+    TSFC=0.50,              # 1/hr (cruise, refined GTF estimate)
     BPR=9.0,
 
     # ---- Design cruise ----
