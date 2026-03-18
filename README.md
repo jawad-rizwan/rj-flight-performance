@@ -91,6 +91,30 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   LDR FAR (ft)                         3,822         4,378         4,525
 ```
 
+### MR&O Mission Profile (Eq. 17.97 / Breguet)
+
+9-segment FAR 121.645 mission with energy-method climb (Eq. 17.97), Breguet cruise, and loiter reserves:
+
+```
+  Requirement                          ZRJ50         ZRJ70        ZRJ100
+  ----------------------------------------------------------------------
+  Design range (nm)                    1,800         1,800         1,200
+  Cruise range (nm)                    1,718         1,718         1,118
+  Cruise L/D                           12.60         14.50         14.49
+  Total fuel req (lb)                 13,043        15,831        13,414
+  Fuel available (lb)                  8,072        21,258        18,786
+  Fuel margin (lb)                    -4,971        +5,427        +5,372
+  Trip fuel (lb)                      11,524        13,944        11,322
+  Reserve fuel (lb)                    1,519         1,887         2,092
+  W_final / W_TO                      0.7993        0.8157        0.8534
+  2nd seg gradient (%)                  19.6          12.4          11.0
+  En-route grad (%)                     23.1          15.9          14.5
+  Approach grad (%)                     22.9          14.4          12.8
+  Time to climb (min)                    2.8           3.8           4.2
+```
+
+ZRJ50 exceeds available fuel at 1,800 nm design range (scope-clause MTOW cap limits fuel to 8,072 lb at max payload). ZRJ70 and ZRJ100 close with comfortable margins. All variants pass FAR 25 OEI climb gradient minimums (2.4% 2nd segment, 1.2% en-route, 2.1% approach).
+
 ---
 
 ## Sync Scripts
