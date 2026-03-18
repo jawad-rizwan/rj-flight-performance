@@ -91,60 +91,29 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   LDR FAR (ft)                         3,822         4,378         4,525
 ```
 
-### Mission-Segment Weight Fractions (Eq. 17.97 / Breguet)
+### MR&O Performance Attributes
 
-9-segment FAR 121.645 mission profile. Climb uses the energy method (Eq. 17.97), cruise/divert use Breguet (Eq. 17.23), loiter uses jet endurance (Eq. 17.30).
-
-**ZRJ50** — 1,800 nm design range, 65,000 lb MTOW
-
-| Segment | Method | W_i/W_{i-1} | Fuel (lb) |
-|---------|--------|:-----------:|----------:|
-| 0. Warmup & Takeoff | Historical | 0.9700 | 1,950 |
-| 1. Climb to FL350 | Eq. 17.97 | 0.9888 | 703 |
-| 2. Cruise (1,718 nm) | Breguet | 0.8697 | 8,122 |
-| 3. Contingency (10%) | Loiter | 0.9912 | 480 |
-| 4. Attempted landing | Historical | 0.9950 | 269 |
-| 5. Go-around climb | Eq. 17.97 | 0.9993 | 37 |
-| 6. Divert (100 nm) | Breguet | 0.9886 | 610 |
-| 7. Hold (30 min) | Loiter | 0.9884 | 611 |
-| 8. Land | Historical | 0.9950 | 261 |
-| **Overall** | | **0.7993** | **13,043** |
-
-Fuel available: 8,072 lb | Margin: **-4,971 lb (EXCEEDED)**
-
-**ZRJ70** — 1,800 nm design range, 85,888 lb MTOW
-
-| Segment | Method | W_i/W_{i-1} | Fuel (lb) |
-|---------|--------|:-----------:|----------:|
-| 0. Warmup & Takeoff | Historical | 0.9700 | 2,577 |
-| 1. Climb to FL350 | Eq. 17.97 | 0.9885 | 959 |
-| 2. Cruise (1,718 nm) | Breguet | 0.8859 | 9,400 |
-| 3. Contingency (10%) | Loiter | 0.9912 | 646 |
-| 4. Attempted landing | Historical | 0.9950 | 362 |
-| 5. Go-around climb | Eq. 17.97 | 0.9993 | 52 |
-| 6. Divert (100 nm) | Breguet | 0.9908 | 660 |
-| 7. Hold (30 min) | Loiter | 0.9884 | 824 |
-| 8. Land | Historical | 0.9950 | 352 |
-| **Overall** | | **0.8157** | **15,831** |
-
-Fuel available: 21,258 lb | Margin: **+5,427 lb (OK)**
-
-**ZRJ100** — 1,200 nm design range, 91,492 lb MTOW
-
-| Segment | Method | W_i/W_{i-1} | Fuel (lb) |
-|---------|--------|:-----------:|----------:|
-| 0. Warmup & Takeoff | Historical | 0.9700 | 2,745 |
-| 1. Climb to FL350 | Eq. 17.97 | 0.9883 | 1,041 |
-| 2. Cruise (1,118 nm) | Breguet | 0.9241 | 6,657 |
-| 3. Contingency (10%) | Loiter | 0.9941 | 476 |
-| 4. Attempted landing | Historical | 0.9950 | 403 |
-| 5. Go-around climb | Eq. 17.97 | 0.9993 | 59 |
-| 6. Divert (100 nm) | Breguet | 0.9912 | 707 |
-| 7. Hold (30 min) | Loiter | 0.9882 | 934 |
-| 8. Land | Historical | 0.9950 | 392 |
-| **Overall** | | **0.8534** | **13,414** |
-
-Fuel available: 18,786 lb | Margin: **+5,372 lb (OK)**
+| Category | MR&O Attribute | ZRJ50 | ZRJ70 | ZRJ100 |
+|----------|---------------|-------|-------|--------|
+| **Airworthiness** | Transport Canada, EASA, FAA (Part 25) | Yes | Yes | Yes |
+| **Performance** | Range, BOW, LRC/FAR121, 100 nm alt. | 4,056 nm | 7,875 nm | 7,929 nm |
+| | Normal cruise (Optimized Mach) | M 0.78 | M 0.78 | M 0.78 |
+| | Maximum cruise (Optimized Mach) | M 0.85 | M 0.85 | M 0.85 |
+| | Takeoff BFL, ft | 2,438 | 3,695 | 4,116 |
+| | Initial cruise altitude, ft | 35,000 | 35,000 | 35,000 |
+| | Maximum cruise altitude, ft | >65,000 | 61,000 | 59,000 |
+| | Max cruise range | 4,479 nm | 4,860 nm | 4,604 nm |
+| | Range, Full PAX, LRC | 1,531 nm | 3,722 nm | 3,009 nm |
+| | Single engine climb | 23.1% | 15.9% | 14.5% |
+| **Weight & Payload** | Max. payload, lbs | 11,350 | 18,055 | 23,380 |
+| | Passengers (<100 PAX market segment) | 50 | 76 | 100 |
+| | Max. landing weight (~90% MTOW) | 58,500 | 77,299 | 82,343 |
+| **Airfield Performance** | TOFL, ISA, SL (MTOW) | 2,677 ft | 3,944 ft | 4,341 ft |
+| | TOFL, ISA, +20C (MTOW) | 2,952 ft | 4,417 ft | 4,880 ft |
+| | LD, ISA, SL (MLW) | 3,925 ft | 4,511 ft | 4,665 ft |
+| | Steep approach capability (MLW) | Yes | Yes | Yes |
+| | Rate of climb [SL, AEO / OEI] | 17,672 / 3,884 fpm | 13,245 / 3,078 fpm | 12,164 / 2,884 fpm |
+| | Glideslope | 3.0 deg | 3.0 deg | 3.0 deg |
 
 ---
 
