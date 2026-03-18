@@ -3,7 +3,7 @@
 sync_aero.py — Pull latest aerodynamic coefficients from rj-basic-aerodynamics.
 
 Imports geometry from the sibling aero repo, runs the Raymer Ch.12
-component buildup, and updates aircraft/zrj*.py with computed values:
+component buildup, and updates data/zrj*.py with computed values:
   CD0, K, e, CL_max_clean, CL_max_TO, CL_max_L
 """
 
@@ -171,7 +171,7 @@ AIRCRAFT_MAP = {
     "zrj100": ZRJ100_GEOM,
 }
 
-AIRCRAFT_DIR = os.path.join(os.path.dirname(__file__), "aircraft")
+AIRCRAFT_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 
 if __name__ == "__main__":

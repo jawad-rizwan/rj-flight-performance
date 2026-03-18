@@ -64,7 +64,7 @@ class AircraftData:
 
     # ---- Landing gear ----
     mu_roll: float = 0.03      # rolling friction coefficient (hard runway)
-    mu_brake: float = 0.40     # braking friction coefficient
+    mu_brake: float = 0.50     # braking friction coefficient (Raymer Table 17.1, civil)
 
     # ---- Takeoff / landing ----
     h_obstacle_TO: float = 35.0  # obstacle height, takeoff [ft]

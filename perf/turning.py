@@ -143,33 +143,6 @@ def CL_sustained_turn(CD0, K):
     return np.sqrt(CD0 / K)   # Eq. (17.55)
 
 
-def sustained_turn_envelope(V_array, T_avail, W, S, CD0, K):
-    """Compute sustained turn rate vs velocity.
-
-    Parameters
-    ----------
-    V_array : array, velocities [ft/s]
-    T_avail : float, available thrust [lb]
-    W       : float, weight [lb]
-    S       : float, wing area [ft^2]
-    CD0, K  : float, drag polar
-
-    Returns
-    -------
-    psi_dot : array, sustained turn rate [deg/s]
-    n_sust  : array, sustained load factor
-    """
-    V = np.asarray(V_array, dtype=float)
-    q = 0.5 * 0.002377 * V**2  # placeholder; caller should provide rho
-    TW = T_avail / W
-    WS = W / S
-
-    n_arr = n_sustained(TW, q, WS, CD0, K)
-    n_arr = np.maximum(n_arr, 1.0)
-    psi = turn_rate_deg(V, n_arr)
-    return psi, n_arr
-
-
 def sustained_turn_envelope_rho(V_array, T_avail, W, S, CD0, K, rho):
     """Compute sustained turn rate vs velocity at a given density.
 

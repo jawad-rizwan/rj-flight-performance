@@ -118,14 +118,13 @@ def V_min_thrust(W, S, rho, CD0, K):
     return np.sqrt(2.0 * W / (rho * S)) * (K / CD0)**0.25   # Eq. (17.13)
 
 
-def D_min_thrust(W, S, rho, CD0, K):
+def D_min_thrust(W, CD0, K):
     """Minimum drag (at best L/D speed).
 
     Raymer Eq. (17.15): D_min = qS*(CD0 + CD0) = 2*q*S*CD0
-    (induced drag equals zero-lift drag at this condition)
+    At this condition induced drag equals zero-lift drag, so
+    D_min = W / (L/D)_max.
     """
-    q = dynamic_pressure(V_min_thrust(W, S, rho, CD0, K), rho * 2.0 / (2.0 * 1.0))
-    # Simpler: D_min = W / (L/D)_max
     return W / LD_max(CD0, K)
 
 

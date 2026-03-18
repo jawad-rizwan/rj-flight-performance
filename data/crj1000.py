@@ -43,7 +43,7 @@ crj1000 = AircraftData(
 
     # ---- Landing gear ----
     mu_roll=0.03,
-    mu_brake=0.40,
+    mu_brake=0.50,
 
     # ---- Takeoff / landing ----
     h_obstacle_TO=35.0,

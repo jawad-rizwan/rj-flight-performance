@@ -24,7 +24,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from aircraft import crj700, crj1000
+from data import crj700, crj1000, zrj50, zrj70, zrj100
 from perf import (
     isa_density, speed_of_sound, TAS_from_mach, fps_to_kts, kts_to_fps,
     thrust_at_altitude, dynamic_pressure, RHO_SL, G,
@@ -39,10 +39,21 @@ from perf import (
     asdr_todr_curves, find_V1,
 )
 
-VARIANTS = [crj700, crj1000]
-COLORS = {"CRJ-700": "tab:blue", "CRJ-1000": "tab:red"}
-CHART_DIR = os.path.join(os.path.dirname(__file__), "charts")
-os.makedirs(CHART_DIR, exist_ok=True)
+FAMILIES = {
+    "CRJ": {
+        "variants": [crj700, crj1000],
+        "colors": {"CRJ-700": "tab:blue", "CRJ-1000": "tab:red"},
+    },
+    "ZRJ": {
+        "variants": [zrj50, zrj70, zrj100],
+        "colors": {"ZRJ50": "tab:green", "ZRJ70": "tab:orange", "ZRJ100": "tab:purple"},
+    },
+}
+
+# Module-level globals — set per family run
+VARIANTS = []
+COLORS = {}
+CHART_DIR = ""
 
 def save(fig, name):
     path = os.path.join(CHART_DIR, name)
@@ -535,16 +546,33 @@ def plot_glide_polar():
 
 
 # =====================================================================
+ALL_PLOTS = [
+    plot_thrust_vs_velocity,
+    plot_power_vs_velocity,
+    plot_LD_vs_CL,
+    plot_ROC_vs_altitude,
+    plot_Ps_vs_Mach,
+    plot_turn_performance,
+    plot_payload_range,
+    plot_TO_landing_bars,
+    plot_asdr_todr,
+    plot_glide_polar,
+]
+
 if __name__ == "__main__":
-    print("Generating performance charts...")
-    plot_thrust_vs_velocity()
-    plot_power_vs_velocity()
-    plot_LD_vs_CL()
-    plot_ROC_vs_altitude()
-    plot_Ps_vs_Mach()
-    plot_turn_performance()
-    plot_payload_range()
-    plot_TO_landing_bars()
-    plot_asdr_todr()
-    plot_glide_polar()
-    print("\nAll charts saved to examples/charts/")
+    import __main__
+    base = os.path.join(os.path.dirname(__file__), "charts")
+
+    for family_name, family in FAMILIES.items():
+        __main__.VARIANTS = family["variants"]
+        __main__.COLORS = family["colors"]
+        __main__.CHART_DIR = os.path.join(base, family_name)
+        os.makedirs(CHART_DIR, exist_ok=True)
+
+        print(f"\n{'=' * 50}")
+        print(f"  Generating {family_name} charts...")
+        print(f"{'=' * 50}")
+        for fn in ALL_PLOTS:
+            fn()
+
+    print(f"\nAll charts saved to examples/charts/CRJ/ and examples/charts/ZRJ/")

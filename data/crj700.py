@@ -32,8 +32,8 @@ crj700 = AircraftData(
     K=0.040,                # induced drag factor  (1/(pi*e*AR))
     e=0.80,                 # Oswald span efficiency
     CL_max_clean=1.40,      # clean
-    CL_max_TO=1.80,         # takeoff flaps
-    CL_max_L=2.40,          # landing flaps
+    CL_max_TO=2.20,         # takeoff flaps + slats
+    CL_max_L=2.40,          # landing flaps + slats
 
     # ---- Propulsion (2x GE CF34-8C5B1) ----
     n_engines=2,
@@ -43,7 +43,7 @@ crj700 = AircraftData(
 
     # ---- Landing gear ----
     mu_roll=0.03,
-    mu_brake=0.40,
+    mu_brake=0.50,
 
     # ---- Takeoff / landing ----
     h_obstacle_TO=35.0,     # ft (FAR 25)

@@ -32,18 +32,13 @@ def specific_energy(h, V):
     return h + np.asarray(V, dtype=float)**2 / (2.0 * G)   # Eq. (17.85)
 
 
-def Ps(T, D, W, V, n=1.0):
+def Ps(T, D, W, V):
     """Specific excess power [ft/s].
 
-    Raymer Eq. (17.89):
-        Ps = V * [T/W - q*CD0/(W/S) - n^2*K*(W/S)/q]
+    Raymer Eq. (17.88):  Ps = V*(T - D)/W = dh/dt + (V/g)*(dV/dt)
 
-    Simplified form:
-        Ps = V*(T - D) / W     (for n=1)
-
-    This equals the rate of climb if dV/dt = 0.
-
-    Raymer Eq. (17.88):  Ps = dh/dt + (V/g)*(dV/dt)
+    At constant velocity (dV/dt = 0), Ps equals the rate of climb.
+    For load-factor-dependent Ps, use Ps_expanded() with Eq. (17.89).
 
     Parameters
     ----------
@@ -51,7 +46,6 @@ def Ps(T, D, W, V, n=1.0):
     D : float or array, drag [lb]
     W : float, weight [lb]
     V : float or array, velocity [ft/s]
-    n : float, load factor (default 1.0)
 
     Returns
     -------

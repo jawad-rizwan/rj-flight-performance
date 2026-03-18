@@ -2,7 +2,7 @@
 
 Aircraft performance analysis toolkit based on **Raymer, Chapter 17: Performance and Flight Mechanics** (*Aircraft Design: A Conceptual Approach*, 7th Edition).
 
-Currently configured for the **Bombardier CRJ-700** and **CRJ-1000**, but designed so any aircraft can be swapped in by editing a single data file.
+Includes the **ZRJ family** (ZRJ50, ZRJ70, ZRJ100 high-wing regional jets) and **Bombardier CRJ-700 / CRJ-1000** as reference aircraft. Any aircraft can be added by creating a single data file.
 
 ---
 
@@ -10,25 +10,35 @@ Currently configured for the **Bombardier CRJ-700** and **CRJ-1000**, but design
 
 ```
 rj-flight-performance/
-├── perf/                          # Core performance library
-│   ├── atmosphere.py              # ISA standard atmosphere model
-│   ├── level_flight.py            # 17.2   Steady level flight
-│   ├── range_endurance.py         # 17.2.4 Range & endurance (Breguet)
-│   ├── climb.py                   # 17.3   Climbing & descending flight
-│   ├── turning.py                 # 17.4   Level turning flight
-│   ├── glide.py                   # 17.5   Gliding flight
-│   ├── energy.py                  # 17.6   Energy-maneuverability methods
-│   ├── takeoff.py                 # 17.8   Takeoff analysis
-│   └── landing.py                 # 17.9   Landing analysis
-├── aircraft/                      # Aircraft data files
-│   ├── base.py                    # AircraftData dataclass definition
-│   ├── crj700.py                  # Bombardier CRJ-700 parameters
-│   └── crj1000.py                 # Bombardier CRJ-1000 parameters
+├── perf/                              # Core performance library
+│   ├── atmosphere.py                  # ISA standard atmosphere model
+│   ├── level_flight.py                # 17.2   Steady level flight
+│   ├── range_endurance.py             # 17.2.4 Range & endurance (Breguet)
+│   ├── climb.py                       # 17.3   Climbing & descending flight
+│   ├── turning.py                     # 17.4   Level turning flight
+│   ├── glide.py                       # 17.5   Gliding flight
+│   ├── energy.py                      # 17.6   Energy-maneuverability methods
+│   ├── takeoff.py                     # 17.8   Takeoff analysis
+│   └── landing.py                     # 17.9   Landing analysis
+├── data/                              # Aircraft data files
+│   ├── base.py                        # AircraftData dataclass definition
+│   ├── crj700.py                      # Bombardier CRJ-700
+│   ├── crj1000.py                     # Bombardier CRJ-1000
+│   ├── zrj50.py                       # ZRJ50  (50-seat, scope-clause)
+│   ├── zrj70.py                       # ZRJ70  (76-seat, NA variant)
+│   └── zrj100.py                      # ZRJ100 (100-seat, EU variant)
 ├── examples/
-│   ├── full_analysis.py           # Complete numerical performance analysis
-│   ├── plot_performance.py        # Generate all performance charts
-│   └── charts/                    # Generated PNG figures (9 charts)
-├── requirements.txt               # Python dependencies
+│   ├── full_analysis.py               # Complete numerical performance analysis
+│   ├── plot_performance.py            # Generate all performance charts
+│   ├── charts/
+│   │   ├── CRJ/                       # CRJ family charts (10 PNGs)
+│   │   └── ZRJ/                       # ZRJ family charts (10 PNGs)
+│   └── output/
+│       ├── CRJ/analysis.txt           # CRJ family analysis output
+│       └── ZRJ/analysis.txt           # ZRJ family analysis output
+├── sync_aero.py                       # Pull aero coefficients from rj-basic-aerodynamics
+├── sync_mission.py                    # Pull weights/propulsion from rj-mission-analysis
+├── requirements.txt                   # Python dependencies
 └── README.md
 ```
 
@@ -40,12 +50,64 @@ rj-flight-performance/
 # Install dependencies
 pip install -r requirements.txt
 
-# Run full numerical analysis (prints tables to console)
+# Run full numerical analysis (CRJ + ZRJ families, output to console + files)
 python examples/full_analysis.py
 
-# Generate all performance charts (saved to examples/charts/)
+# Generate all performance charts (saved to examples/charts/CRJ/ and ZRJ/)
 python examples/plot_performance.py
 ```
+
+---
+
+## ZRJ Family
+
+Three variants of a high-wing regional jet with PW1200G geared turbofan engines:
+
+| Variant | Seats | MTOW (lb) | OEW (lb) | Wing Area (ft²) | T/W | Cruise Mach |
+|---------|-------|-----------|----------|-----------------|-----|-------------|
+| ZRJ50   | 50    | 65,000    | 45,578   | 1,016.6          | 0.590 | 0.78        |
+| ZRJ70   | 76    | 85,888    | 46,575   | 1,016.6          | 0.447 | 0.78        |
+| ZRJ100  | 100   | 91,492    | 49,326   | 1,016.6          | 0.419 | 0.78        |
+
+All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 38,380 lb total thrust, BPR 9.0). The ZRJ50 uses the same airframe as the ZRJ70 but is MTOW-capped at 65,000 lb per scope clause.
+
+### Sample Output (ZRJ Family)
+
+```
+  Metric                               ZRJ50         ZRJ70        ZRJ100
+  ----------------------------------------------------------------------
+  (L/D)_max                            15.82         15.82         15.54
+  Cruise L/D                           12.91         14.74         14.71
+  Range (nmi)                          1,495         3,630         2,937
+  Best ROC (fpm)                      17,672        13,245        12,164
+  Corner spd (kts)                       202           232           239
+  TODR (ft)                            2,327         3,430         3,775
+  TODR FAR (ft)                        2,677         3,944         4,341
+  ASDR at V1 (ft)                      2,438         3,695         4,115
+  BFL iterative (ft)                   2,438         3,695         4,116
+  BFL Eq.17.113 (ft)                   2,589         3,987         4,434
+  TOFL FAR 25 (ft)                     2,677         3,944         4,341
+  LDR (ft)                             2,293         2,626         2,714
+  LDR FAR (ft)                         3,822         4,378         4,525
+```
+
+---
+
+## Sync Scripts
+
+Two scripts pull data from sibling repos to keep aircraft definitions up to date:
+
+| Script | Source Repo | Fields Synced |
+|--------|------------|---------------|
+| `sync_aero.py` | `rj-basic-aerodynamics` | CD0, K, e, CL_max_clean, CL_max_TO, CL_max_L |
+| `sync_mission.py` | `rj-mission-analysis` | W_TO, W_empty, W_fuel_max, W_payload, T_max_SL, TSFC, BPR, n_engines, M_cruise, h_cruise_ft |
+
+```bash
+python sync_aero.py      # update aero coefficients from component buildup
+python sync_mission.py   # update weights/propulsion from mission analysis
+```
+
+Both scripts use regex-based file updaters that modify values in-place in `data/zrj*.py` while preserving comments and formatting.
 
 ---
 
@@ -53,58 +115,13 @@ python examples/plot_performance.py
 
 All aircraft parameters live in a single `AircraftData` dataclass. To analyse a different aircraft:
 
-1. **Copy** `aircraft/crj700.py` to a new file (e.g. `aircraft/my_aircraft.py`)
-2. **Edit** the parameters:
-
-```python
-from .base import AircraftData
-
-my_aircraft = AircraftData(
-    name="My Aircraft",
-
-    # Weights
-    W_TO=75000.0,          # lb, max takeoff weight
-    W_empty=44000.0,       # lb, operating empty weight
-    W_fuel_max=19500.0,    # lb, max usable fuel
-    W_payload=17500.0,     # lb, design payload
-
-    # Wing geometry
-    S=520.0,               # ft^2, reference area
-    b=76.3,                # ft, span
-    AR=11.2,               # aspect ratio
-    sweep_qc_deg=25.0,     # deg, quarter-chord sweep
-    t_c=0.11,              # thickness-to-chord ratio
-    taper=0.32,            # taper ratio
-
-    # Aerodynamics (parabolic drag polar: CD = CD0 + K*CL^2)
-    CD0=0.022,             # zero-lift drag coefficient
-    K=0.040,               # induced drag factor
-    e=0.80,                # Oswald span efficiency
-    CL_max_clean=1.40,     # max CL, clean
-    CL_max_TO=1.80,        # max CL, takeoff flaps
-    CL_max_L=2.40,         # max CL, landing flaps
-
-    # Propulsion (jet)
-    n_engines=2,
-    T_max_SL=26760.0,      # lb, total sea-level static thrust
-    TSFC=0.68,             # 1/hr, cruise TSFC
-    BPR=5.0,               # bypass ratio
-
-    # Design cruise
-    M_cruise=0.78,
-    h_cruise_ft=35000.0,   # ft
-
-    # Structural limits
-    n_max=2.5,             # max load factor
-)
-```
-
-3. **Import** it in `aircraft/__init__.py`:
+1. **Copy** `data/crj700.py` to a new file (e.g. `data/my_aircraft.py`)
+2. **Edit** the parameters (see Data Checklist below)
+3. **Import** it in `data/__init__.py`:
 ```python
 from .my_aircraft import my_aircraft
 ```
-
-4. **Add** it to the `VARIANTS` list in `examples/full_analysis.py` and `examples/plot_performance.py`.
+4. **Add** it to a family in `examples/full_analysis.py` and `examples/plot_performance.py`.
 
 ### Propeller Aircraft
 
@@ -154,7 +171,7 @@ All equations reference Raymer's *Aircraft Design: A Conceptual Approach*, 7th E
 
 ## Performance Charts
 
-Running `python examples/plot_performance.py` generates 10 charts in `examples/charts/`:
+Running `python examples/plot_performance.py` generates 10 charts per family in `examples/charts/{CRJ,ZRJ}/`:
 
 | # | Chart | Raymer Reference |
 |---|-------|-----------------|
@@ -168,28 +185,6 @@ Running `python examples/plot_performance.py` generates 10 charts in `examples/c
 | 8 | Takeoff & landing distance breakdown | Sec. 17.8, 17.9 |
 | 9 | ASDR & AGDR vs engine failure speed (BFL) | Sec. 17.8.4, Eq. 17.102 |
 | 10 | Glide polar (sink rate vs velocity) | Fig. 17.7, Eq. 17.68 |
-
----
-
-## Sample Output (CRJ-700 vs CRJ-1000)
-
-```
-  Metric                             CRJ-700      CRJ-1000
-  --------------------------------------------------------
-  (L/D)_max                            16.85         17.01
-  Cruise L/D                           16.79         16.97
-  Range (nmi)                          2,976         2,359
-  Best ROC (fpm)                      11,202         9,393
-  Corner spd (kts)                       276           292
-  TODR (ft)                            6,801         8,377
-  TODR FAR (ft)                        7,821         9,634
-  ASDR at V1 (ft)                      7,803         9,627
-  BFL iterative (ft)                   7,803         9,627
-  BFL Eq.17.113 (ft)                   7,933         9,808
-  TOFL FAR 25 (ft)                     7,821         9,634
-  LDR (ft)                             4,258         4,592
-  LDR FAR (ft)                         7,099         7,656
-```
 
 ---
 
@@ -268,7 +263,7 @@ To run a full performance analysis on your own design, you need to gather the va
 | Parameter | Field | Default | Description |
 |-----------|-------|---------|-------------|
 | Rolling friction coeff. | `mu_roll` | 0.03 | Hard-surface runway rolling friction |
-| Braking friction coeff. | `mu_brake` | 0.40 | Hard-surface runway braking friction |
+| Braking friction coeff. | `mu_brake` | 0.50 | Hard-surface runway braking friction (Raymer Table 17.1) |
 
 ### Takeoff / Landing *(optional — defaults shown)*
 

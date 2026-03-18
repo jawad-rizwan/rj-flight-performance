@@ -81,14 +81,14 @@ def rotation_distance(V_TO, t_rotate=3.0):
 # Transition
 # =========================================================================
 
-def transition_segment(W, S, rho, CL_max_TO, TW):
+def transition_segment(W, S, rho, CL_max_TO, TW, CD0, K):
     """Transition arc parameters after rotation.
 
     Raymer Eqs. (17.105)-(17.111).
 
     During transition, V increases from V_TO to V_climb (1.2*V_stall).
     Average velocity ~ 1.15 * V_stall.
-    Average CL ~ 0.9 * CL_max_TO.
+    CL during transition ~ CL_max_TO / 1.15^2 * n  (at V_TR with n=1.2).
 
     Returns
     -------
@@ -110,17 +110,19 @@ def transition_segment(W, S, rho, CL_max_TO, TW):
     # Eq. (17.107): R = V_TR^2 / (g*(n-1)) = V_TR^2 / (0.2*g)
     R = V_TR**2 / (G * (n - 1.0))          # Eq. (17.107)
 
-    # Climb angle at end of transition
-    # Eq. (17.108): sin(gamma) = (T-D)/W ~ T/W - 1/(L/D)
-    LD_climb = 0.9 * CL_max_TO / (0.9 * CL_max_TO * 0.05 + 0.022)  # rough estimate
+    # CL during transition: at V_TR = 1.15*Vs with n = 1.2
+    # CL_TR = n * CL_max / 1.15^2 ≈ 0.907 * CL_max
+    CL_TR = n * CL_max_TO / 1.15**2
+    CD_TR = CD0 + K * CL_TR**2
+    LD_climb = CL_TR / CD_TR
 
-    # Use simplified: sin(gamma) ~ T/W - 1/(L/D)
+    # Climb angle: Eq. (17.108): sin(gamma) = T/W - 1/(L/D)
     sin_gamma = TW - 1.0 / max(LD_climb, 1.0)
     sin_gamma = np.clip(sin_gamma, 0.0, 1.0)
     gamma = np.arcsin(sin_gamma)                # Eq. (17.108)
 
     # Horizontal distance
-    S_TR = R * sin_gamma                         # Eq. (17.109)
+    S_TR = R * np.sin(gamma)                     # Eq. (17.109)
 
     # Altitude gained
     h_TR = R * (1.0 - np.cos(gamma))            # Eq. (17.110)
@@ -172,7 +174,7 @@ def total_takeoff_distance(W, S, T, CD0, CL_ground, K, mu, rho,
     S_G = ground_roll_distance(W, S, T, CD0, CL_ground, K, mu, rho, CL_max_TO)
     S_R = rotation_distance(V_R, t_rotate)
 
-    trans = transition_segment(W, S, rho, CL_max_TO, TW)
+    trans = transition_segment(W, S, rho, CL_max_TO, TW, CD0, K)
     h_TR = trans["h_TR"]
     gamma = trans["gamma_rad"]
     R = trans["R"]
@@ -277,7 +279,7 @@ def accelerate_go_distance(W, S, T, CD0, CL_ground, K, mu_roll, rho,
 
     # Transition and climb (OEI)
     TW_OEI = T_OEI / W
-    trans = transition_segment(W, S, rho, CL_max_TO, TW_OEI)
+    trans = transition_segment(W, S, rho, CL_max_TO, TW_OEI, CD0_OEI, K)
     h_TR = trans["h_TR"]
     gamma = trans["gamma_rad"]
     R = trans["R"]

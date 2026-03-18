@@ -3,14 +3,14 @@
 Full performance analysis for regional jet variants.
 
 Uses methods from Raymer Chapter 17: Performance and Flight Mechanics.
-Analyses CRJ-700 and CRJ-1000 (easily swapped for your own aircraft).
+Runs CRJ and ZRJ families separately, saving output to examples/output/.
 """
 
-import sys, os
+import sys, os, io, contextlib
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import numpy as np
-from aircraft import crj700, crj1000
+from data import crj700, crj1000, zrj50, zrj70, zrj100
 from perf import (
     # atmosphere
     isa_density, speed_of_sound, TAS_from_mach, fps_to_kts, kts_to_fps,
@@ -40,9 +40,12 @@ from perf import (
 )
 
 # =====================================================================
-# Select aircraft variants to analyse
+# Aircraft families
 # =====================================================================
-VARIANTS = [crj700, crj1000]
+FAMILIES = {
+    "CRJ": [crj700, crj1000],
+    "ZRJ": [zrj50, zrj70, zrj100],
+}
 
 # =====================================================================
 # Helper
@@ -442,13 +445,9 @@ def analyse(ac):
 
 
 # =====================================================================
-if __name__ == "__main__":
-    results = {}
-    for ac in VARIANTS:
-        results[ac.name] = analyse(ac)
-
-    # ---- Comparison ----
-    separator("COMPARISON: CRJ-700 vs CRJ-1000")
+def run_comparison(results):
+    """Print comparison table for a set of analysis results."""
+    separator("VARIANT COMPARISON")
     header = f"  {'Metric':<28s}"
     for name in results:
         header += f"  {name:>12s}"
@@ -478,3 +477,42 @@ if __name__ == "__main__":
                 val = transform(val)
             row += f"  {val:>12{fmt}}"
         print(row)
+
+
+# =====================================================================
+if __name__ == "__main__":
+    OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "output")
+
+    for family_name, variants in FAMILIES.items():
+        family_dir = os.path.join(OUTPUT_DIR, family_name)
+        os.makedirs(family_dir, exist_ok=True)
+        output_path = os.path.join(family_dir, "analysis.txt")
+
+        # Capture output to both stdout and file
+        buf = io.StringIO()
+
+        class Tee:
+            def __init__(self, *streams):
+                self.streams = streams
+            def write(self, data):
+                for s in self.streams:
+                    s.write(data)
+            def flush(self):
+                for s in self.streams:
+                    s.flush()
+
+        tee = Tee(sys.stdout, buf)
+        old_stdout = sys.stdout
+        sys.stdout = tee
+
+        try:
+            results = {}
+            for ac in variants:
+                results[ac.name] = analyse(ac)
+            run_comparison(results)
+        finally:
+            sys.stdout = old_stdout
+
+        with open(output_path, "w") as f:
+            f.write(buf.getvalue())
+        print(f"\n  Output saved to {output_path}")

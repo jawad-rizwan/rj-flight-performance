@@ -67,7 +67,7 @@ def flare_parameters(W, S, rho, CL_max_L, approach_factor=1.3):
     V_s = V_stall(W, S, rho, CL_max_L)
     V_a = approach_factor * V_s
     V_TD = 1.15 * V_s                # civil touchdown speed
-    V_f = 0.5 * (V_a + V_TD)         # average flare velocity
+    V_f = 1.23 * V_s                 # average flare velocity (Raymer 17.9.2)
 
     n = 1.2
     R = V_f**2 / (G * (n - 1.0))     # Eq. (17.107) for flare
