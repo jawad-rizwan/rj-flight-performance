@@ -47,10 +47,18 @@ def isa_pressure(h_ft):
     return float(P) if P.ndim == 0 else P
 
 
-def isa_density(h_ft):
-    """ISA density [slug/ft^3] at altitude h_ft [ft]."""
+def isa_density(h_ft, dT_C=0.0):
+    """ISA density [slug/ft^3] at altitude h_ft [ft].
+
+    Parameters
+    ----------
+    h_ft : float or array, altitude [ft]
+    dT_C : float, ISA temperature deviation [deg C / K].
+           e.g. dT_C=20 for ISA+20.  Pressure is unchanged;
+           only temperature (and thus density) is affected.
+    """
     P = isa_pressure(h_ft)
-    T = isa_temperature(h_ft)
+    T = isa_temperature(h_ft) + dT_C * 1.8   # convert C -> Rankine offset
     rho = P / (R_AIR * T)
     return float(rho) if np.ndim(rho) == 0 else rho
 
@@ -74,9 +82,9 @@ def dynamic_pressure(V, h_ft):
     return 0.5 * rho * np.asarray(V, dtype=float)**2
 
 
-def sigma(h_ft):
-    """Density ratio rho/rho_SL."""
-    return isa_density(h_ft) / RHO_SL
+def sigma(h_ft, dT_C=0.0):
+    """Density ratio rho/rho_SL (ISA SL reference)."""
+    return isa_density(h_ft, dT_C) / RHO_SL
 
 
 def mach_number(V, h_ft):
@@ -99,7 +107,7 @@ def fps_to_kts(V_fps):
     return V_fps / 1.68781
 
 
-def thrust_at_altitude(T_SL, h_ft, BPR=5.0):
+def thrust_at_altitude(T_SL, h_ft, BPR=5.0, dT_C=0.0):
     """Thrust lapse model for turbofans.
 
     T/T_SL ~ sigma^n with exponent scaling by BPR:
@@ -110,8 +118,13 @@ def thrust_at_altitude(T_SL, h_ft, BPR=5.0):
 
     Above the tropopause an additional 0.85 factor accounts for
     the isothermal stratosphere where ram recovery drops off.
+
+    Parameters
+    ----------
+    dT_C : float, ISA temperature deviation [deg C].
+           Hot day reduces density and thus available thrust.
     """
-    sig = sigma(h_ft)
+    sig = sigma(h_ft, dT_C)
     h = np.asarray(h_ft, dtype=float)
     # Linear interpolation: n = 0.70 at BPR=3, 0.90 at BPR=13
     exp = np.clip(0.70 + (BPR - 3.0) * 0.02, 0.70, 0.90)

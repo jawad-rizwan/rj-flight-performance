@@ -125,6 +125,7 @@
     BFL (Raymer Eq.17.113): 6,788 ft
 
   >> TOFL (FAR 25)        : 6,543 ft  = max(TODR×1.15, BFL)
+  >> TOFL (ISA+20, SL)    : 7,222 ft
 
 --- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
     1st segment (LOF, TO flaps, gear dn, OEI)
@@ -177,6 +178,7 @@
   BFL (iterative)             : 6,250 ft
   BFL (Raymer Eq.17.113)      : 6,788 ft
   TOFL (FAR 25)               : 6,543 ft
+  TOFL (ISA+20, SL)           : 7,222 ft
   LDR (unfactored)            : 3,786 ft
   LDR (FAR /0.6)              : 6,310 ft
   LDR wet (FAR x1.15)         : 7,257 ft
@@ -309,6 +311,7 @@
     BFL (Raymer Eq.17.113): 9,808 ft
 
   >> TOFL (FAR 25)        : 9,634 ft  = max(TODR×1.15, BFL)
+  >> TOFL (ISA+20, SL)    : 10,709 ft
 
 --- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
     1st segment (LOF, TO flaps, gear dn, OEI)
@@ -361,6 +364,7 @@
   BFL (iterative)             : 9,295 ft
   BFL (Raymer Eq.17.113)      : 9,808 ft
   TOFL (FAR 25)               : 9,634 ft
+  TOFL (ISA+20, SL)           : 10,709 ft
   LDR (unfactored)            : 4,071 ft
   LDR (FAR /0.6)              : 6,784 ft
   LDR wet (FAR x1.15)         : 7,802 ft
@@ -383,6 +387,7 @@
   BFL iterative (ft)                   6,250         9,295
   BFL Eq.17.113 (ft)                   6,788         9,808
   TOFL FAR 25 (ft)                     6,543         9,634
+  TOFL ISA+20 (ft)                     7,222        10,709
   LDR (ft)                             3,786         4,071
   LDR FAR (ft)                         6,310         6,784
   LDR wet (ft)                         7,257         7,802

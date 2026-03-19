@@ -404,6 +404,31 @@ def analyse(ac):
     TOFL = max(to['TODR_factored'], v1_result['BFL'])
     print(f"\n  >> TOFL (FAR 25)        : {TOFL:,.0f} ft  = max(TODR×1.15, BFL)")
 
+    # ----- ISA+20 hot-day TOFL -----
+    dT_C = 20.0
+    rho_hot = isa_density(0.0, dT_C=dT_C)
+    T_sl_hot = thrust_at_altitude(ac.T_max_SL, 0.0, ac.BPR, dT_C=dT_C)
+    T_TO_hot = T_ratio * T_sl_hot
+    TW_hot = T_sl_hot / W
+
+    to_hot = total_takeoff_distance(
+        W=W, S=S, T=T_TO_hot, CD0=CD0_TO,
+        CL_ground=ac.CL_ground, K=K, mu=ac.mu_roll,
+        rho=rho_hot, CL_max_TO=ac.CL_max_TO, TW=TW_hot,
+        h_obstacle=ac.h_obstacle_TO, t_rotate=3.0)
+
+    T_idle_hot = 0.05 * T_sl_hot
+    v1_hot = find_V1(
+        W=W, S=S, T=T_TO_hot, CD0=CD0_TO,
+        CL_ground=ac.CL_ground, K=K,
+        mu_roll=ac.mu_roll, mu_brake=ac.mu_brake,
+        rho=rho_hot, CL_max_TO=ac.CL_max_TO, TW=TW_hot,
+        h_obstacle=ac.h_obstacle_TO, n_engines=ac.n_engines,
+        T_idle=T_idle_hot, T_reverse=0.0, t_react=2.0, t_rotate=3.0)
+
+    TOFL_hot = max(to_hot['TODR_factored'], v1_hot['BFL'])
+    print(f"  >> TOFL (ISA+20, SL)    : {TOFL_hot:,.0f} ft")
+
     # =================================================================
     # FAR 25 CLIMB GRADIENTS (Table F.4)
     # =================================================================
@@ -482,6 +507,7 @@ def analyse(ac):
         ("BFL (iterative)",         f"{v1_result['BFL']:,.0f} ft"),
         ("BFL (Raymer Eq.17.113)",  f"{bfl_empirical:,.0f} ft"),
         ("TOFL (FAR 25)",           f"{TOFL:,.0f} ft"),
+        ("TOFL (ISA+20, SL)",       f"{TOFL_hot:,.0f} ft"),
         ("LDR (unfactored)",        f"{la['S_total_actual']:,.0f} ft"),
         ("LDR (FAR /0.6)",          f"{la['S_FAR_field']:,.0f} ft"),
         ("LDR wet (FAR x1.15)",     f"{ldr_wet:,.0f} ft"),
@@ -500,6 +526,7 @@ def analyse(ac):
         "BFL": v1_result["BFL"],
         "BFL_empirical": bfl_empirical,
         "TOFL": TOFL,
+        "TOFL_hot": TOFL_hot,
         "LDR": la["S_total_actual"],
         "LDR_FAR": la["S_FAR_field"],
         "LDR_wet": ldr_wet,
@@ -528,6 +555,7 @@ def run_comparison(results):
         ("BFL iterative (ft)", "BFL",            ",.0f", None),
         ("BFL Eq.17.113 (ft)", "BFL_empirical",  ",.0f", None),
         ("TOFL FAR 25 (ft)",   "TOFL",           ",.0f", None),
+        ("TOFL ISA+20 (ft)",   "TOFL_hot",       ",.0f", None),
         ("LDR (ft)",           "LDR",            ",.0f", None),
         ("LDR FAR (ft)",       "LDR_FAR",        ",.0f", None),
         ("LDR wet (ft)",       "LDR_wet",        ",.0f", None),

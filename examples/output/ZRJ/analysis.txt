@@ -125,6 +125,7 @@
     BFL (Raymer Eq.17.113): 2,589 ft
 
   >> TOFL (FAR 25)        : 2,677 ft  = max(TODR×1.15, BFL)
+  >> TOFL (ISA+20, SL)    : 2,904 ft
 
 --- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
     1st segment (LOF, TO flaps, gear dn, OEI)
@@ -177,6 +178,7 @@
   BFL (iterative)             : 2,439 ft
   BFL (Raymer Eq.17.113)      : 2,589 ft
   TOFL (FAR 25)               : 2,677 ft
+  TOFL (ISA+20, SL)           : 2,904 ft
   LDR (unfactored)            : 2,293 ft
   LDR (FAR /0.6)              : 3,822 ft
   LDR wet (FAR x1.15)         : 4,395 ft
@@ -309,6 +311,7 @@
     BFL (Raymer Eq.17.113): 3,662 ft
 
   >> TOFL (FAR 25)        : 3,653 ft  = max(TODR×1.15, BFL)
+  >> TOFL (ISA+20, SL)    : 4,000 ft
 
 --- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
     1st segment (LOF, TO flaps, gear dn, OEI)
@@ -361,6 +364,7 @@
   BFL (iterative)             : 3,396 ft
   BFL (Raymer Eq.17.113)      : 3,662 ft
   TOFL (FAR 25)               : 3,653 ft
+  TOFL (ISA+20, SL)           : 4,000 ft
   LDR (unfactored)            : 2,557 ft
   LDR (FAR /0.6)              : 4,262 ft
   LDR wet (FAR x1.15)         : 4,902 ft
@@ -493,6 +497,7 @@
     BFL (Raymer Eq.17.113): 4,266 ft
 
   >> TOFL (FAR 25)        : 4,192 ft  = max(TODR×1.15, BFL)
+  >> TOFL (ISA+20, SL)    : 4,608 ft
 
 --- FAR 25 CLIMB GRADIENTS (Table F.4, 2-engine) ---
     1st segment (LOF, TO flaps, gear dn, OEI)
@@ -545,6 +550,7 @@
   BFL (iterative)             : 3,956 ft
   BFL (Raymer Eq.17.113)      : 4,266 ft
   TOFL (FAR 25)               : 4,192 ft
+  TOFL (ISA+20, SL)           : 4,608 ft
   LDR (unfactored)            : 2,682 ft
   LDR (FAR /0.6)              : 4,469 ft
   LDR wet (FAR x1.15)         : 5,140 ft
@@ -567,6 +573,7 @@
   BFL iterative (ft)                   2,439         3,396         3,956
   BFL Eq.17.113 (ft)                   2,589         3,662         4,266
   TOFL FAR 25 (ft)                     2,677         3,653         4,192
+  TOFL ISA+20 (ft)                     2,904         4,000         4,608
   LDR (ft)                             2,293         2,557         2,682
   LDR FAR (ft)                         3,822         4,262         4,469
   LDR wet (ft)                         4,395         4,902         5,140

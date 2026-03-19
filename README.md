@@ -90,6 +90,7 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   BFL iterative (ft)                   2,439         3,396         3,956
   BFL Eq.17.113 (ft)                   2,589         3,662         4,266
   TOFL FAR 25 (ft)                     2,677         3,653         4,192
+  TOFL ISA+20 (ft)                     2,904         4,000         4,608
   LDR (ft)                             2,293         2,557         2,682
   LDR FAR (ft)                         3,822         4,262         4,469
   LDR wet (ft)                         4,395         4,902         5,140
@@ -114,6 +115,7 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | Passengers (<100 PAX market segment) | 50 | 76 | 96 |
 | | Max. landing weight (~85% MTOW) | 55,250 | 69,295 | 76,002 |
 | **Airfield Performance** | TOFL, ISA, SL (MTOW) | 2,677 ft | 3,653 ft | 4,192 ft |
+| | TOFL, ISA+20, SL (MTOW) | 2,904 ft | 4,000 ft | 4,608 ft |
 | | LD FAR (dry), ISA, SL (MLW) | 3,822 ft | 4,262 ft | 4,469 ft |
 | | LD FAR (wet), ISA, SL (MLW) | 4,395 ft | 4,902 ft | 5,140 ft |
 | | Steep approach capability (MLW) | Yes | Yes | Yes |
