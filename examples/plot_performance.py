@@ -782,8 +782,11 @@ def plot_per_surface_charts():
 
             V_s = V_stall(W, S, rho, ac.CL_max_TO)
             VR_kts = fps_to_kts(1.1 * V_s)
+            VMCG_kts = fps_to_kts(v1_result["V_MCG"])
             ax.axvline(VR_kts, color='green', ls='--', alpha=0.6,
                        label=f"VR = {VR_kts:.0f} kts")
+            ax.axvline(VMCG_kts, color='orange', ls='--', alpha=0.6,
+                       label=f"$V_{{MCG}}$ = {VMCG_kts:.0f} kts")
 
             ax.set_xlabel("$V_{EF}$ [kts]")
             ax.set_title(f"{ac.name}")
