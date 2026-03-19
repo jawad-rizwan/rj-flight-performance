@@ -301,20 +301,30 @@ def accelerate_go_distance(W, S, T, CD0, CL_ground, K, mu_roll, rho,
 
 def find_V1(W, S, T, CD0, CL_ground, K, mu_roll, mu_brake, rho,
             CL_max_TO, TW, h_obstacle=35.0, n_engines=2,
-            T_idle=0.0, T_reverse=0.0, t_react=2.0, t_rotate=3.0):
+            T_idle=0.0, T_reverse=0.0, t_react=2.0, t_rotate=3.0,
+            V_mcg=None):
     """Find V1 decision speed where ASDR = accelerate-go distance.
 
-    Iterates over candidate V_EF speeds between V_MCG (~0.7*V_stall)
-    and V_R (1.1*V_stall) to find the intersection.
+    V1 is constrained to V_MCG <= V1 <= V_R.  If the balanced
+    intersection falls below V_MCG the pilot must always GO,
+    and BFL = AGDR at V_MCG.
+
+    Parameters
+    ----------
+    V_mcg : float or None, minimum control speed on ground [ft/s].
+            If None, estimated as 0.85 * V_stall (Raymer approximation).
 
     Returns
     -------
-    dict with V1, ASDR, accelerate-go distance, and BFL (the max of the two)
+    dict with V1, V_MCG, ASDR, accelerate-go distance, and BFL
     """
     V_s = V_stall(W, S, rho, CL_max_TO)
     V_R = 1.1 * V_s
 
-    V_lo = 0.5 * V_s   # match asdr_todr_curves lower bound
+    if V_mcg is None:
+        V_mcg = 0.85 * V_s    # typical twin-jet estimate
+
+    V_lo = 0.5 * V_s   # search from below V_MCG to find unconstrained balance
     V_hi = V_R
 
     # Bisection: find V where ASDR = AGDR
@@ -336,7 +346,11 @@ def find_V1(W, S, T, CD0, CL_ground, K, mu_roll, mu_brake, rho,
         if abs(asd - agd) < 1.0:  # converged within 1 ft
             break
 
-    V1 = 0.5 * (V_lo + V_hi)
+    V1_balanced = 0.5 * (V_lo + V_hi)
+
+    # Enforce V1 >= V_MCG
+    V1 = max(V1_balanced, V_mcg)
+
     asd_final = accelerate_stop_distance(W, S, T, CD0, CL_ground, K,
                                          mu_roll, mu_brake, rho, CL_max_TO,
                                          V1, T_idle, T_reverse, t_react)
@@ -347,6 +361,7 @@ def find_V1(W, S, T, CD0, CL_ground, K, mu_roll, mu_brake, rho,
 
     return {
         "V1": V1,
+        "V_MCG": V_mcg,
         "ASDR_at_V1": asd_final,
         "AGDR_at_V1": agd_final,
         "BFL": BFL,
