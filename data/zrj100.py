@@ -11,9 +11,9 @@ zrj100 = AircraftData(
     name="ZRJ100",
 
     # ---- Weights ----
-    W_TO=89_414.0,          # lb, MTOW (Ch.17 mission analysis, shared wing fuel)
-    W_empty=48_341.0,       # lb, OEW (We 47553 + crew 788)
-    W_fuel_max=17_693.0,    # lb, total mission fuel (shared wing with ZRJ70)
+    W_TO=92_953.0,          # lb, MTOW (Ch.17 mission analysis, shared wing fuel)
+    W_empty=48_315.0,       # lb, OEW (We 47553 + crew 788)
+    W_fuel_max=21_258.0,    # lb, total mission fuel (shared wing with ZRJ70)
     W_payload=23_380.0,     # lb, 96 pax + cargo
 
     # ---- Wing geometry ----
@@ -26,8 +26,8 @@ zrj100 = AircraftData(
 
     # ---- Aerodynamics (synced from rj-basic-aerodynamics) ----
     CD0=0.01910,            # zero-lift drag coefficient
-    K=0.05418,              # induced drag factor (LE suction method)
-    e=0.753,                # Oswald span efficiency (LE suction)
+    K=0.04829,              # induced drag factor (LE suction method)
+    e=0.727,                # Oswald span efficiency (LE suction)
     CL_max_clean=1.16,      # clean
     CL_max_TO=1.99,         # takeoff flaps
     CL_max_L=2.62,          # landing flaps + slats
@@ -35,7 +35,7 @@ zrj100 = AircraftData(
     # ---- Propulsion (2x PW1200G) ----
     n_engines=2,
     T_max_SL=38_380.0,      # lb total (2 x 19,190 lb)
-    TSFC=0.50,              # 1/hr (cruise, refined GTF estimate)
+    TSFC=0.52,              # 1/hr (cruise, refined GTF estimate)
     BPR=9.0,
 
     # ---- Design cruise ----

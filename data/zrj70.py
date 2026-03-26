@@ -11,9 +11,9 @@ zrj70 = AircraftData(
     name="ZRJ70",
 
     # ---- Weights ----
-    W_TO=81_523.0,          # lb, MTOW (Ch.17 mission analysis)
-    W_empty=45_775.0,       # lb, OEW (We 44987 + crew 788)
-    W_fuel_max=17_693.0,    # lb, total mission fuel
+    W_TO=86_000.0,          # lb, MTOW (Ch.17 mission analysis)
+    W_empty=45_820.0,       # lb, OEW (We 44987 + crew 788)
+    W_fuel_max=22_125.0,    # lb, total mission fuel
     W_payload=18_055.0,     # lb, 76 pax + cargo
 
     # ---- Wing geometry ----
@@ -26,8 +26,8 @@ zrj70 = AircraftData(
 
     # ---- Aerodynamics (synced from rj-basic-aerodynamics) ----
     CD0=0.01843,            # zero-lift drag coefficient
-    K=0.05418,              # induced drag factor (LE suction method)
-    e=0.753,                # Oswald span efficiency (LE suction)
+    K=0.04829,              # induced drag factor (LE suction method)
+    e=0.727,                # Oswald span efficiency (LE suction)
     CL_max_clean=1.16,      # clean
     CL_max_TO=1.99,         # takeoff flaps
     CL_max_L=2.62,          # landing flaps + slats
@@ -35,7 +35,7 @@ zrj70 = AircraftData(
     # ---- Propulsion (2x PW1200G) ----
     n_engines=2,
     T_max_SL=38_380.0,      # lb total (2 x 19,190 lb)
-    TSFC=0.50,              # 1/hr (cruise, refined GTF estimate)
+    TSFC=0.52,              # 1/hr (cruise, refined GTF estimate)
     BPR=9.0,
 
     # ---- Design cruise ----

@@ -13,8 +13,8 @@ zrj50 = AircraftData(
 
     # ---- Weights ----
     W_TO=65_000.0,          # lb, MTOW (scope clause cap)
-    W_empty=45_578.0,       # lb, OEW (We 44987 + crew 591, 3 crew)
-    W_fuel_max=8_072.0,    # lb, max fuel (MTOW-limited, tank cap 21258)
+    W_empty=45_623.0,       # lb, OEW (We 44987 + crew 591, 3 crew)
+    W_fuel_max=8_027.0,    # lb, max fuel (MTOW-limited, tank cap 21258)
     W_payload=11_350.0,     # lb, 50 pax × 197 lbs + 50 bags × 30 lbs
 
     # ---- Wing geometry (same airframe as ZRJ70) ----
@@ -36,7 +36,7 @@ zrj50 = AircraftData(
     # ---- Propulsion (2x PW1200G) ----
     n_engines=2,
     T_max_SL=38_380.0,      # lb total (2 x 19,190 lb)
-    TSFC=0.50,              # 1/hr (cruise, refined GTF estimate)
+    TSFC=0.52,              # 1/hr (cruise, refined GTF estimate)
     BPR=9.0,
 
     # ---- Design cruise ----
