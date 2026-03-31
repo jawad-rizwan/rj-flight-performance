@@ -91,11 +91,11 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   BFL Eq.17.113 (ft)                   2,589         3,872         4,520
   TOFL FAR 25 (ft)                     2,677         3,884         4,471
   TOFL ISA+20 (ft)                     2,904         4,261         4,923
-  LDR (ft)                             2,293         2,613         2,742
-  LDR FAR (ft)                         3,822         4,355         4,570
-  LDR wet (ft)                         4,395         5,008         5,255
-  LDR steep 5.5 (ft)                   3,246         3,825         4,059
-  Max glideslope (deg)                   9.0           7.8           7.5
+  LDR (ft)                             2,355         2,691         2,827
+  LDR FAR (ft)                         3,924         4,486         4,712
+  LDR wet (ft)                         4,513         5,159         5,419
+  LDR steep 5.5 (ft)                   3,358         3,968         4,215
+  Max glideslope (deg)                   8.7           7.6           7.3
 ```
 
 ### MR&O Performance Attributes
@@ -115,14 +115,14 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | Single engine climb | 19.6% | 13.5% | 11.4% |
 | **Weight & Payload** | Max. payload, lbs | 11,350 | 20,347 | 26,092 |
 | | Passengers (<100 PAX market segment) | 50 | 76 | 96 |
-| | Max. landing weight (~85% MTOW) | 55,250 | 72,263 | 79,267 |
+| | Max. landing weight (~90% MTOW) | 58,500 | 76,514 | 83,930 |
 | **Airfield Performance** | TOFL, ISA, SL (MTOW) | 2,677 ft | 3,884 ft | 4,471 ft |
 | | TOFL, ISA+20, SL (MTOW) | 2,904 ft | 4,261 ft | 4,923 ft |
-| | LD FAR (dry), ISA, SL (MLW) | 3,822 ft | 4,355 ft | 4,570 ft |
-| | LD FAR (wet), ISA, SL (MLW) | 4,395 ft | 5,008 ft | 5,255 ft |
+| | LD FAR (dry), ISA, SL (MLW) | 3,924 ft | 4,486 ft | 4,712 ft |
+| | LD FAR (wet), ISA, SL (MLW) | 4,513 ft | 5,159 ft | 5,419 ft |
 | | Steep approach capability (MLW) | Yes | Yes | Yes |
-| | LDR FAR steep 5.5 deg (MLW) | 3,246 ft | 3,825 ft | 4,059 ft |
-| | Max feasible glideslope | 9.0 deg | 7.8 deg | 7.5 deg |
+| | LDR FAR steep 5.5 deg (MLW) | 3,358 ft | 3,968 ft | 4,215 ft |
+| | Max feasible glideslope | 8.7 deg | 7.6 deg | 7.3 deg |
 | | Rate of climb [SL, AEO / OEI] | 17,672 / 6,003 fpm | 13,420 / 4,464 fpm | 11,958 / 3,915 fpm |
 | | Glideslope | 3.0 deg | 3.0 deg | 3.0 deg |
 

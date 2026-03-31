@@ -84,8 +84,8 @@ class AircraftData:
     # ---- Derived helpers ----
     @property
     def W_landing(self):
-        """Typical landing weight ~ 85% MTOW (Raymer Ch.17)."""
-        return 0.85 * self.W_TO
+        """Typical landing weight ~ 90% MTOW."""
+        return 0.90 * self.W_TO
 
     @property
     def wing_loading(self):

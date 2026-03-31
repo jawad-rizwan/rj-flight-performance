@@ -131,7 +131,7 @@ def analyse(ac):
     vs_land  = V_stall(ac.W_landing, S, rho_sl, ac.CL_max_L)
     print(f"\n  V_stall clean (SL): {fps_to_kts(vs_clean):.1f} kts")
     print(f"  V_stall TO   (SL): {fps_to_kts(vs_to):.1f} kts")
-    print(f"  V_stall land (SL): {fps_to_kts(vs_land):.1f} kts  (at 85% MTOW)")
+    print(f"  V_stall land (SL): {fps_to_kts(vs_land):.1f} kts  (at 90% MTOW)")
 
     # Maximum speed (Sec. 17.2.3)
     v_max_sl = V_max(W, S, rho_sl, CD0, K, ac.T_max_SL)
@@ -473,7 +473,7 @@ def analyse(ac):
     print(f"    V_approach (1.3 Vs)   : {fps_to_kts(la['V_approach']):.1f} kts")
     print(f"    V_touchdown (1.15 Vs) : {fps_to_kts(la['V_TD']):.1f} kts")
 
-    print(f"\n  Landing weight          : {W_land:,.0f} lb  (85% MTOW)")
+    print(f"\n  Landing weight          : {W_land:,.0f} lb  (90% MTOW)")
     print(f"    Approach distance     : {la['S_approach']:,.0f} ft")
     print(f"    Flare distance        : {la['S_flare']:,.0f} ft")
     print(f"    Free roll             : {la['S_free_roll']:,.0f} ft")

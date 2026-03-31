@@ -30,7 +30,7 @@
 
   V_stall clean (SL): 127.6 kts
   V_stall TO   (SL): 97.4 kts
-  V_stall land (SL): 78.3 kts  (at 85% MTOW)
+  V_stall land (SL): 80.5 kts  (at 90% MTOW)
 
   V_max (SL)        : 776.7 kts  (Sec. 17.2.3)
   V_max (cruise alt): 855.7 kts
@@ -144,29 +144,29 @@
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
   V-speeds:
-    V_stall (landing)     : 78.3 kts
-    V_approach (1.3 Vs)   : 101.8 kts
-    V_touchdown (1.15 Vs) : 90.0 kts
+    V_stall (landing)     : 80.5 kts
+    V_approach (1.3 Vs)   : 104.7 kts
+    V_touchdown (1.15 Vs) : 92.6 kts
 
-  Landing weight          : 55,250 lb  (85% MTOW)
-    Approach distance     : 847 ft
-    Flare distance        : 215 ft
-    Free roll             : 456 ft
-    Braking distance      : 776 ft
-    LDR (unfactored)      : 2,293 ft
-    LDR (FAR /0.6)        : 3,822 ft
-    LDR wet (FAR x1.15)   : 4,395 ft  (FAR 121.195d)
+  Landing weight          : 58,500 lb  (90% MTOW)
+    Approach distance     : 840 ft
+    Flare distance        : 227 ft
+    Free roll             : 469 ft
+    Braking distance      : 818 ft
+    LDR (unfactored)      : 2,355 ft
+    LDR (FAR /0.6)        : 3,924 ft
+    LDR wet (FAR x1.15)   : 4,513 ft  (FAR 121.195d)
 
 --- 17.9b  STEEP APPROACH ANALYSIS (Sea Level, ISA) ---
   Ref: EASA CS 25.1420 / FAR 25.125(b)(2)(iii)
 
-  Max feasible glideslope : 9.0 deg  (flare height = obstacle height)
+  Max feasible glideslope : 8.7 deg  (flare height = obstacle height)
 
   GS [deg]    S_app  S_flare S_ground      LDR  LDR FAR     Sink   OK
   -----------------------------------------------------------------
-       3.0      847      215    1,231    2,293    3,822     539  yes
-       4.5      475      322    1,231    2,028    3,380     809  yes
-       5.5      323      393    1,231    1,948    3,246     988  yes
+       3.0      840      227    1,287    2,355    3,924     555  yes
+       4.5      465      341    1,287    2,093    3,488     832  yes
+       5.5      312      416    1,287    2,015    3,358   1,016  yes
 
   Sink = approach sink rate [fpm]
   S_ground = free roll + braking (unchanged by glideslope)
@@ -193,11 +193,11 @@
   BFL (Raymer Eq.17.113)      : 2,589 ft
   TOFL (FAR 25)               : 2,677 ft
   TOFL (ISA+20, SL)           : 2,904 ft
-  LDR (unfactored)            : 2,293 ft
-  LDR (FAR /0.6)              : 3,822 ft
-  LDR wet (FAR x1.15)         : 4,395 ft
-  LDR steep 5.5 (FAR)         : 3,246 ft
-  Max glideslope              : 9.0 deg
+  LDR (unfactored)            : 2,355 ft
+  LDR (FAR /0.6)              : 3,924 ft
+  LDR wet (FAR x1.15)         : 4,513 ft
+  LDR steep 5.5 (FAR)         : 3,358 ft
+  Max glideslope              : 8.7 deg
   Glide range from cruise     : 91 nmi
 
 
@@ -232,7 +232,7 @@
 
   V_stall clean (SL): 145.9 kts
   V_stall TO   (SL): 111.4 kts
-  V_stall land (SL): 89.5 kts  (at 85% MTOW)
+  V_stall land (SL): 92.1 kts  (at 90% MTOW)
 
   V_max (SL)        : 776.1 kts  (Sec. 17.2.3)
   V_max (cruise alt): 850.9 kts
@@ -346,29 +346,29 @@
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
   V-speeds:
-    V_stall (landing)     : 89.5 kts
-    V_approach (1.3 Vs)   : 116.4 kts
-    V_touchdown (1.15 Vs) : 102.9 kts
+    V_stall (landing)     : 92.1 kts
+    V_approach (1.3 Vs)   : 119.7 kts
+    V_touchdown (1.15 Vs) : 105.9 kts
 
-  Landing weight          : 72,263 lb  (85% MTOW)
-    Approach distance     : 814 ft
-    Flare distance        : 281 ft
-    Free roll             : 521 ft
-    Braking distance      : 997 ft
-    LDR (unfactored)      : 2,613 ft
-    LDR (FAR /0.6)        : 4,355 ft
-    LDR wet (FAR x1.15)   : 5,008 ft  (FAR 121.195d)
+  Landing weight          : 76,514 lb  (90% MTOW)
+    Approach distance     : 805 ft
+    Flare distance        : 297 ft
+    Free roll             : 536 ft
+    Braking distance      : 1,052 ft
+    LDR (unfactored)      : 2,691 ft
+    LDR (FAR /0.6)        : 4,486 ft
+    LDR wet (FAR x1.15)   : 5,159 ft  (FAR 121.195d)
 
 --- 17.9b  STEEP APPROACH ANALYSIS (Sea Level, ISA) ---
   Ref: EASA CS 25.1420 / FAR 25.125(b)(2)(iii)
 
-  Max feasible glideslope : 7.8 deg  (flare height = obstacle height)
+  Max feasible glideslope : 7.6 deg  (flare height = obstacle height)
 
   GS [deg]    S_app  S_flare S_ground      LDR  LDR FAR     Sink   OK
   -----------------------------------------------------------------
-       3.0      814      281    1,518    2,613    4,355     617  yes
-       4.5      425      421    1,518    2,364    3,941     925  yes
-       5.5      263      514    1,518    2,295    3,825   1,130  yes
+       3.0      805      297    1,589    2,691    4,486     635  yes
+       4.5      413      446    1,589    2,447    4,079     951  yes
+       5.5      248      545    1,589    2,381    3,968   1,162  yes
 
   Sink = approach sink rate [fpm]
   S_ground = free roll + braking (unchanged by glideslope)
@@ -395,11 +395,11 @@
   BFL (Raymer Eq.17.113)      : 3,872 ft
   TOFL (FAR 25)               : 3,884 ft
   TOFL (ISA+20, SL)           : 4,261 ft
-  LDR (unfactored)            : 2,613 ft
-  LDR (FAR /0.6)              : 4,355 ft
-  LDR wet (FAR x1.15)         : 5,008 ft
-  LDR steep 5.5 (FAR)         : 3,825 ft
-  Max glideslope              : 7.8 deg
+  LDR (unfactored)            : 2,691 ft
+  LDR (FAR /0.6)              : 4,486 ft
+  LDR wet (FAR x1.15)         : 5,159 ft
+  LDR steep 5.5 (FAR)         : 3,968 ft
+  Max glideslope              : 7.6 deg
   Glide range from cruise     : 97 nmi
 
 
@@ -434,7 +434,7 @@
 
   V_stall clean (SL): 152.8 kts
   V_stall TO   (SL): 116.7 kts
-  V_stall land (SL): 93.8 kts  (at 85% MTOW)
+  V_stall land (SL): 96.5 kts  (at 90% MTOW)
 
   V_max (SL)        : 762.0 kts  (Sec. 17.2.3)
   V_max (cruise alt): 832.5 kts
@@ -548,29 +548,29 @@
 --- 17.9  LANDING ANALYSIS (Sea Level, ISA) ---
 
   V-speeds:
-    V_stall (landing)     : 93.8 kts
-    V_approach (1.3 Vs)   : 121.9 kts
-    V_touchdown (1.15 Vs) : 107.8 kts
+    V_stall (landing)     : 96.5 kts
+    V_approach (1.3 Vs)   : 125.4 kts
+    V_touchdown (1.15 Vs) : 110.9 kts
 
-  Landing weight          : 79,267 lb  (85% MTOW)
-    Approach distance     : 800 ft
-    Flare distance        : 308 ft
-    Free roll             : 546 ft
-    Braking distance      : 1,088 ft
-    LDR (unfactored)      : 2,742 ft
-    LDR (FAR /0.6)        : 4,570 ft
-    LDR wet (FAR x1.15)   : 5,255 ft  (FAR 121.195d)
+  Landing weight          : 83,930 lb  (90% MTOW)
+    Approach distance     : 791 ft
+    Flare distance        : 326 ft
+    Free roll             : 562 ft
+    Braking distance      : 1,148 ft
+    LDR (unfactored)      : 2,827 ft
+    LDR (FAR /0.6)        : 4,712 ft
+    LDR wet (FAR x1.15)   : 5,419 ft  (FAR 121.195d)
 
 --- 17.9b  STEEP APPROACH ANALYSIS (Sea Level, ISA) ---
   Ref: EASA CS 25.1420 / FAR 25.125(b)(2)(iii)
 
-  Max feasible glideslope : 7.5 deg  (flare height = obstacle height)
+  Max feasible glideslope : 7.3 deg  (flare height = obstacle height)
 
   GS [deg]    S_app  S_flare S_ground      LDR  LDR FAR     Sink   OK
   -----------------------------------------------------------------
-       3.0      800      308    1,634    2,742    4,570     646  yes
-       4.5      405      462    1,634    2,500    4,167     968  yes
-       5.5      238      564    1,634    2,436    4,059   1,183  yes
+       3.0      791      326    1,710    2,827    4,712     665  yes
+       4.5      391      489    1,710    2,590    4,317     996  yes
+       5.5      221      597    1,710    2,529    4,215   1,217  yes
 
   Sink = approach sink rate [fpm]
   S_ground = free roll + braking (unchanged by glideslope)
@@ -597,11 +597,11 @@
   BFL (Raymer Eq.17.113)      : 4,520 ft
   TOFL (FAR 25)               : 4,471 ft
   TOFL (ISA+20, SL)           : 4,923 ft
-  LDR (unfactored)            : 2,742 ft
-  LDR (FAR /0.6)              : 4,570 ft
-  LDR wet (FAR x1.15)         : 5,255 ft
-  LDR steep 5.5 (FAR)         : 4,059 ft
-  Max glideslope              : 7.5 deg
+  LDR (unfactored)            : 2,827 ft
+  LDR (FAR /0.6)              : 4,712 ft
+  LDR wet (FAR x1.15)         : 5,419 ft
+  LDR steep 5.5 (FAR)         : 4,215 ft
+  Max glideslope              : 7.3 deg
   Glide range from cruise     : 95 nmi
 
 
@@ -622,11 +622,11 @@
   BFL Eq.17.113 (ft)                   2,589         3,872         4,520
   TOFL FAR 25 (ft)                     2,677         3,884         4,471
   TOFL ISA+20 (ft)                     2,904         4,261         4,923
-  LDR (ft)                             2,293         2,613         2,742
-  LDR FAR (ft)                         3,822         4,355         4,570
-  LDR wet (ft)                         4,395         5,008         5,255
-  LDR steep 5.5 (ft)                   3,246         3,825         4,059
-  Max glideslope (deg)                   9.0           7.8           7.5
+  LDR (ft)                             2,355         2,691         2,827
+  LDR FAR (ft)                         3,924         4,486         4,712
+  LDR wet (ft)                         4,513         5,159         5,419
+  LDR steep 5.5 (ft)                   3,358         3,968         4,215
+  Max glideslope (deg)                   8.7           7.6           7.3
 
 ======================================================================
   AIRFIELD PERFORMANCE BY RUNWAY SURFACE  (Table 17.1)
@@ -635,13 +635,13 @@
 --- ZRJ50 ---
   Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
   ---------------------------------------------------------------------------
-  Dry concrete        0.03  0.40    2,677    2,533    2,500    4,167    4,792
-  Wet concrete        0.05  0.23    2,917    2,917    3,363    5,604        -
-  Icy concrete        0.02  0.08    6,466    6,466    8,324   13,874        -
-  Hard turf           0.05  0.40    2,739    2,606    2,500    4,167        -
-  Firm dirt           0.04  0.30    2,709    2,709    2,858    4,764        -
-  Soft turf           0.07  0.20    3,114    3,114    3,627    6,045        -
-  Wet grass           0.08  0.20    3,186    3,186    3,627    6,045        -
+  Dry concrete        0.03  0.40    2,677    2,533    2,572    4,287    4,930
+  Wet concrete        0.05  0.23    2,917    2,917    3,471    5,786        -
+  Icy concrete        0.02  0.08    6,466    6,466    8,488   14,147        -
+  Hard turf           0.05  0.40    2,739    2,606    2,572    4,287        -
+  Firm dirt           0.04  0.30    2,709    2,709    2,946    4,911        -
+  Soft turf           0.07  0.20    3,114    3,114    3,746    6,243        -
+  Wet grass           0.08  0.20    3,186    3,186    3,746    6,243        -
 
   TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
@@ -649,13 +649,13 @@
 --- ZRJ70 ---
   Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
   ---------------------------------------------------------------------------
-  Dry concrete        0.03  0.40    3,884    3,753    2,873    4,789    5,507
-  Wet concrete        0.05  0.23    4,427    4,427    3,932    6,554        -
-  Icy concrete        0.02  0.08    7,894    7,894    9,318   15,530        -
-  Hard turf           0.05  0.40    4,034    3,919    2,873    4,789        -
-  Firm dirt           0.04  0.30    4,055    4,055    3,318    5,529        -
-  Soft turf           0.07  0.20    4,843    4,843    4,249    7,082        -
-  Wet grass           0.08  0.20    5,008    5,008    4,249    7,082        -
+  Dry concrete        0.03  0.40    3,884    3,753    2,965    4,942    5,683
+  Wet concrete        0.05  0.23    4,427    4,427    4,074    6,790        -
+  Icy concrete        0.02  0.08    7,894    7,894    9,601   16,001        -
+  Hard turf           0.05  0.40    4,034    3,919    2,965    4,942        -
+  Firm dirt           0.04  0.30    4,055    4,055    3,432    5,719        -
+  Soft turf           0.07  0.20    4,843    4,843    4,404    7,341        -
+  Wet grass           0.08  0.20    5,008    5,008    4,404    7,341        -
 
   TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
@@ -663,13 +663,13 @@
 --- ZRJ100 ---
   Surface             mu_r  mu_b     TOFL      BFL      LDR  LDR FAR  Wet FAR
   ---------------------------------------------------------------------------
-  Dry concrete        0.03  0.40    4,471    4,369    3,024    5,040    5,796
-  Wet concrete        0.05  0.23    5,198    5,198    4,164    6,940        -
-  Icy concrete        0.02  0.08    8,547    8,547    9,768   16,280        -
-  Hard turf           0.05  0.40    4,674    4,591    3,024    5,040        -
-  Firm dirt           0.04  0.30    4,737    4,737    3,504    5,840        -
-  Soft turf           0.07  0.20    5,738    5,738    4,502    7,504        -
-  Wet grass           0.08  0.20    5,964    5,964    4,502    7,504        -
+  Dry concrete        0.03  0.40    4,471    4,369    3,124    5,207    5,988
+  Wet concrete        0.05  0.23    5,198    5,198    4,319    7,198        -
+  Icy concrete        0.02  0.08    8,547    8,547   10,091   16,818        -
+  Hard turf           0.05  0.40    4,674    4,591    3,124    5,207        -
+  Firm dirt           0.04  0.30    4,737    4,737    3,628    6,047        -
+  Soft turf           0.07  0.20    5,738    5,738    4,673    7,788        -
+  Wet grass           0.08  0.20    5,964    5,964    4,673    7,788        -
 
   TOFL = max(TODR × 1.15, BFL)  |  LDR FAR = actual / 0.6  |  Wet FAR = dry FAR × 1.15 (FAR 121.195d)
 
