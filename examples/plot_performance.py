@@ -16,6 +16,8 @@ Charts produced:
  10. Climb hodograph (Vx vs Vy)
  11. Ps contour plot (altitude vs Mach)
  12. Airfield performance by runway surface
+ 13. Steep approach landing distance comparison
+ 14. Steep approach sink rate & glideslope limit
 """
 
 import sys, os
@@ -802,6 +804,184 @@ def plot_per_surface_charts():
 
 
 # =====================================================================
+# 13. Steep Approach Landing Distance Comparison
+# =====================================================================
+def plot_steep_approach_bars():
+    from perf import total_landing_distance, steep_approach_analysis
+
+    angles = [3.0, 4.5, 5.5]
+    n_angles = len(angles)
+    n_ac = len(VARIANTS)
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+    # ---- Left panel: stacked segment bars per angle, grouped by variant ----
+    ax = axes[0]
+    group_width = 0.8
+    bar_width = group_width / n_ac
+    segment_labels = ["Approach", "Flare", "Free Roll", "Braking"]
+
+    for i_ac, ac in enumerate(VARIANTS):
+        W, S, CD0, K = ac.W_landing, ac.S, ac.CD0, ac.K
+        rho = RHO_SL
+        T_idle = 0.05 * ac.T_max_SL
+        color = COLORS[ac.name]
+
+        for i_ang, angle in enumerate(angles):
+            la = total_landing_distance(
+                W, S, rho, ac.CL_max_L, CD0 + 0.02, ac.CL_ground, K,
+                ac.mu_brake, ac.h_obstacle_L, T_idle, 0.0,
+                1.3, 3.0, False, glideslope_deg=angle)
+
+            segs = [la["S_approach"], la["S_flare"],
+                    la["S_free_roll"], la["S_braking"]]
+            x_pos = i_ang * (n_ac + 1) + i_ac
+            bottom = 0.0
+            hatches = ['', '///', '...', 'xxx']
+            for j, (val, hatch) in enumerate(zip(segs, hatches)):
+                bar = ax.bar(x_pos, val, bar_width * 0.95, bottom=bottom,
+                             color=color, hatch=hatch, edgecolor='white',
+                             alpha=0.8 if j == 0 else 0.6)
+                bottom += val
+
+            # Total label on top
+            ax.text(x_pos, bottom + 30, f"{bottom:,.0f}",
+                    ha='center', va='bottom', fontsize=7, rotation=90)
+
+    # X-axis
+    tick_positions = [i * (n_ac + 1) + (n_ac - 1) / 2 for i in range(n_angles)]
+    ax.set_xticks(tick_positions)
+    ax.set_xticklabels([f"{a:.1f} deg" for a in angles])
+    ax.set_ylabel("Landing Distance [ft]")
+    ax.set_title("Landing Distance by Glideslope Angle\n(unfactored)")
+    ax.grid(True, alpha=0.3, axis='y')
+
+    # Custom legend for variants + segments
+    from matplotlib.patches import Patch
+    handles = [Patch(facecolor=COLORS[ac.name], label=ac.name) for ac in VARIANTS]
+    seg_handles = [Patch(facecolor='gray', hatch=h, edgecolor='white', alpha=0.7,
+                         label=s) for h, s in zip(['', '///', '...', 'xxx'],
+                                                  segment_labels)]
+    ax.legend(handles=handles + seg_handles, fontsize=7,
+              loc='upper right', ncol=2)
+
+    # ---- Right panel: FAR landing distance vs glideslope angle (line) ----
+    ax = axes[1]
+    angles_sweep = np.arange(2.0, 8.1, 0.25)
+
+    for ac in VARIANTS:
+        W, S, CD0, K = ac.W_landing, ac.S, ac.CD0, ac.K
+        rho = RHO_SL
+        T_idle = 0.05 * ac.T_max_SL
+        color = COLORS[ac.name]
+
+        steep = steep_approach_analysis(
+            W, S, rho, ac.CL_max_L, CD0 + 0.02, ac.CL_ground, K,
+            ac.mu_brake, ac.h_obstacle_L, T_idle, 0.0,
+            1.3, 3.0, angles_deg=list(angles_sweep))
+        gamma_max = steep["gamma_max_deg"]
+
+        ldrs = [steep[a]["S_FAR_field"] for a in angles_sweep]
+        feasible = [a for a in angles_sweep if a <= gamma_max]
+        infeasible = [a for a in angles_sweep if a > gamma_max]
+
+        if feasible:
+            ldr_f = [steep[a]["S_FAR_field"] for a in feasible]
+            ax.plot(feasible, ldr_f, '-', color=color, lw=2, label=ac.name)
+        if infeasible:
+            ldr_i = [steep[a]["S_FAR_field"] for a in infeasible]
+            ax.plot(infeasible, ldr_i, '--', color=color, lw=1.5, alpha=0.4)
+
+        ax.axvline(gamma_max, color=color, ls=':', alpha=0.5, lw=1)
+        ax.annotate(f"{gamma_max:.1f} deg",
+                    (gamma_max, max(ldrs) * 0.95), fontsize=7,
+                    color=color, rotation=90, ha='right')
+
+    ax.axvline(3.0, color='black', ls='--', alpha=0.3, lw=1)
+    ax.text(3.05, ax.get_ylim()[0], "3.0 std", fontsize=7, alpha=0.5)
+    ax.set_xlabel("Glideslope Angle [deg]")
+    ax.set_ylabel("FAR Landing Distance [ft]")
+    ax.set_title("FAR LDR vs Glideslope Angle\n(solid = feasible, dashed = infeasible)")
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    save(fig, "13_steep_approach_LDR.png")
+
+
+# =====================================================================
+# 14. Steep Approach Sink Rate & Glideslope Limit
+# =====================================================================
+def plot_steep_approach_sink():
+    from perf import total_landing_distance, max_glideslope_angle
+
+    angles_sweep = np.arange(2.0, 8.1, 0.25)
+
+    fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+
+    # ---- Left panel: approach sink rate vs glideslope ----
+    ax = axes[0]
+    for ac in VARIANTS:
+        W, S = ac.W_landing, ac.S
+        rho = RHO_SL
+        color = COLORS[ac.name]
+        V_s = V_stall(W, S, rho, ac.CL_max_L)
+        V_a = 1.3 * V_s
+        gamma_max = max_glideslope_angle(W, S, rho, ac.CL_max_L,
+                                         ac.h_obstacle_L)
+
+        sink_fpm = [V_a * np.sin(np.radians(a)) * 60.0 for a in angles_sweep]
+        ax.plot(angles_sweep, sink_fpm, '-', color=color, lw=2, label=ac.name)
+        ax.axvline(gamma_max, color=color, ls=':', alpha=0.5, lw=1)
+
+    # Reference lines for typical sink rate limits
+    ax.axhline(1000, color='orange', ls='--', alpha=0.5, lw=1.5)
+    ax.text(2.1, 1020, "1000 fpm (typical steep limit)", fontsize=7,
+            color='orange', alpha=0.7)
+    ax.axhline(720, color='green', ls='--', alpha=0.5, lw=1.5)
+    ax.text(2.1, 740, "720 fpm (normal ops)", fontsize=7,
+            color='green', alpha=0.7)
+
+    ax.set_xlabel("Glideslope Angle [deg]")
+    ax.set_ylabel("Approach Sink Rate [fpm]")
+    ax.set_title("Approach Sink Rate vs Glideslope\n(at 1.3 Vs, landing config)")
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    # ---- Right panel: flare height vs glideslope ----
+    ax = axes[1]
+    for ac in VARIANTS:
+        W, S = ac.W_landing, ac.S
+        rho = RHO_SL
+        color = COLORS[ac.name]
+        V_s = V_stall(W, S, rho, ac.CL_max_L)
+        V_f = 1.23 * V_s
+        R = V_f**2 / (G * 0.2)  # flare radius
+        gamma_max = max_glideslope_angle(W, S, rho, ac.CL_max_L,
+                                         ac.h_obstacle_L)
+
+        h_f = [R * (1.0 - np.cos(np.radians(a))) for a in angles_sweep]
+        ax.plot(angles_sweep, h_f, '-', color=color, lw=2, label=ac.name)
+        ax.axvline(gamma_max, color=color, ls=':', alpha=0.5, lw=1)
+
+    # Obstacle height reference
+    ax.axhline(50, color='red', ls='--', alpha=0.6, lw=1.5)
+    ax.text(2.1, 52, "50 ft screen height", fontsize=7, color='red', alpha=0.7)
+    ax.axhline(35, color='gray', ls='--', alpha=0.5, lw=1.5)
+    ax.text(2.1, 37, "35 ft (reduced screen)", fontsize=7,
+            color='gray', alpha=0.7)
+
+    ax.set_xlabel("Glideslope Angle [deg]")
+    ax.set_ylabel("Flare Height [ft]")
+    ax.set_title("Flare Height vs Glideslope\n(h_f = R(1 - cos gamma), Eq. 17.110)")
+    ax.legend(fontsize=8)
+    ax.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    save(fig, "14_steep_approach_sink_flare.png")
+
+
+# =====================================================================
 ALL_PLOTS = [
     plot_thrust_vs_velocity,
     plot_power_vs_velocity,
@@ -816,6 +996,8 @@ ALL_PLOTS = [
     plot_Ps_contours,
     plot_surface_performance,
     plot_per_surface_charts,
+    plot_steep_approach_bars,
+    plot_steep_approach_sink,
 ]
 
 if __name__ == "__main__":

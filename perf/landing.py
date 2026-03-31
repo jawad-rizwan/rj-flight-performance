@@ -50,7 +50,8 @@ def approach_distance(h_obstacle, gamma_a):
 # Flare
 # =========================================================================
 
-def flare_parameters(W, S, rho, CL_max_L, approach_factor=1.3):
+def flare_parameters(W, S, rho, CL_max_L, approach_factor=1.3,
+                     glideslope_deg=3.0):
     """Flare segment parameters.
 
     Touchdown speed V_TD = 1.15 * V_stall (civil) or 1.1 * V_stall (military).
@@ -60,9 +61,14 @@ def flare_parameters(W, S, rho, CL_max_L, approach_factor=1.3):
 
     Raymer Eq. (17.107) applied to flare.
 
+    Parameters
+    ----------
+    glideslope_deg : float, approach glideslope angle [deg].
+        Standard = 3.0.  Steep approaches use 4.5-5.5 deg (e.g. London City 5.5).
+
     Returns
     -------
-    dict with V_TD, V_f, R, h_f, S_f
+    dict with V_TD, V_f, R, h_f, S_f, glideslope_deg
     """
     V_s = V_stall(W, S, rho, CL_max_L)
     V_a = approach_factor * V_s
@@ -72,8 +78,7 @@ def flare_parameters(W, S, rho, CL_max_L, approach_factor=1.3):
     n = 1.2
     R = V_f**2 / (G * (n - 1.0))     # Eq. (17.107) for flare
 
-    # Approach angle (assume ~3 deg for transport)
-    gamma_a = np.radians(3.0)
+    gamma_a = np.radians(glideslope_deg)
 
     # Flare height
     h_f = R * (1.0 - np.cos(gamma_a))    # Eq. (17.110) for flare
@@ -89,6 +94,7 @@ def flare_parameters(W, S, rho, CL_max_L, approach_factor=1.3):
         "R": R,
         "h_f": h_f,
         "S_f": S_f,
+        "glideslope_deg": glideslope_deg,
     }
 
 
@@ -159,23 +165,27 @@ def braking_distance(W, S, V_TD, mu_brake, rho, CD0, CL_ground, K,
 def total_landing_distance(W, S, rho, CL_max_L, CD0, CL_ground, K,
                            mu_brake, h_obstacle=50.0, T_idle=0.0,
                            T_reverse=0.0, approach_factor=1.3,
-                           t_free=3.0, FAR_factor=True):
+                           t_free=3.0, FAR_factor=True,
+                           glideslope_deg=3.0):
     """Total landing distance [ft].
 
     Sum of: approach + flare + free roll + braking
 
     Parameters
     ----------
-    FAR_factor : bool, if True multiply by 1.667 for FAR field length
+    FAR_factor     : bool, if True multiply by 1/0.6 for FAR field length
+    glideslope_deg : float, approach glideslope angle [deg].
+        Standard = 3.0.  Steep approaches use 4.5-5.5 deg.
 
     Returns
     -------
     dict with all segment distances and total
     """
-    flare = flare_parameters(W, S, rho, CL_max_L, approach_factor)
+    flare = flare_parameters(W, S, rho, CL_max_L, approach_factor,
+                             glideslope_deg)
 
     # Approach
-    gamma_a = np.radians(3.0)  # typical transport
+    gamma_a = np.radians(glideslope_deg)
     S_a = (h_obstacle - flare["h_f"]) / np.tan(gamma_a) if flare["h_f"] < h_obstacle else 0.0
 
     # Flare
@@ -193,10 +203,15 @@ def total_landing_distance(W, S, rho, CL_max_L, CD0, CL_ground, K,
     # FAR field length = actual / 0.6  (FAR 25.125)
     S_FAR = S_total / 0.6 if FAR_factor else S_total
 
+    # Sink rate on approach
+    V_sink = flare["V_approach"] * np.sin(gamma_a)
+
     return {
         "V_stall": flare["V_stall"],
         "V_approach": flare["V_approach"],
         "V_TD": flare["V_TD"],
+        "glideslope_deg": glideslope_deg,
+        "V_sink_approach": V_sink,
         "S_approach": S_a,
         "S_flare": S_f,
         "S_free_roll": S_free,
@@ -204,3 +219,103 @@ def total_landing_distance(W, S, rho, CL_max_L, CD0, CL_ground, K,
         "S_total_actual": S_total,
         "S_FAR_field": S_FAR,
     }
+
+
+# =========================================================================
+# Steep Approach (EASA CS 25.1420 / FAR 25.125)
+# =========================================================================
+
+def approach_sink_rate(V_approach, glideslope_deg):
+    """Sink rate during approach [ft/s].
+
+    V_sink = V_approach * sin(gamma_a)
+
+    Typical limits:
+        Normal (3 deg):   ~12 ft/s  (~720 fpm)
+        Steep (5.5 deg):  ~22 ft/s  (~1300 fpm)
+
+    Parameters
+    ----------
+    V_approach     : float, approach speed [ft/s]
+    glideslope_deg : float, glideslope angle [deg]
+
+    Returns
+    -------
+    V_sink : float, sink rate [ft/s] (positive downward)
+    """
+    return V_approach * np.sin(np.radians(glideslope_deg))
+
+
+def max_glideslope_angle(W, S, rho, CL_max_L, h_obstacle=50.0,
+                         approach_factor=1.3):
+    """Maximum feasible glideslope angle [deg].
+
+    Limited by the condition that flare height h_f must not exceed
+    the obstacle clearance height h_obstacle.  Beyond this angle the
+    aircraft would need to begin its flare above the screen height,
+    making the approach geometry infeasible.
+
+    h_f = R * (1 - cos(gamma_a))  <=  h_obstacle
+    => gamma_max = arccos(1 - h_obstacle / R)
+
+    Parameters
+    ----------
+    h_obstacle : float, screen height [ft] (default 50)
+
+    Returns
+    -------
+    gamma_max_deg : float, maximum glideslope angle [deg]
+    """
+    V_s = V_stall(W, S, rho, CL_max_L)
+    V_f = 1.23 * V_s
+    n = 1.2
+    R = V_f**2 / (G * (n - 1.0))
+
+    ratio = h_obstacle / R
+    if ratio >= 2.0:
+        return 90.0  # practically unlimited
+    return np.degrees(np.arccos(1.0 - ratio))
+
+
+def steep_approach_analysis(W, S, rho, CL_max_L, CD0, CL_ground, K,
+                            mu_brake, h_obstacle=50.0, T_idle=0.0,
+                            T_reverse=0.0, approach_factor=1.3,
+                            t_free=3.0, angles_deg=None):
+    """Landing distances for standard and steep approach angles.
+
+    Computes full landing distance breakdown for each glideslope angle
+    and flags angles that exceed the flare-height feasibility limit.
+
+    Steep approach operations (glideslope > 3 deg) are used at airports
+    with terrain or noise constraints (e.g. London City at 5.5 deg,
+    Lugano at 6.65 deg).  Certification basis: EASA CS 25.1420 /
+    FAR 25.125(b)(2)(iii).
+
+    Parameters
+    ----------
+    angles_deg : list of float, glideslope angles to evaluate [deg].
+        Default [3.0, 4.5, 5.5].
+
+    Returns
+    -------
+    dict keyed by angle (float) with landing distance dicts,
+    plus 'gamma_max_deg' for the feasibility limit.
+    """
+    if angles_deg is None:
+        angles_deg = [3.0, 4.5, 5.5]
+
+    gamma_max = max_glideslope_angle(W, S, rho, CL_max_L, h_obstacle,
+                                     approach_factor)
+
+    results = {"gamma_max_deg": gamma_max}
+
+    for angle in angles_deg:
+        ld = total_landing_distance(
+            W, S, rho, CL_max_L, CD0, CL_ground, K,
+            mu_brake, h_obstacle, T_idle, T_reverse,
+            approach_factor, t_free, FAR_factor=True,
+            glideslope_deg=angle)
+        ld["feasible"] = angle <= gamma_max
+        results[angle] = ld
+
+    return results

@@ -157,6 +157,20 @@
     LDR (FAR /0.6)        : 3,822 ft
     LDR wet (FAR x1.15)   : 4,395 ft  (FAR 121.195d)
 
+--- 17.9b  STEEP APPROACH ANALYSIS (Sea Level, ISA) ---
+  Ref: EASA CS 25.1420 / FAR 25.125(b)(2)(iii)
+
+  Max feasible glideslope : 9.0 deg  (flare height = obstacle height)
+
+  GS [deg]    S_app  S_flare S_ground      LDR  LDR FAR     Sink   OK
+  -----------------------------------------------------------------
+       3.0      847      215    1,231    2,293    3,822     539  yes
+       4.5      475      322    1,231    2,028    3,380     809  yes
+       5.5      323      393    1,231    1,948    3,246     988  yes
+
+  Sink = approach sink rate [fpm]
+  S_ground = free roll + braking (unchanged by glideslope)
+
 ======================================================================
   ZRJ50  PERFORMANCE SUMMARY
 ======================================================================
@@ -182,6 +196,8 @@
   LDR (unfactored)            : 2,293 ft
   LDR (FAR /0.6)              : 3,822 ft
   LDR wet (FAR x1.15)         : 4,395 ft
+  LDR steep 5.5 (FAR)         : 3,246 ft
+  Max glideslope              : 9.0 deg
   Glide range from cruise     : 91 nmi
 
 
@@ -343,6 +359,20 @@
     LDR (FAR /0.6)        : 4,282 ft
     LDR wet (FAR x1.15)   : 4,924 ft  (FAR 121.195d)
 
+--- 17.9b  STEEP APPROACH ANALYSIS (Sea Level, ISA) ---
+  Ref: EASA CS 25.1420 / FAR 25.125(b)(2)(iii)
+
+  Max feasible glideslope : 8.0 deg  (flare height = obstacle height)
+
+  GS [deg]    S_app  S_flare S_ground      LDR  LDR FAR     Sink   OK
+  -----------------------------------------------------------------
+       3.0      818      272    1,479    2,569    4,282     607  yes
+       4.5      432      407    1,479    2,318    3,864     910  yes
+       5.5      271      498    1,479    2,248    3,746   1,111  yes
+
+  Sink = approach sink rate [fpm]
+  S_ground = free roll + braking (unchanged by glideslope)
+
 ======================================================================
   ZRJ70  PERFORMANCE SUMMARY
 ======================================================================
@@ -368,6 +398,8 @@
   LDR (unfactored)            : 2,569 ft
   LDR (FAR /0.6)              : 4,282 ft
   LDR wet (FAR x1.15)         : 4,924 ft
+  LDR steep 5.5 (FAR)         : 3,746 ft
+  Max glideslope              : 8.0 deg
   Glide range from cruise     : 97 nmi
 
 
@@ -529,6 +561,20 @@
     LDR (FAR /0.6)        : 4,487 ft
     LDR wet (FAR x1.15)   : 5,160 ft  (FAR 121.195d)
 
+--- 17.9b  STEEP APPROACH ANALYSIS (Sea Level, ISA) ---
+  Ref: EASA CS 25.1420 / FAR 25.125(b)(2)(iii)
+
+  Max feasible glideslope : 7.6 deg  (flare height = obstacle height)
+
+  GS [deg]    S_app  S_flare S_ground      LDR  LDR FAR     Sink   OK
+  -----------------------------------------------------------------
+       3.0      805      298    1,589    2,692    4,487     635  yes
+       4.5      413      446    1,589    2,448    4,080     952  yes
+       5.5      247      545    1,589    2,382    3,969   1,163  yes
+
+  Sink = approach sink rate [fpm]
+  S_ground = free roll + braking (unchanged by glideslope)
+
 ======================================================================
   ZRJ100  PERFORMANCE SUMMARY
 ======================================================================
@@ -554,6 +600,8 @@
   LDR (unfactored)            : 2,692 ft
   LDR (FAR /0.6)              : 4,487 ft
   LDR wet (FAR x1.15)         : 5,160 ft
+  LDR steep 5.5 (FAR)         : 3,969 ft
+  Max glideslope              : 7.6 deg
   Glide range from cruise     : 95 nmi
 
 
@@ -577,6 +625,8 @@
   LDR (ft)                             2,293         2,569         2,692
   LDR FAR (ft)                         3,822         4,282         4,487
   LDR wet (ft)                         4,395         4,924         5,160
+  LDR steep 5.5 (ft)                   3,246         3,746         3,969
+  Max glideslope (deg)                   9.0           8.0           7.6
 
 ======================================================================
   AIRFIELD PERFORMANCE BY RUNWAY SURFACE  (Table 17.1)

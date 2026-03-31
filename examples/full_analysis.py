@@ -37,7 +37,7 @@ from perf import (
     # takeoff
     total_takeoff_distance, balanced_field_length, find_V1,
     # landing
-    total_landing_distance,
+    total_landing_distance, steep_approach_analysis,
     # wave drag
     mdd_wing, cd0_at_mach,
 )
@@ -485,6 +485,45 @@ def analyse(ac):
     print(f"    LDR wet (FAR x1.15)   : {ldr_wet:,.0f} ft  (FAR 121.195d)")
 
     # =================================================================
+    # 17.9b  STEEP APPROACH ANALYSIS
+    # =================================================================
+    subsection("17.9b  STEEP APPROACH ANALYSIS (Sea Level, ISA)")
+    print("  Ref: EASA CS 25.1420 / FAR 25.125(b)(2)(iii)")
+
+    steep = steep_approach_analysis(
+        W=W_land, S=S, rho=rho_sl, CL_max_L=ac.CL_max_L,
+        CD0=CD0 + 0.02, CL_ground=ac.CL_ground, K=K,
+        mu_brake=ac.mu_brake, h_obstacle=ac.h_obstacle_L,
+        T_idle=T_idle_land, T_reverse=0.0,
+        approach_factor=1.3, t_free=3.0,
+        angles_deg=[3.0, 4.5, 5.5])
+
+    print(f"\n  Max feasible glideslope : {steep['gamma_max_deg']:.1f} deg"
+          f"  (flare height = obstacle height)")
+
+    header = (f"  {'GS [deg]':>8s} {'S_app':>8s} {'S_flare':>8s}"
+              f" {'S_ground':>8s} {'LDR':>8s} {'LDR FAR':>8s}"
+              f" {'Sink':>8s} {'OK':>4s}")
+    print(f"\n{header}")
+    print("  " + "-" * (len(header.strip()) - 2))
+
+    for angle in [3.0, 4.5, 5.5]:
+        r = steep[angle]
+        S_ground = r["S_free_roll"] + r["S_braking"]
+        sink_fpm = r["V_sink_approach"] * 60.0
+        ok = "yes" if r["feasible"] else "NO"
+        print(f"  {angle:8.1f} {r['S_approach']:8,.0f} {r['S_flare']:8,.0f}"
+              f" {S_ground:8,.0f} {r['S_total_actual']:8,.0f}"
+              f" {r['S_FAR_field']:8,.0f} {sink_fpm:7,.0f} {ok:>4s}")
+
+    print()
+    print("  Sink = approach sink rate [fpm]")
+    print("  S_ground = free roll + braking (unchanged by glideslope)")
+
+    # Store steep approach results for summary
+    steep_5p5 = steep[5.5]
+
+    # =================================================================
     # Summary table
     # =================================================================
     separator(f"{ac.name}  PERFORMANCE SUMMARY")
@@ -511,6 +550,9 @@ def analyse(ac):
         ("LDR (unfactored)",        f"{la['S_total_actual']:,.0f} ft"),
         ("LDR (FAR /0.6)",          f"{la['S_FAR_field']:,.0f} ft"),
         ("LDR wet (FAR x1.15)",     f"{ldr_wet:,.0f} ft"),
+        ("LDR steep 5.5 (FAR)",     f"{steep_5p5['S_FAR_field']:,.0f} ft"
+                                     + ("" if steep_5p5["feasible"] else " (INFEASIBLE)")),
+        ("Max glideslope",          f"{steep['gamma_max_deg']:.1f} deg"),
         ("Glide range from cruise", f"{R_glide/6076:,.0f} nmi"),
     ]
     for label, value in summary:
@@ -530,6 +572,9 @@ def analyse(ac):
         "LDR": la["S_total_actual"],
         "LDR_FAR": la["S_FAR_field"],
         "LDR_wet": ldr_wet,
+        "LDR_steep_5p5": steep_5p5["S_FAR_field"],
+        "steep_feasible": steep_5p5["feasible"],
+        "gamma_max_deg": steep["gamma_max_deg"],
     }
 
 
@@ -559,6 +604,8 @@ def run_comparison(results):
         ("LDR (ft)",           "LDR",            ",.0f", None),
         ("LDR FAR (ft)",       "LDR_FAR",        ",.0f", None),
         ("LDR wet (ft)",       "LDR_wet",        ",.0f", None),
+        ("LDR steep 5.5 (ft)", "LDR_steep_5p5",  ",.0f", None),
+        ("Max glideslope (deg)","gamma_max_deg",  ".1f",  None),
     ]
     for label, key, fmt, transform in metrics:
         row = f"  {label:<28s}"

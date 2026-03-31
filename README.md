@@ -32,9 +32,9 @@ rj-flight-performance/
 │   ├── full_analysis.py               # Complete numerical performance analysis
 │   ├── plot_performance.py            # Generate all performance charts
 │   ├── charts/
-│   │   ├── CRJ/                       # CRJ family charts (12 PNGs)
+│   │   ├── CRJ/                       # CRJ family charts (14 PNGs)
 │   │   │   └── surfaces/              # Per-surface TO/landing + BFL charts
-│   │   └── ZRJ/                       # ZRJ family charts (12 PNGs)
+│   │   └── ZRJ/                       # ZRJ family charts (15 PNGs)
 │   │       └── surfaces/              # Per-surface TO/landing + BFL charts
 │   └── output/
 │       ├── CRJ/analysis.txt           # CRJ family analysis output
@@ -94,6 +94,8 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
   LDR (ft)                             2,293         2,569         2,692
   LDR FAR (ft)                         3,822         4,282         4,487
   LDR wet (ft)                         4,395         4,924         5,160
+  LDR steep 5.5 (ft)                   3,246         3,746         3,969
+  Max glideslope (deg)                   9.0           8.0           7.6
 ```
 
 ### MR&O Performance Attributes
@@ -119,6 +121,8 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | LD FAR (dry), ISA, SL (MLW) | 3,822 ft | 4,282 ft | 4,487 ft |
 | | LD FAR (wet), ISA, SL (MLW) | 4,395 ft | 4,924 ft | 5,160 ft |
 | | Steep approach capability (MLW) | Yes | Yes | Yes |
+| | LDR FAR steep 5.5 deg (MLW) | 3,246 ft | 3,746 ft | 3,969 ft |
+| | Max feasible glideslope | 9.0 deg | 8.0 deg | 7.6 deg |
 | | Rate of climb [SL, AEO / OEI] | 17,672 / 6,006 fpm | 13,887 / 4,638 fpm | 12,401 / 4,082 fpm |
 | | Glideslope | 3.0 deg | 3.0 deg | 3.0 deg |
 
@@ -201,13 +205,14 @@ All equations reference Raymer's *Aircraft Design: A Conceptual Approach*, 7th E
 | 17.9.1 | Landing approach | -- | `landing.py` |
 | 17.9.2 | Landing flare | 17.107, 17.110 | `landing.py` |
 | 17.9.3 | Landing ground roll (braking) | 17.102-17.104 | `landing.py` |
+| — | Steep approach analysis | CS 25.1420, FAR 25.125 | `landing.py` |
 | 12.5.9 | Transonic wave drag / drag rise | Eq. 12.46, Fig. 12.32 | `wave_drag.py` |
 
 ---
 
 ## Performance Charts
 
-Running `python examples/plot_performance.py` generates 12 charts per family in `examples/charts/{CRJ,ZRJ}/`, plus per-surface subcharts in `surfaces/`:
+Running `python examples/plot_performance.py` generates 14 charts per family in `examples/charts/{CRJ,ZRJ}/`, plus per-surface subcharts in `surfaces/`:
 
 | # | Chart | Raymer Reference |
 |---|-------|-----------------|
@@ -223,6 +228,8 @@ Running `python examples/plot_performance.py` generates 12 charts per family in 
 | 10 | Climb hodograph (Vx vs Vy) | Sec. 17.3.2, Eq. 17.38-17.39 |
 | 11 | Ps contour plot (altitude vs Mach) | Fig. 17.9, Eq. 17.89 |
 | 12 | Airfield performance by runway surface | Table 17.1, Sec. 17.8-17.9 |
+| 13 | Steep approach landing distance comparison | CS 25.1420, FAR 25.125 |
+| 14 | Steep approach sink rate & flare height | Eq. 17.107, 17.110 |
 | — | Per-surface TO/landing + BFL (in `surfaces/`) | Table 17.1, Eq. 17.102 |
 
 ---
