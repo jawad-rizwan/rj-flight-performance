@@ -25,7 +25,7 @@ zrj70 = AircraftData(
     taper=0.33,             # taper ratio
 
     # ---- Aerodynamics (synced from rj-basic-aerodynamics) ----
-    CD0=0.01843,            # zero-lift drag coefficient
+    CD0=0.01853,            # zero-lift drag coefficient
     K=0.04829,              # induced drag factor (LE suction method)
     e=0.727,                # Oswald span efficiency (LE suction)
     CL_max_clean=1.16,      # clean

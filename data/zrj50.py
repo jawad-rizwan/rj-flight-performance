@@ -26,9 +26,9 @@ zrj50 = AircraftData(
     taper=0.33,             # taper ratio
 
     # ---- Aerodynamics (same airframe as ZRJ70) ----
-    CD0=0.01843,            # zero-lift drag coefficient
-    K=0.05418,              # induced drag factor (LE suction method)
-    e=0.753,                # Oswald span efficiency (LE suction)
+    CD0=0.01853,            # zero-lift drag coefficient
+    K=0.04829,              # induced drag factor (LE suction method)
+    e=0.727,                # Oswald span efficiency (LE suction)
     CL_max_clean=1.16,      # clean
     CL_max_TO=1.99,         # takeoff flaps
     CL_max_L=2.62,          # landing flaps + slats

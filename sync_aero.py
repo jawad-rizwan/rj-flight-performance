@@ -73,6 +73,7 @@ def compute_aero(ac):
     S_wet_htail = 2.0 * ac["S_htail_exposed"]  * (1 + 0.25 * ac["t_c_htail"])
     S_wet_vtail = 2.0 * ac["S_vtail_exposed"]  * (1 + 0.25 * ac["t_c_vtail"])
     S_wet_nac   = np.pi * ac["nacelle_d"] * ac["nacelle_length"] * 0.8
+    S_wet_fairing = ac.get("fairing_s_wet_delta", 0.0)
     f = ac["fuse_length"] / ac["fuse_d"]
     S_wet_fuse  = (np.pi * ac["fuse_d"] * ac["fuse_length"]
                    * (1 - 2 / f) ** (2 / 3) * (1 + 1 / f ** 2))
@@ -86,6 +87,10 @@ def compute_aero(ac):
     FF_htail = ff_tail_with_hinge(ac["x_c_max_htail"], ac["t_c_htail"], cruise_mach, sweep_mt_ht)
     FF_vtail = ff_tail_with_hinge(ac["x_c_max_vtail"], ac["t_c_vtail"], cruise_mach, sweep_mt_vt)
     FF_nac   = ff_nacelle(ac["nacelle_length"], ac["nacelle_d"])
+    FF_fairing = (
+        ff_nacelle(ac["fairing_length"], ac["fairing_d_eq"])
+        if S_wet_fairing > 0.0 else None
+    )
 
     # CD0 component buildup (Raymer Eq. 12.24)
     components = [
@@ -103,6 +108,16 @@ def compute_aero(ac):
             "name": f"Nacelle {'L' if i == 0 else 'R'}",
             "s_wet": S_wet_nac, "length": ac["nacelle_length"],
             "ff": FF_nac, "Q": ac["Q_nac"], "pct_laminar": ac["lam_nac"], "k": ac["k_composite"],
+        })
+    if S_wet_fairing > 0.0:
+        components.append({
+            "name": "Fairing",
+            "s_wet": S_wet_fairing,
+            "length": ac["fairing_length"],
+            "ff": FF_fairing,
+            "Q": ac.get("Q_fairing", 1.0),
+            "pct_laminar": ac.get("lam_fairing", 0.0),
+            "k": ac.get("k_fairing", ac["k_metal"]),
         })
 
     result = cd0_component_buildup(
@@ -167,6 +182,7 @@ def update_aircraft_file(path, values):
 
 # ── Main ───────────────────────────────────────────────────────
 AIRCRAFT_MAP = {
+    "zrj50":  ZRJ70_GEOM,
     "zrj70":  ZRJ70_GEOM,
     "zrj100": ZRJ100_GEOM,
 }
