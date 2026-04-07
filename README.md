@@ -66,13 +66,13 @@ python examples/plot_performance.py
 
 Three variants of a high-wing regional jet with PW1200G geared turbofan engines:
 
-| Variant | Seats | MTOW (lb) | OEW (lb) | Wing Area (ft²) | T/W | Cruise Mach |
-|---------|-------|-----------|----------|-----------------|-----|-------------|
-| ZRJ50   | 50    | 65,000    | 45,623   | 1,016.6          | 0.590 | 0.78        |
-| ZRJ70   | 76    | 85,015    | 45,820   | 1,016.6          | 0.451 | 0.78        |
-| ZRJ100  | 96    | 93,255    | 48,315   | 1,016.6          | 0.412 | 0.78        |
+| Variant | Seats | MTOW (lb) | OEW (lb) | Wing Area (ft²) | T/W (SL static) | T/W @ 35,000 ft | Cruise Mach |
+|---------|-------|-----------|----------|-----------------|-----------------|-----------------|-------------|
+| ZRJ50   | 50    | 65,000    | 45,623   | 1,016.6          | 0.590           | 0.226           | 0.78        |
+| ZRJ70   | 76    | 85,015    | 45,820   | 1,016.6          | 0.451           | 0.173           | 0.78        |
+| ZRJ100  | 96    | 93,255    | 48,315   | 1,016.6          | 0.412           | 0.157           | 0.78        |
 
-All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 38,380 lb total thrust, BPR 9.0). The ZRJ50 uses the same airframe as the ZRJ70 but is MTOW-capped at 65,000 lb per scope clause.
+All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 38,380 lb total thrust, BPR 9.0). The ZRJ50 uses the same airframe as the ZRJ70 but is MTOW-capped at 65,000 lb per scope clause. `T/W (SL static)` is total installed sea-level static thrust divided by MTOW; `T/W @ 35,000 ft` uses the repo's turbofan thrust-lapse model at cruise altitude, still referenced to MTOW.
 
 ### Sample Output (ZRJ Family)
 
