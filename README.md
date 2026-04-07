@@ -118,13 +118,17 @@ All three share the same wing (AR 7.8, 22.9 deg sweep) and engine (2x PW1200G, 3
 | | Max. landing weight (~90% MTOW) | 58,500 | 76,514 | 83,930 |
 | **Airfield Performance** | TOFL, ISA, SL (MTOW) | 2,677 ft | 3,884 ft | 4,471 ft |
 | | TOFL, ISA+20, SL (MTOW) | 2,904 ft | 4,261 ft | 4,923 ft |
+| | TOFL, gravel est., ISA, SL (MTOW) | 2,709 ft | 4,055 ft | 4,737 ft |
 | | LD FAR (dry), ISA, SL (MLW) | 3,924 ft | 4,486 ft | 4,712 ft |
 | | LD FAR (wet), ISA, SL (MLW) | 4,513 ft | 5,159 ft | 5,419 ft |
+| | LD FAR, gravel est., ISA, SL (MLW) | 4,911 ft | 5,719 ft | 6,047 ft |
 | | Steep approach capability (MLW) | Yes | Yes | Yes |
 | | LDR FAR steep 5.5 deg (MLW) | 3,358 ft | 3,968 ft | 4,215 ft |
 | | Max feasible glideslope | 8.7 deg | 7.6 deg | 7.3 deg |
 | | Rate of climb [SL, AEO / OEI] | 17,672 / 6,003 fpm | 13,420 / 4,464 fpm | 11,958 / 3,915 fpm |
 | | Glideslope | 3.0 deg | 3.0 deg | 3.0 deg |
+
+Gravel values are estimated using the existing `firm dirt` surface proxy in the performance scripts (`mu_roll = 0.04`, `mu_brake = 0.30`), not a separately calibrated gravel model. `LD FAR` follows the repo's existing convention of actual landing distance divided by `0.6`.
 
 ---
 
