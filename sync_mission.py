@@ -3,7 +3,7 @@
 sync_mission.py — Pull latest weight/propulsion data from rj-mission-analysis.
 
 Imports weight breakdown and engine data from the sibling mission-analysis repo
-and updates data/zrj*.py with computed values:
+and updates data/zrj*.py with canonical values:
   W_TO, W_empty, W_fuel_max, W_payload, n_engines, T_max_SL, TSFC, BPR,
   M_cruise, h_cruise_ft
 """
@@ -23,10 +23,6 @@ sys.path.insert(0, MISSION_REPO)
 from data.ZRJ50 import AIRCRAFT as ZRJ50_DATA
 from data.ZRJ70 import AIRCRAFT as ZRJ70_DATA
 from data.ZRJ100 import AIRCRAFT as ZRJ100_DATA
-
-from aircraft import ZRJ50 as ZRJ50_AC, ZRJ70 as ZRJ70_AC, ZRJ100 as ZRJ100_AC
-from mission import solve_w0, solve_range
-
 
 # ── Formatting per field ──────────────────────────────────────
 FIELD_FMT = {
@@ -59,45 +55,21 @@ def format_value(key, val):
     return formatted
 
 
-# ── Solve mission to get actual W0 values ─────────────────────
-def _solve_mission():
-    """Run the mission solver to get actual MTOW for each variant.
-
-    ZRJ70: solve for W0 at design range (baseline).
-    ZRJ100: shared wing → same fuel as ZRJ70, solve for range.
-    ZRJ50: fixed MTOW cap (scope clause), solve for range.
-    """
-    # ZRJ70: solve for W0 at design range
-    zrj70_result = solve_w0(ZRJ70_AC)
-    w0_70 = zrj70_result.w0
-    wf_70 = zrj70_result.wf
-
-    # ZRJ100: shared wing → same fuel as ZRJ70
-    w0_100 = ZRJ100_AC.we + ZRJ100_AC.crew_weight + ZRJ100_AC.payload + wf_70
-    solve_range(ZRJ100_AC, w0_100)  # validate it converges
-
-    # ZRJ50: fixed MTOW cap
-    mtow_50 = ZRJ50_DATA.get("mtow_limit", 65_000)
-    w0_50 = float(mtow_50)
-
-    return {
-        "zrj50":  w0_50,
-        "zrj70":  w0_70,
-        "zrj100": w0_100,
-    }
-
-
 # ── Derive flight-performance fields from mission-analysis dict ──
-def derive_fields(ac, w0_solved):
+def derive_fields(ac):
     """Convert mission-analysis dict to flight-performance AircraftData fields."""
     n_crew = ac["n_pilots"] + ac["n_flight_attendants"]
-    W_empty = ac["empty_weight"] + n_crew * ac["person_weight"]  # OEW
-
+    W_empty = ac.get(
+        "operating_empty_weight",
+        ac["empty_weight"] + n_crew * ac["person_weight"],
+    )
     W_payload = ac["payload_weight"]
     T_max_SL = ac["max_thrust_per_engine"] * ac["num_engines"]
-
-    W_TO = float(w0_solved)
+    W_TO = float(ac.get("mtow_limit", W_empty + W_payload))
     W_fuel_max = W_TO - W_empty - W_payload
+    fixed_loaded_fuel = ac.get("fixed_fuel_weight")
+    if fixed_loaded_fuel is not None:
+        W_fuel_max = min(W_fuel_max, float(fixed_loaded_fuel))
     if W_fuel_max < 0:
         print(f"  WARNING: negative W_fuel_max ({W_fuel_max:.0f} lb) — check MTOW/weights")
         W_fuel_max = 0.0
@@ -150,10 +122,9 @@ AIRCRAFT_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 if __name__ == "__main__":
     print("Syncing mission data from rj-mission-analysis...\n")
-    solved = _solve_mission()
     for name, ac_data in AIRCRAFT_MAP.items():
         print(f"{name}:")
-        vals = derive_fields(ac_data, solved[name])
+        vals = derive_fields(ac_data)
         update_aircraft_file(os.path.join(AIRCRAFT_DIR, f"{name}.py"), vals)
         print()
     print("Done.")

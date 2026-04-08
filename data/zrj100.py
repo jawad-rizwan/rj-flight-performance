@@ -11,9 +11,9 @@ zrj100 = AircraftData(
     name="ZRJ100",
 
     # ---- Weights ----
-    W_TO=93_255.0,          # lb, MTOW (Ch.17 mission analysis, shared wing fuel)
-    W_empty=48_315.0,       # lb, OEW (We 47553 + crew 788)
-    W_fuel_max=18_848.0,    # lb, total mission fuel (shared wing with ZRJ70)
+    W_TO=92_484.0,          # lb, takeoff MTOW
+    W_empty=47_892.0,       # lb, OEW incl. 4 crew
+    W_fuel_max=18_500.0,    # lb, fuel available at MTOW (19,000 lb loaded)
     W_payload=26_092.0,     # lb, 96 pax + cargo
 
     # ---- Wing geometry ----

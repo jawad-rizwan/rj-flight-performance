@@ -13,8 +13,8 @@ zrj50 = AircraftData(
 
     # ---- Weights ----
     W_TO=65_000.0,          # lb, MTOW (scope clause cap)
-    W_empty=45_623.0,       # lb, OEW (We 44987 + crew 591, 3 crew)
-    W_fuel_max=8_027.0,    # lb, max fuel (MTOW-limited, tank cap 21258)
+    W_empty=44_765.0,       # lb, OEW (shared ZRJ70 airframe + 3 crew)
+    W_fuel_max=8_885.0,     # lb, takeoff fuel available under 65,000 lb MTOW
     W_payload=11_350.0,     # lb, 50 pax × 197 lbs + 50 bags × 30 lbs
 
     # ---- Wing geometry (same airframe as ZRJ70) ----

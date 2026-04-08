@@ -11,9 +11,9 @@ zrj70 = AircraftData(
     name="ZRJ70",
 
     # ---- Weights ----
-    W_TO=85_015.0,          # lb, MTOW (Ch.17 mission analysis)
-    W_empty=45_820.0,       # lb, OEW (We 44987 + crew 788)
-    W_fuel_max=18_848.0,    # lb, total mission fuel
+    W_TO=84_059.0,          # lb, takeoff MTOW
+    W_empty=44_962.0,       # lb, OEW incl. 4 crew
+    W_fuel_max=18_750.0,    # lb, fuel available at MTOW (19,000 lb loaded)
     W_payload=20_347.0,     # lb, 76 pax + cargo
 
     # ---- Wing geometry ----
