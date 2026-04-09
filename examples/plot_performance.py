@@ -31,10 +31,11 @@ import matplotlib.pyplot as plt
 from data import crj700, crj1000, zrj50, zrj70, zrj100
 from perf import (
     isa_density, speed_of_sound, TAS_from_mach, fps_to_kts, kts_to_fps,
-    thrust_at_altitude, dynamic_pressure, RHO_SL, G,
+    thrust_at_altitude, dynamic_pressure, RHO_SL, G, sigma,
+    has_engine_deck, total_net_thrust,
     thrust_required, power_required,
     LD_max, CL_max_LD, V_min_thrust, V_min_power, V_stall, LD_from_CL,
-    ROC_jet, V_best_ROC_jet, climb_angle, rate_of_climb,
+    climb_angle, rate_of_climb,
     turn_rate_deg, turn_radius, corner_speed,
     n_sustained, sustained_turn_envelope_rho,
     Ps_expanded, specific_energy,
@@ -59,11 +60,72 @@ VARIANTS = []
 COLORS = {}
 CHART_DIR = ""
 
+
+def use_workbook_engine(ac):
+    return ac.name.startswith("ZRJ") and has_engine_deck()
+
+
+def thrust_available(ac, h_ft, V_fps):
+    a = speed_of_sound(h_ft)
+    V_arr = np.asarray(V_fps, dtype=float)
+    if use_workbook_engine(ac):
+        thrust = total_net_thrust(h_ft, V_arr / a, n_engines=ac.n_engines)
+    else:
+        thrust = np.full_like(V_arr, thrust_at_altitude(ac.T_max_SL, h_ft, ac.BPR), dtype=float)
+    return float(thrust) if np.ndim(V_arr) == 0 else thrust
+
+
+def speed_limit(ac, h_ft):
+    limits = []
+    if ac.V_NE_kts > 0:
+        # Structural speed limit is stored as KEAS, so convert to TAS at altitude.
+        limits.append(kts_to_fps(ac.V_NE_kts) / np.sqrt(sigma(h_ft)))
+    if ac.M_mo > 0:
+        limits.append(ac.M_mo * speed_of_sound(h_ft))
+    return min(limits) if limits else float("inf")
+
+
+def best_climb_condition(ac, h_ft, n_points=320):
+    W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+    rho = isa_density(h_ft)
+    a = speed_of_sound(h_ft)
+    v_min = 1.3 * V_stall(W, S, rho, ac.CL_max_clean)
+    v_max = speed_limit(ac, h_ft)
+    if not np.isfinite(v_max):
+        v_max = max(v_min * 1.8, v_min + 10.0)
+    if v_max <= v_min:
+        v_max = v_min * 1.02
+
+    V_arr = np.linspace(v_min, v_max, n_points)
+    q = 0.5 * rho * V_arr**2
+    CL = W / (q * S)
+    M = V_arr / a
+    mdd = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL)
+    CD0_eff = cd0_at_mach(CD0, M, mdd)
+    D = q * S * (CD0_eff + K * CL**2)
+    T = thrust_available(ac, h_ft, V_arr)
+    roc = V_arr * (T - D) / W
+    idx = int(np.nanargmax(roc))
+    return {
+        "V": float(V_arr[idx]),
+        "T": float(T[idx]),
+        "D": float(D[idx]),
+        "roc": float(roc[idx]),
+    }
+
 def save(fig, name):
     path = os.path.join(CHART_DIR, name)
     fig.savefig(path, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print(f"  Saved: {path}")
+
+
+def display_name(ac):
+    if ac.name == "ZRJ70":
+        return "ZRJ-70"
+    if ac.name == "ZRJ100":
+        return "ZRJ-100"
+    return ac.name
 
 
 # =====================================================================
@@ -83,15 +145,16 @@ def plot_thrust_vs_velocity():
         for h_ft, ls in [(0, "-"), (ac.h_cruise_ft, "--")]:
             rho = isa_density(h_ft)
             Vs = V_stall(W, S, rho, ac.CL_max_clean)
-            V_arr = np.linspace(Vs * 0.9, kts_to_fps(450), 300)
+            V_hi = min(kts_to_fps(450), speed_limit(ac, h_ft) * 1.02)
+            V_arr = np.linspace(Vs * 0.9, V_hi, 300)
             T_req = thrust_required(W, CD0, K, S, rho, V_arr)
-            T_av = thrust_at_altitude(ac.T_max_SL, h_ft, ac.BPR)
+            T_av = thrust_available(ac, h_ft, V_arr)
 
             label_alt = f"{h_ft/1000:.0f}k ft"
             ax.plot(fps_to_kts(V_arr), T_req, ls, color=COLORS[ac.name],
                     label=f"T_req @ {label_alt}")
-            ax.axhline(T_av, color=COLORS[ac.name], ls=ls, alpha=0.5,
-                       label=f"T_avail @ {label_alt}")
+            ax.plot(fps_to_kts(V_arr), T_av, ls=ls, alpha=0.5,
+                    color=COLORS[ac.name], label=f"T_avail @ {label_alt}")
 
         # Mark min-drag speed at SL
         rho_sl = RHO_SL
@@ -124,10 +187,11 @@ def plot_power_vs_velocity():
         W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
         rho = RHO_SL
         Vs = V_stall(W, S, rho, ac.CL_max_clean)
-        V_arr = np.linspace(Vs * 0.9, kts_to_fps(400), 300)
+        V_hi = min(kts_to_fps(400), speed_limit(ac, 0.0) * 1.02)
+        V_arr = np.linspace(Vs * 0.9, V_hi, 300)
 
         P_req = power_required(W, CD0, K, S, rho, V_arr) / 550.0  # to hp
-        P_av = ac.T_max_SL * V_arr / 550.0  # max thrust * V
+        P_av = thrust_available(ac, 0.0, V_arr) * V_arr / 550.0
 
         ax.plot(fps_to_kts(V_arr), P_req, color=COLORS[ac.name], label="P required")
 
@@ -178,30 +242,32 @@ def plot_LD_vs_CL():
 def plot_ROC_vs_altitude():
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    for ac in VARIANTS:
-        W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
+    roc_variants = VARIANTS
+    if {ac.name for ac in VARIANTS} == {"ZRJ50", "ZRJ70", "ZRJ100"}:
+        roc_variants = [ac for ac in VARIANTS if ac.name in {"ZRJ70", "ZRJ100"}]
+
+    for ac in roc_variants:
         alts = np.linspace(0, 50000, 100)
         rocs = []
+        svc_alt = None
+        abs_alt = None
         for h in alts:
-            rho_h = isa_density(h)
-            a_h = speed_of_sound(h)
-            T_h = thrust_at_altitude(ac.T_max_SL, h, ac.BPR)
-            TW_h = T_h / W
-            V_h = V_best_ROC_jet(W, S, rho_h, CD0, K, TW_h)
-            # Cap at Mmo
-            if ac.M_mo > 0:
-                V_h = min(V_h, ac.M_mo * a_h)
-            # Wave drag
-            M_h = V_h / a_h
-            q_h = 0.5 * rho_h * V_h**2
-            CL_h = W / (q_h * S) if q_h > 0 else 0
-            mdd_h = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_h)
-            CD0_h = cd0_at_mach(CD0, M_h, mdd_h)
-            roc = ROC_jet(V_h, T_h, CD0_h, K, W, S, rho_h)
-            rocs.append(max(roc * 60, 0))  # fpm
-        ax.plot(rocs, alts / 1000, color=COLORS[ac.name], label=ac.name, lw=2)
+            roc_fpm = best_climb_condition(ac, h)["roc"] * 60
+            rocs.append(roc_fpm if roc_fpm > 0.0 else np.nan)
+            if svc_alt is None and roc_fpm <= 100.0:
+                svc_alt = h
+            if abs_alt is None and roc_fpm <= 0.0:
+                abs_alt = h
 
-    ax.axvline(500, color='gray', ls='--', alpha=0.5, label="Service ceiling (500 fpm)")
+        rocs = np.asarray(rocs, dtype=float)
+        ax.plot(rocs, alts / 1000, color=COLORS[ac.name], label=display_name(ac), lw=2)
+
+        if svc_alt is not None:
+            ax.plot(100, svc_alt / 1000, 'o', color=COLORS[ac.name], ms=5)
+        if abs_alt is not None:
+            ax.plot(0, abs_alt / 1000, 'x', color=COLORS[ac.name], ms=6)
+
+    ax.axvline(100, color='gray', ls='--', alpha=0.5, label="Service ceiling (100 fpm)")
     ax.set_xlabel("Best Rate of Climb [fpm]")
     ax.set_ylabel("Altitude [1000 ft]")
     ax.set_title("Rate of Climb vs Altitude  (Raymer Eq. 17.43, 17.39)")
@@ -224,8 +290,6 @@ def plot_Ps_vs_Mach():
         for h_ft in [0, 10000, 20000, 30000, ac.h_cruise_ft]:
             rho = isa_density(h_ft)
             a = speed_of_sound(h_ft)
-            T_h = thrust_at_altitude(ac.T_max_SL, h_ft, ac.BPR)
-            TW = T_h / W
 
             M_arr = np.linspace(0.2, 0.85, 200)
             V_arr = M_arr * a
@@ -234,6 +298,7 @@ def plot_Ps_vs_Mach():
             CL_arr = W / (q_arr * S)
             mdd_arr = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_arr)
             CD0_arr = cd0_at_mach(CD0, M_arr, mdd_arr)
+            TW = thrust_available(ac, h_ft, V_arr) / W
             ps_arr = Ps_expanded(V_arr, TW, ac.wing_loading, CD0_arr, K, rho, n=1.0)
 
             ax.plot(M_arr, ps_arr * 60, label=f"{h_ft/1000:.0f}k ft")
@@ -441,7 +506,6 @@ def plot_operating_envelope():
         for h in alts:
             rho_h = isa_density(h)
             a_h = speed_of_sound(h)
-            T_h = thrust_at_altitude(ac.T_max_SL, h, ac.BPR)
 
             # Stall boundary: 1g stall Mach at this altitude
             Vs = V_stall(W, S, rho_h, ac.CL_max_clean)
@@ -457,7 +521,7 @@ def plot_operating_envelope():
             CD0_test = cd0_at_mach(CD0, M_test, mdd_test)
             T_req = np.array([thrust_required(W, cd0_m, K, S, rho_h, v)
                               for cd0_m, v in zip(CD0_test, V_test)])
-            feasible = T_req <= T_h
+            feasible = T_req <= thrust_available(ac, h, V_test)
             # Also cap at Mmo
             if ac.M_mo > 0:
                 feasible = feasible & (M_test <= ac.M_mo)
@@ -507,11 +571,11 @@ def plot_climb_hodograph():
     for ax, ac in zip(axes, VARIANTS):
         W, S, CD0, K = ac.W_TO, ac.S, ac.CD0, ac.K
         rho = RHO_SL
-        T = ac.T_max_SL
 
         Vs = V_stall(W, S, rho, ac.CL_max_clean)
-        V_arr = np.linspace(Vs, kts_to_fps(450), 300)
+        V_arr = np.linspace(Vs, min(kts_to_fps(450), speed_limit(ac, 0.0) * 1.02), 300)
         T_req = thrust_required(W, CD0, K, S, rho, V_arr)
+        T = thrust_available(ac, 0.0, V_arr)
         gamma_arr = np.arcsin(np.clip((T - T_req) / W, -1, 1))
         Vx = fps_to_kts(V_arr * np.cos(gamma_arr))  # horizontal
         Vy = V_arr * np.sin(gamma_arr) * 60           # vertical [fpm]
@@ -560,15 +624,14 @@ def plot_Ps_contours():
             h = h_arr[i]
             rho_h = isa_density(h)
             a_h = speed_of_sound(h)
-            T_h = thrust_at_altitude(ac.T_max_SL, h, ac.BPR)
-            TW_h = T_h / W
             V_row = M_arr * a_h
             # Wave drag: adjust CD0 for each Mach
             q_row = 0.5 * rho_h * V_row**2
             CL_row = np.where(q_row > 0, W / (q_row * S), 0)
             mdd_row = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_row)
             CD0_row = cd0_at_mach(CD0, M_arr, mdd_row)
-            Ps_grid[i, :] = Ps_expanded(V_row, TW_h, ac.wing_loading,
+            TW_row = thrust_available(ac, h, V_row) / W
+            Ps_grid[i, :] = Ps_expanded(V_row, TW_row, ac.wing_loading,
                                          CD0_row, K, rho_h, n=1.0) * 60  # fpm
 
         levels = [0, 500, 1000, 2000, 5000, 10000, 15000]

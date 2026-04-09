@@ -50,26 +50,26 @@
   Loiter from cruise (est) : 7.55 hr  (Eq. 17.34)
 
 --- 17.3  STEADY CLIMB ---
-  Sea-level max thrust    : 26,760 lb
+  Sea-level avail thrust  : 26,760 lb
   Climb speed (1.3 Vs)    : 226.8 kts
   Climb angle (SL)        : 17.3 deg  (Eq. 17.38)
   Rate of climb (SL)      : 114 ft/s  (6823 fpm)  (Eq. 17.39)
 
-  V best ROC (SL)         : 484.7 kts  (Eq. 17.43)
-  Best ROC (SL)           : 187 ft/s  (11202 fpm)
+  V best ROC (SL)         : 335.0 kts
+  Best ROC (SL)           : 160 ft/s  (9623 fpm)
 
   Climb profile (SL -> 35k ft):
     Alt (ft)   ROC (fpm)  Time (min)
-           0      11,202         0.0
-       5,000      10,150         0.5
-      10,000       9,144         1.0
-      15,000       8,181         1.6
-      20,000       7,259         2.2
-      25,000       6,373         2.9
-      30,000       5,517         3.8
-      35,000       4,686         4.8
-  Total time to climb   : 4.8 min  (Eqs. 17.48-17.50)
-  Est. fuel to climb    : 1,303 lb  (Eq. 17.51)
+           0       9,623         0.0
+       5,000       9,006         0.5
+      10,000       8,368         1.1
+      15,000       7,703         1.7
+      20,000       7,007         2.4
+      25,000       6,190         3.2
+      30,000       5,191         4.1
+      35,000       4,178         5.1
+  Total time to climb   : 5.1 min  (Eqs. 17.48-17.50)
+  Est. fuel to climb    : 1,067 lb  (Eq. 17.51)
 
 --- 17.4  LEVEL TURNING FLIGHT ---
   n_max (structural)      : 2.5
@@ -98,8 +98,8 @@
   Ps at SL, n=3           : 12.3 ft/s  (735 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 47,000 ft
-  Absolute ceiling (~0 fpm) : 49,000 ft
+  Service ceiling (~100 fpm): 46,500 ft
+  Absolute ceiling (~0 fpm) : 46,500 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -183,7 +183,7 @@
   V_stall clean (SL)          : 174 kts
   V1 / VR / V2                : 148 / 153 / 167 kts
   Best range (cruise)         : 2,976 nmi
-  Best ROC (SL)               : 11,202 fpm
+  Best ROC (SL)               : 9,623 fpm
   Service ceiling             : see above
   Corner speed (SL)           : 276 kts
   TODR (unfactored)           : 5,689 ft
@@ -252,26 +252,26 @@
   Loiter from cruise (est) : 5.98 hr  (Eq. 17.34)
 
 --- 17.3  STEADY CLIMB ---
-  Sea-level max thrust    : 29,020 lb
+  Sea-level avail thrust  : 29,020 lb
   Climb speed (1.3 Vs)    : 240.1 kts
   Climb angle (SL)        : 14.9 deg  (Eq. 17.38)
   Rate of climb (SL)      : 104 ft/s  (6256 fpm)  (Eq. 17.39)
 
-  V best ROC (SL)         : 463.6 kts  (Eq. 17.43)
-  Best ROC (SL)           : 157 ft/s  (9393 fpm)
+  V best ROC (SL)         : 335.0 kts
+  Best ROC (SL)           : 138 ft/s  (8291 fpm)
 
   Climb profile (SL -> 35k ft):
     Alt (ft)   ROC (fpm)  Time (min)
-           0       9,393         0.0
-       5,000       8,493         0.6
-      10,000       7,631         1.2
-      15,000       6,803         1.9
-      20,000       6,007         2.7
-      25,000       5,238         3.5
-      30,000       4,492         4.6
-      35,000       3,761         5.8
-  Total time to climb   : 5.8 min  (Eqs. 17.48-17.50)
-  Est. fuel to climb    : 1,739 lb  (Eq. 17.51)
+           0       8,291         0.0
+       5,000       7,726         0.6
+      10,000       7,140         1.3
+      15,000       6,528         2.0
+      20,000       5,886         2.8
+      25,000       5,133         3.7
+      30,000       4,266         4.8
+      35,000       3,371         6.1
+  Total time to climb   : 6.1 min  (Eqs. 17.48-17.50)
+  Est. fuel to climb    : 1,403 lb  (Eq. 17.51)
 
 --- 17.4  LEVEL TURNING FLIGHT ---
   n_max (structural)      : 2.5
@@ -300,8 +300,8 @@
   Ps at SL, n=3           : 7.6 ft/s  (456 fpm)
 
 --- 17.7  SERVICE CEILING ---
-  Service ceiling (~500 fpm): 44,500 ft
-  Absolute ceiling (~0 fpm) : 47,000 ft
+  Service ceiling (~100 fpm): 44,000 ft
+  Absolute ceiling (~0 fpm) : 44,000 ft
 
 --- 17.8  TAKEOFF ANALYSIS (Sea Level, ISA) ---
 
@@ -385,7 +385,7 @@
   V_stall clean (SL)          : 185 kts
   V1 / VR / V2                : 173 / 179 / 195 kts
   Best range (cruise)         : 2,359 nmi
-  Best ROC (SL)               : 9,393 fpm
+  Best ROC (SL)               : 8,291 fpm
   Service ceiling             : see above
   Corner speed (SL)           : 292 kts
   TODR (unfactored)           : 8,377 ft
@@ -411,7 +411,7 @@
   (L/D)_max                            16.85         17.01
   Cruise L/D                           16.79         16.97
   Range (nmi)                          2,976         2,359
-  Best ROC (fpm)                      11,202         9,393
+  Best ROC (fpm)                       9,623         8,291
   Corner spd (kts)                       276           292
   TODR (ft)                            5,689         8,377
   TODR FAR (ft)                        6,543         9,634

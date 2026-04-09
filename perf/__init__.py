@@ -8,3 +8,4 @@ from .energy import *
 from .takeoff import *
 from .landing import *
 from .wave_drag import *
+from .engine import *

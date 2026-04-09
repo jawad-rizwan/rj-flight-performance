@@ -15,6 +15,7 @@ from perf import (
     # atmosphere
     isa_density, speed_of_sound, TAS_from_mach, fps_to_kts, kts_to_fps,
     thrust_at_altitude, sigma, dynamic_pressure, RHO_SL, G,
+    has_engine_deck, total_net_thrust, tsfc_from_deck,
     # level flight
     thrust_required, power_required, TW_level,
     LD_max, CL_max_LD, V_min_thrust, V_min_power,
@@ -23,7 +24,7 @@ from perf import (
     breguet_range_jet_nmi, V_best_range_jet, CL_best_range_jet,
     endurance_jet_hr, loiter_from_cruise,
     # climb
-    climb_angle, rate_of_climb, V_best_ROC_jet, ROC_jet,
+    climb_angle, rate_of_climb,
     time_to_climb, fuel_to_climb, time_to_climb_profile,
     far25_climb_gradients,
     # turning
@@ -62,6 +63,76 @@ def separator(title, width=70):
 def subsection(title):
     print(f"\n--- {title} ---")
 
+
+def use_workbook_engine(ac):
+    """Use the workbook-backed PW1200G deck for ZRJ variants when present."""
+    return ac.name.startswith("ZRJ") and has_engine_deck()
+
+
+def thrust_available(ac, h_ft, V_fps):
+    """Available thrust [lb] at the requested flight condition."""
+    if use_workbook_engine(ac):
+        mach = V_fps / speed_of_sound(h_ft)
+        return total_net_thrust(h_ft, mach, n_engines=ac.n_engines)
+    return thrust_at_altitude(ac.T_max_SL, h_ft, ac.BPR)
+
+
+def tsfc_available(ac, h_ft, V_fps):
+    """TSFC [lb/lb/hr] at the requested flight condition."""
+    if use_workbook_engine(ac):
+        mach = V_fps / speed_of_sound(h_ft)
+        return tsfc_from_deck(h_ft, mach)
+    return ac.TSFC
+
+
+def climb_speed_limit(ac, h_ft):
+    """Upper speed bound for climb search [ft/s]."""
+    limits = []
+    if ac.V_NE_kts > 0:
+        # Structural speed limit is stored as KEAS, so convert to TAS at altitude.
+        limits.append(kts_to_fps(ac.V_NE_kts) / np.sqrt(sigma(h_ft)))
+    if ac.M_mo > 0:
+        limits.append(ac.M_mo * speed_of_sound(h_ft))
+    return min(limits) if limits else float("inf")
+
+
+def best_climb_condition(ac, W, S, CD0, K, h_ft, n_points=320):
+    """Search a bounded climb envelope for max rate of climb."""
+    rho = isa_density(h_ft)
+    a = speed_of_sound(h_ft)
+    v_min = 1.3 * V_stall(W, S, rho, ac.CL_max_clean)
+    v_max = climb_speed_limit(ac, h_ft)
+    if not np.isfinite(v_max):
+        v_max = max(v_min * 1.8, v_min + 10.0)
+    if v_max <= v_min:
+        v_max = v_min * 1.02
+
+    V_arr = np.linspace(v_min, v_max, n_points)
+    q = 0.5 * rho * V_arr**2
+    CL = W / (q * S)
+    M = V_arr / a
+    mdd = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL)
+    CD0_eff = cd0_at_mach(CD0, M, mdd)
+    D = q * S * (CD0_eff + K * CL**2)
+
+    if use_workbook_engine(ac):
+        T = total_net_thrust(h_ft, M, n_engines=ac.n_engines)
+        C = tsfc_from_deck(h_ft, M)
+    else:
+        T = np.full_like(V_arr, thrust_at_altitude(ac.T_max_SL, h_ft, ac.BPR))
+        C = np.full_like(V_arr, ac.TSFC)
+
+    roc = V_arr * (T - D) / W
+    idx = int(np.nanargmax(roc))
+    return {
+        "V": float(V_arr[idx]),
+        "T": float(T[idx]),
+        "D": float(D[idx]),
+        "roc": float(roc[idx]),
+        "tsfc": float(C[idx]),
+        "mach": float(M[idx]),
+    }
+
 # =====================================================================
 # Main analysis
 # =====================================================================
@@ -81,7 +152,7 @@ def analyse(ac):
     a_cr = speed_of_sound(h_cr)
     V_cr = TAS_from_mach(ac.M_cruise, h_cr)
     q_cr = dynamic_pressure(V_cr, h_cr)
-    T_avail_cr = thrust_at_altitude(ac.T_max_SL, h_cr, ac.BPR)
+    T_avail_cr = thrust_available(ac, h_cr, V_cr)
 
     CL_cr = W / (q_cr * S)
     CD_cr = CD0 + K * CL_cr**2
@@ -144,7 +215,7 @@ def analyse(ac):
     # =================================================================
     subsection("17.2.5  RANGE (Jet)")
 
-    C_hr = ac.TSFC  # [1/hr]
+    C_hr = tsfc_available(ac, h_cr, V_cr)  # [1/hr]
     W_fuel_cruise = 0.90 * ac.W_fuel_max  # ~90% of fuel for cruise (rest for reserves)
     Wi = W
     Wf = W - W_fuel_cruise
@@ -185,40 +256,43 @@ def analyse(ac):
     # =================================================================
     subsection("17.3  STEADY CLIMB")
 
-    # Sea-level, max thrust
-    T_sl = ac.T_max_SL
-    D_sl = thrust_required(W, CD0, K, S, rho_sl, vs_clean * 1.3)  # at ~1.3 Vs
-    gamma_sl = climb_angle(T_sl, D_sl, W)
+    # Sea-level climb reference at 1.3 Vs, using thrust at the actual condition
     V_climb_sl = vs_clean * 1.3
+    T_sl = thrust_available(ac, 0.0, V_climb_sl)
+    TW_sl = T_sl / W
+    D_sl = thrust_required(W, CD0, K, S, rho_sl, V_climb_sl)
+    gamma_sl = climb_angle(T_sl, D_sl, W)
     roc_sl = rate_of_climb(V_climb_sl, T_sl, D_sl, W)
 
-    print(f"  Sea-level max thrust    : {T_sl:,.0f} lb")
+    print(f"  Sea-level avail thrust  : {T_sl:,.0f} lb")
     print(f"  Climb speed (1.3 Vs)    : {fps_to_kts(V_climb_sl):.1f} kts")
     print(f"  Climb angle (SL)        : {np.degrees(gamma_sl):.1f} deg  (Eq. 17.38)")
     print(f"  Rate of climb (SL)      : {roc_sl:.0f} ft/s  ({roc_sl*60:.0f} fpm)  (Eq. 17.39)")
 
-    # Best ROC velocity (Eq. 17.43)
-    TW_sl = T_sl / W
-    V_broc = V_best_ROC_jet(W, S, rho_sl, CD0, K, TW_sl)
-    roc_best = ROC_jet(V_broc, T_sl, CD0, K, W, S, rho_sl)
+    # Best ROC from a bounded speed search with condition-dependent thrust
+    climb_sl = best_climb_condition(ac, W, S, CD0, K, 0.0)
+    V_broc = climb_sl["V"]
+    roc_best = climb_sl["roc"]
 
-    print(f"\n  V best ROC (SL)         : {fps_to_kts(V_broc):.1f} kts  (Eq. 17.43)")
+    print(f"\n  V best ROC (SL)         : {fps_to_kts(V_broc):.1f} kts")
     print(f"  Best ROC (SL)           : {roc_best:.0f} ft/s  ({roc_best*60:.0f} fpm)")
 
     # Climb profile (SL to cruise alt)
     alt_steps = np.linspace(0, h_cr, 8)
     rocs = []
+    climb_thrusts = []
+    climb_tsfcs = []
     for h in alt_steps:
-        rho_h = isa_density(h)
-        T_h = thrust_at_altitude(T_sl, h, ac.BPR)
-        TW_h = T_h / W
-        V_h = V_best_ROC_jet(W, S, rho_h, CD0, K, TW_h)
-        roc_h = ROC_jet(V_h, T_h, CD0, K, W, S, rho_h)
-        rocs.append(max(roc_h, 0.1))  # keep positive
+        climb_h = best_climb_condition(ac, W, S, CD0, K, h)
+        rocs.append(max(climb_h["roc"], 0.1))  # keep positive
+        climb_thrusts.append(climb_h["T"])
+        climb_tsfcs.append(climb_h["tsfc"])
     rocs = np.array(rocs)
+    climb_thrusts = np.array(climb_thrusts)
+    climb_tsfcs = np.array(climb_tsfcs)
 
     times = time_to_climb_profile(alt_steps, rocs)
-    fuel_climb = fuel_to_climb(ac.TSFC / 3600, T_sl * 0.9, times[-1])
+    fuel_climb = fuel_to_climb(np.mean(climb_tsfcs) / 3600, np.mean(climb_thrusts), times[-1])
 
     print(f"\n  Climb profile (SL -> {h_cr/1000:.0f}k ft):")
     print(f"  {'Alt (ft)':>10}  {'ROC (fpm)':>10}  {'Time (min)':>10}")
@@ -292,30 +366,14 @@ def analyse(ac):
     # =================================================================
     subsection("17.7  SERVICE CEILING")
 
-    # Find altitude where ROC = 500 fpm for jet service ceiling
-    # Cap speed at Mmo and account for compressibility drag rise
+    # Find altitude where ROC = 100 fpm for jet service ceiling.
+    # Absolute ceiling is where climb performance goes to zero.
     svc_ceil = None
     abs_ceil = None
     for h_test in np.arange(0, 60001, 500):
-        rho_t = isa_density(h_test)
-        a_t = speed_of_sound(h_test)
-        T_t = thrust_at_altitude(T_sl, h_test, ac.BPR)
-        V_t = V_best_ROC_jet(W, S, rho_t, CD0, K, T_t / W)
-
-        # Cap at Mmo
-        if ac.M_mo > 0:
-            V_mmo = ac.M_mo * a_t
-            V_t = min(V_t, V_mmo)
-
-        # Wave drag: adjust CD0 for compressibility
-        M_t = V_t / a_t
-        q_t = 0.5 * rho_t * V_t**2
-        CL_t = W / (q_t * S) if q_t > 0 else 0
-        mdd_t = mdd_wing(ac.t_c, ac.sweep_qc_deg, CL_t)
-        CD0_t = cd0_at_mach(CD0, M_t, mdd_t)
-
-        roc_t = ROC_jet(V_t, T_t, CD0_t, K, W, S, rho_t)
-        if svc_ceil is None and roc_t * 60 <= 500.0:
+        climb_t = best_climb_condition(ac, W, S, CD0, K, h_test)
+        roc_t = climb_t["roc"]
+        if svc_ceil is None and roc_t * 60 <= 100.0:
             svc_ceil = h_test
         if roc_t <= 0.5:
             abs_ceil = h_test
@@ -329,7 +387,7 @@ def analyse(ac):
             abs_ceil = ac.h_max_ft
 
     if svc_ceil:
-        print(f"  Service ceiling (~500 fpm): {svc_ceil:,.0f} ft")
+        print(f"  Service ceiling (~100 fpm): {svc_ceil:,.0f} ft")
     else:
         print(f"  Service ceiling           : > 60,000 ft")
     if abs_ceil:
@@ -347,7 +405,8 @@ def analyse(ac):
     CD0_TO = CD0 + 0.015   # gear + flap drag increment
     # Raymer Eq. 17.114: average thrust = T_static * 0.75*(5+BPR)/(4+BPR)
     T_ratio = 0.75 * (5.0 + ac.BPR) / (4.0 + ac.BPR)
-    T_TO = T_ratio * T_sl
+    T_sl_static = ac.T_max_SL
+    T_TO = T_ratio * T_sl_static
 
     # All-engine TODR
     to = total_takeoff_distance(
@@ -357,7 +416,7 @@ def analyse(ac):
         h_obstacle=ac.h_obstacle_TO, t_rotate=3.0)
 
     # V1 / BFL (iterative)
-    T_idle_to = 0.05 * T_sl
+    T_idle_to = 0.05 * T_sl_static
     v1_result = find_V1(
         W=W, S=S, T=T_TO, CD0=CD0_TO,
         CL_ground=ac.CL_ground, K=K,
@@ -459,7 +518,7 @@ def analyse(ac):
     subsection("17.9  LANDING ANALYSIS (Sea Level, ISA)")
 
     W_land = ac.W_landing
-    T_idle_land = 0.05 * T_sl   # idle thrust ~ 5%
+    T_idle_land = 0.05 * T_sl_static   # idle thrust ~ 5%
 
     la = total_landing_distance(
         W=W_land, S=S, rho=rho_sl, CL_max_L=ac.CL_max_L,
